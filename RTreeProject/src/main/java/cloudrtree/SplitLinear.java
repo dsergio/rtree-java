@@ -1,4 +1,12 @@
 package cloudrtree;
+
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class SplitLinear extends SplitBehavior {
 
 	@Override

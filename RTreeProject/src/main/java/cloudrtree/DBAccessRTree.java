@@ -1,5 +1,12 @@
 package cloudrtree;
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public interface DBAccessRTree {
 	
 	public void init() throws Exception;

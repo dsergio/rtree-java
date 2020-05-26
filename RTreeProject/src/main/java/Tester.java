@@ -27,15 +27,6 @@ public class Tester {
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
 		
 		
-		
-		/*
-		 * TODO: 
-		 * 
-		 * 
-		 * 
-		 */
-		
-		
 		if (args.length < 2)  {
 			System.out.println("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
 			System.out.println("Usage: java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]");

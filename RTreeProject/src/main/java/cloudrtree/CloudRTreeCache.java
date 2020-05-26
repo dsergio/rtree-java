@@ -10,6 +10,13 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class CloudRTreeCache {
 	
 	private Map<String, CloudRTreeNode> cache;
@@ -24,8 +31,6 @@ public class CloudRTreeCache {
 		
 		if (cloudType.equals("DynamoDB")) {
 			dbAccess = new DBAccessRTreeDynamoDB();
-		} else if (cloudType.equals("MongoDB")) {
-			dbAccess = new DBAccessRTreeArangoDB();
 		} else if (cloudType.equals("Local")) {
 			dbAccess = new DBAccessRTreeLocal();
 		} else { // default to DynamoDB

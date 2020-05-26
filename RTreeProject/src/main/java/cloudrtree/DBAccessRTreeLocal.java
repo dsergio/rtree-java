@@ -7,6 +7,13 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class DBAccessRTreeLocal implements DBAccessRTree {
 	
 	private int maxItems;

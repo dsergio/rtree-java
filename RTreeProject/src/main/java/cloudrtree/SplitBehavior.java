@@ -1,5 +1,12 @@
 package cloudrtree;
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public abstract class SplitBehavior {
 	
 	protected CloudRTreeCache cache;

@@ -3,6 +3,13 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class Rectangle {
 	
 	private int x1;

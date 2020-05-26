@@ -6,6 +6,14 @@ import java.util.UUID;
 
 import org.json.simple.JSONArray;
 
+
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class SplitQuadratic extends SplitBehavior {
 
 	public SplitQuadratic(CloudRTreeCache cache, int maxChildren, CloudRTreeNode root) {

@@ -40,8 +40,10 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
 
 /**
- * This sample demonstrates how to perform a few simple operations with the
- * Amazon DynamoDB service.
+ * 
+ * Description TBD
+ * 
+ *
  */
 public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 

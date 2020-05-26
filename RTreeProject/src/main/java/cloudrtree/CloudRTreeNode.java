@@ -11,15 +11,20 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class CloudRTreeNode {
 
 	List<String> children;
 	String parent;
 	List<LocationItem> locationItems;
 	Rectangle rectangle;
-	
 	String nodeId;
-	
 	CloudRTreeCache cache;
 
 	public CloudRTreeNode(String nodeId, String childrenStr, String parent, CloudRTreeCache cache) {

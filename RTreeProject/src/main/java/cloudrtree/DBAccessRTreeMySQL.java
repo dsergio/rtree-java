@@ -1,5 +1,12 @@
 package cloudrtree;
 
+/**
+ * 
+ * Description TBD
+ * 
+ * @author David Sergio
+ *
+ */
 public class DBAccessRTreeMySQL implements DBAccessRTree {
 
 	@Override
