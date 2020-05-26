@@ -21,3 +21,21 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+wa_cities
+
+*.csv
+
+*.xlsx
+
+small_file_cities
+
+cli_args
+
+.project
+
+all_us_cities
+
+todo
+
+RTreeProject/.classpath
