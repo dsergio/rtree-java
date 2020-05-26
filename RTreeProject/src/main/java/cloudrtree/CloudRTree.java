@@ -1,18 +1,11 @@
 package cloudrtree;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.UUID;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /**
  * 
@@ -85,18 +78,51 @@ public class CloudRTree {
 		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root);
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param tableName
+	 * @param maxChildren
+	 * @param maxItems
+	 * @return void
+	 * 
+	 */
 	public void addToMetaData(String tableName, int maxChildren, int maxItems) {
 		cacheContainer.getDBAccess().addToMetaData(tableName, maxChildren, maxItems);
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public boolean metaDataExists() {
 		return cacheContainer.getDBAccess().metaDataExists(treeName);
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int getMaxChildren() {
 		if (cloudType.equals("Local")) {
 			return maxChildren;
 		}
 		return cacheContainer.getDBAccess().getMaxChildren(treeName);
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int getMaxItems() {
 		if (cloudType.equals("Local")) {
 			return maxItems;
@@ -104,32 +130,92 @@ public class CloudRTree {
 		return cacheContainer.getDBAccess().getMaxItems(treeName);
 	}
 	
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int getMaxChildrenVar() {
 		return maxChildren;
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int getMaxItemsVar() {
 		return maxItems;
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public CloudRTreeNode getNode(String nodeId) {
 		return cacheContainer.getNode(nodeId);
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void updateNode(String nodeId, String children, String parent, String items, String rectangle) {
 		cacheContainer.updateNode(nodeId, children, parent, items, rectangle);
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		cacheContainer.addNode(nodeId, children, parent, items, rectangle, node);
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public boolean getLeafNodeSplit() {
 		return leafNodeSplit;
 	}
+	
+	/**
+	 * 
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public boolean getBranchSplit() {
 		return branchSplit;
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void insertType(LocationItem locationItem) throws IOException {
 		
 		System.out.println("GOING TO INSERT: " + locationItem);
@@ -153,7 +239,14 @@ public class CloudRTree {
 		
 		System.out.println("MIN X: " + minXInserted + " MIN Y: " + minYInserted + " MAX X: " + maxXInserted + " MAX Y: " + maxYInserted);
 	}
-
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void insert(LocationItem locationItem) throws IOException {
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
@@ -165,7 +258,7 @@ public class CloudRTree {
 		System.out.println();
 //		printTree();
 	}
-
+	
 	private void insert(LocationItem locationItem, CloudRTreeNode node) throws IOException {
 		
 		if (node == null) {
@@ -232,6 +325,7 @@ public class CloudRTree {
 		}
 	}
 	
+	
 	private void addToRectangle(CloudRTreeNode node, Rectangle r) {
 		if (node == null) {
 			return;
@@ -241,7 +335,7 @@ public class CloudRTree {
 		updateNode(node.nodeId, null, null, null, node.getRectangle().getJson().toJSONString());
 		addToRectangle(getNode(node.parent), sumRectangle);
 	}
-
+	
 	private int getEnlargementArea(CloudRTreeNode node, int x, int y) {
 		
 		if (node.getNumberOfItems() == 0) {
@@ -262,6 +356,13 @@ public class CloudRTree {
 	}
 	
 
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public List<Rectangle> getRectangles() {
 		List<Rectangle> allRectangles = new ArrayList<Rectangle>();
 		getRectangles(getNode("root"), allRectangles, 0);
@@ -283,6 +384,13 @@ public class CloudRTree {
 		
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public List<LocationItem> getPoints() {
 		List<LocationItem> points = new ArrayList<LocationItem>();
 		getPoints(root, points, 0);
@@ -305,6 +413,13 @@ public class CloudRTree {
 		
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public Map<LocationItem, Integer> getPointsWithDepth() {
 		Map<LocationItem, Integer> points = new HashMap<LocationItem, Integer>();
 		
@@ -330,7 +445,13 @@ public class CloudRTree {
 		
 	}
 	
-	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void printTree() {
 		System.out.println("PRINTING TREE: ");
 		System.out.print("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
@@ -380,7 +501,13 @@ public class CloudRTree {
 		}
 	}
 	
-	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public Map<Rectangle, List<LocationItem>> search(Rectangle searchRectangle) {
 		int curAdds = dynamoAdds();
 		int curUpdates = dynamoUpdates();
@@ -395,8 +522,6 @@ public class CloudRTree {
 				(dynamoReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
 		return result;
 	}
-	
-	
 	
 	private void search(Rectangle searchRectangle, CloudRTreeNode node, Map<Rectangle, List<LocationItem>> result, int depth) {
 		node.rectangle.setLevel(depth);
@@ -437,9 +562,17 @@ public class CloudRTree {
 		}
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void delete(LocationItem toDelete) {
 		delete(toDelete, root);
 	}
+	
 	private void delete(LocationItem toDelete, CloudRTreeNode node) {
 		
 		if (node.isLeafNode()) {
@@ -472,30 +605,90 @@ public class CloudRTree {
 		}
 	}
 	
-	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public String getName() {
 		return treeName;
 	}
 	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int dynamoAdds() {
 		return cacheContainer.getDBAccess().getNumAdds();
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int dynamoReads() {
 		return cacheContainer.getDBAccess().getNumReads();
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public int dynamoUpdates() {
 		return cacheContainer.getDBAccess().getNumUpdates();
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public long dynamoAddTime() {
 		return cacheContainer.getDBAccess().getAddTime();
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public long dynamoReadTime() {
 		return cacheContainer.getDBAccess().getReadTime();
 	}
+	
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public long dynamoUpdateTime() {
 		return cacheContainer.getDBAccess().getUpdateTime();
 	}
 
+	/**
+	 * TBD
+	 * 
+	 * @param
+	 * @return
+	 * 
+	 */
 	public void updateRoot() {
 		root = getNode("root");
 	}
