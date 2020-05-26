@@ -3,4 +3,26 @@
   <groupId>dsergio</groupId>
   <artifactId>rtree</artifactId>
   <version>1.0</version>
+  
+  <dependencies>
+  	
+  	<dependency>
+	  <groupId>org.junit.jupiter</groupId>
+	  <artifactId>junit-jupiter</artifactId>
+	  <version>5.6.0-RC1</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>org.apache.clerezza.ext</groupId>
+	  <artifactId>org.json.simple</artifactId>
+	  <version>0.4</version>
+	</dependency>
+	
+	<dependency>
+	  <groupId>com.amazonaws</groupId>
+	  <artifactId>aws-java-sdk-dynamodb</artifactId>
+	  <version>1.11.665</version>
+	</dependency>
+	
+  </dependencies>
 </project>
