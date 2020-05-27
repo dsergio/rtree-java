@@ -54,7 +54,7 @@ public class CloudRTree {
 
 	
 	/**
-	 * Initialize the split behavior
+	 * Initialize the split behavior, the cache container, and the root node configuration
 	 * 
 	 * @param None
 	 * @return void
@@ -241,10 +241,10 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Insert a random type of "animal" into the tree
 	 * 
-	 * @param
-	 * @return
+	 * @param LocationItem locationItem
+	 * @return void
 	 * 
 	 */
 	public void insert(LocationItem locationItem) throws IOException {
