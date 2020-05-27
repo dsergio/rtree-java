@@ -39,7 +39,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems) {
-		this(treeName, maxChildren, maxItems, "Local");
+		this(treeName, maxChildren, maxItems, "MySQL");
 	}
 	public CloudRTree(String treeName, int maxChildren, int maxItems, String cloudType) {
 		this.maxChildren = maxChildren;

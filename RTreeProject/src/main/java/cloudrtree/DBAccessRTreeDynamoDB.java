@@ -170,7 +170,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 		return node;
 	}
 
-	public void addItemToTable(Map<String, AttributeValue> item, String tableName) {
+	private void addItemToTable(Map<String, AttributeValue> item, String tableName) {
 		try {
 
 			// Add an item

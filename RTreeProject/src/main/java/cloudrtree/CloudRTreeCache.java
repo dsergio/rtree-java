@@ -33,8 +33,10 @@ public class CloudRTreeCache {
 			dbAccess = new DBAccessRTreeDynamoDB();
 		} else if (cloudType.equals("Local")) {
 			dbAccess = new DBAccessRTreeLocal();
-		} else { // default to DynamoDB
-			dbAccess = new DBAccessRTreeDynamoDB();
+		} else if (cloudType.equals("MySQL")) {
+			dbAccess = new DBAccessRTreeMySQL();
+		} else { // default to MySQL
+			dbAccess = new DBAccessRTreeMySQL();
 		}
 		
 		dbAccess.createTable(treeName);

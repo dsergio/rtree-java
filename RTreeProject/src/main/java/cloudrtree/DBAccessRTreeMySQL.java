@@ -1,5 +1,10 @@
 package cloudrtree;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+
 /**
  * 
  * Description TBD
@@ -8,43 +13,75 @@ package cloudrtree;
  *
  */
 public class DBAccessRTreeMySQL implements DBAccessRTree {
+	
+	private MysqlConnection connection;
+	private String tableName = null;
+	
+	public DBAccessRTreeMySQL() {
+		try {
+			init();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	@Override
 	public void init() throws Exception {
-		// TODO Auto-generated method stub
+		
+		String creds = "../../creds.txt";
+		connection = new MysqlConnection(creds);
 
 	}
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
+
+		connection.close();
 
 	}
 
 	@Override
 	public void createTable(String tableName) {
-		// TODO Auto-generated method stub
-
+		
+		connection.createTable(tableName);
+		this.tableName = tableName;
 	}
 
 	@Override
 	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, CloudRTreeCache cache) {
-		return null;
+		
+		
+		System.out.println("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: + " + rectangle);
+		
+		
+		
+		boolean success = connection.insert(nodeId, children, parent, items, rectangle, tableName);
+		
+		if (success) {
+			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+			return node;
+		} else {
+			return null;
+		}
 
 	}
 
 	@Override
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
-		// TODO Auto-generated method stub
+		
+		connection.update(tableName, nodeId, children, parent, items, rectangle);
 
 	}
 
 	@Override
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		CloudRTreeNode node = connection.select(tableName, nodeId, cache);
+		
+		return node;
 	}
 
 	@Override
@@ -105,6 +142,10 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	public int getMaxItems(String treeName) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	public String getTableName() {
+		return tableName;
 	}
 
 }
