@@ -26,13 +26,29 @@ class RectangleTests {
 	}
 
 	@Test
-	void test() {
+	void Rectangle_Overlap_True() {
 		// Arrange
+		Rectangle r1 = new Rectangle(0, 10, 0, 10);
+		Rectangle r2 = new Rectangle(5, 15, 5, 15);
 		
 		// Act
+		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
 				
 		// Assert
-		fail("Not yet implemented");
+		assertEquals(true, overlap);
+	}
+	
+	@Test
+	void Rectangle_Overlap_False() {
+		// Arrange
+		Rectangle r1 = new Rectangle(0, 10, 0, 10);
+		Rectangle r2 = new Rectangle(20, 30, 20, 30);
+		
+		// Act
+		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
+				
+		// Assert
+		assertEquals(false, overlap);
 	}
 
 }
