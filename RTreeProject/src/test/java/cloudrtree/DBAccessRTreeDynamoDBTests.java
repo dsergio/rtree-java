@@ -27,6 +27,11 @@ class DBAccessRTreeDynamoDBTests {
 
 	@Test
 	void test() {
+		// Arrange
+		
+		// Act
+				
+		// Assert
 		fail("Not yet implemented");
 	}
 

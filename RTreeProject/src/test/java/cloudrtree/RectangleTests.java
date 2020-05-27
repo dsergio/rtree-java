@@ -27,6 +27,11 @@ class RectangleTests {
 
 	@Test
 	void test() {
+		// Arrange
+		
+		// Act
+				
+		// Assert
 		fail("Not yet implemented");
 	}
 
