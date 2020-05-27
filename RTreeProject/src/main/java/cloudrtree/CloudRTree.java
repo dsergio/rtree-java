@@ -79,7 +79,7 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Metadata table persistently stores the configuration of the R-Tree (the max children and max items)
 	 * 
 	 * @param tableName
 	 * @param maxChildren
@@ -92,10 +92,10 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Check if metadata exists for the member treeName
 	 * 
 	 * @param
-	 * @return
+	 * @return boolean
 	 * 
 	 */
 	public boolean metaDataExists() {
@@ -103,10 +103,10 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Get max children
 	 * 
 	 * @param
-	 * @return
+	 * @return int maxChildren
 	 * 
 	 */
 	public int getMaxChildren() {
@@ -117,10 +117,10 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Get max items
 	 * 
 	 * @param
-	 * @return
+	 * @return int maxItems
 	 * 
 	 */
 	public int getMaxItems() {
