@@ -28,11 +28,14 @@ class LocationItemTests {
 	@Test
 	void test() {
 		// Arrange
+		LocationItem item1 = new LocationItem(0, 0, "test");
+		LocationItem item2 = new LocationItem(10, 10, "test");
 		
 		// Act
+		int area = LocationItem.area(item1, item2);
 				
 		// Assert
-		fail("Not yet implemented");
+		assertEquals(100, area);
 	}
 
 }
