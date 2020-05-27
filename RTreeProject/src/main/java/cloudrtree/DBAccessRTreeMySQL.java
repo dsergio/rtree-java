@@ -17,13 +17,9 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	private MysqlConnection connection;
 	private String tableName = null;
 	
-	public DBAccessRTreeMySQL() {
-		try {
-			init();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public DBAccessRTreeMySQL() throws Exception {
+		init();
+
 	}
 
 	@Override

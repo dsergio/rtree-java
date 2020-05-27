@@ -34,9 +34,19 @@ public class CloudRTreeCache {
 		} else if (cloudType.equals("Local")) {
 			dbAccess = new DBAccessRTreeLocal();
 		} else if (cloudType.equals("MySQL")) {
-			dbAccess = new DBAccessRTreeMySQL();
+			try {
+				dbAccess = new DBAccessRTreeMySQL();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else { // default to MySQL
-			dbAccess = new DBAccessRTreeMySQL();
+			try {
+				dbAccess = new DBAccessRTreeMySQL();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		dbAccess.createTable(treeName);

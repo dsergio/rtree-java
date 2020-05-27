@@ -40,7 +40,7 @@ public class CloudRTreeNode {
 		JSONParser parser = new JSONParser();
 		Object obj;
 		try {
-			if (childrenStr != null && !childrenStr.equals("{}")) {
+			if (childrenStr != null && !childrenStr.equals("{}") && !childrenStr.equals("")) {
 				if (children == null) {
 					children = new ArrayList<String>();
 				}
@@ -56,7 +56,7 @@ public class CloudRTreeNode {
 			}
 			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		
