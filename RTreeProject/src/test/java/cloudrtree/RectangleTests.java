@@ -50,5 +50,18 @@ class RectangleTests {
 		// Assert
 		assertEquals(false, overlap);
 	}
+	
+	@Test
+	void Rectangle_Sum_CorrectValue() {
+		// Arrange
+		Rectangle r1 = new Rectangle(0, 10, 0, 10);
+		Rectangle r2 = new Rectangle(20, 30, 20, 30);
+		
+		// Act
+		Rectangle sum = Rectangle.sumRectangles(r1, r2);
+				
+		// Assert
+		assertEquals(900, sum.getArea());
+	}
 
 }
