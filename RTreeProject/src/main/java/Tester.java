@@ -221,8 +221,8 @@ public class Tester {
 					count++;
 					performanceOutput += 
 						count + "\t" + size + "\t" + key + "\t" + (curTime - time) + "\t" + (curTime - startTime) + "\t" + 
-						tree.dynamoAdds() + "\t" + tree.dynamoReads() + "\t" + tree.dynamoUpdates() + "\t" + 
-						tree.dynamoAddTime() + "\t" + tree.dynamoReadTime() + "\t" + tree.dynamoUpdateTime() + "\t" + 
+						tree.dynamoAdds() + "\t" + tree.numReads() + "\t" + tree.numUpdates() + "\t" + 
+						tree.getAddTime() + "\t" + tree.getReadTime() + "\t" + tree.getUpdateTime() + "\t" + 
 						tree.getLeafNodeSplit() + "\t" + tree.getBranchSplit() + 
 						"\n";
 								
@@ -230,8 +230,8 @@ public class Tester {
 					System.out.println(
 							"Inserted " + count + " of " + size + " (" + numInserts + ") total items (" + latitude + ", " + longitude + ") " + 
 							key + " current insert: " + (curTime - time) + "ms total so far: " + (curTime - startTime) + "ms total" + 
-							" dynamoDB adds: " + tree.dynamoAdds() + " dynamo reads: " + tree.dynamoReads() + " dynamo updates: " + tree.dynamoUpdates() +
-							" dynamoDB add time: " + tree.dynamoAddTime() + " dynamo read time: " + tree.dynamoReadTime() + " dynamo update time: " + tree.dynamoUpdateTime() +
+							" dynamoDB adds: " + tree.dynamoAdds() + " dynamo reads: " + tree.numReads() + " dynamo updates: " + tree.numUpdates() +
+							" dynamoDB add time: " + tree.getAddTime() + " dynamo read time: " + tree.getReadTime() + " dynamo update time: " + tree.getUpdateTime() +
 							" leafnode split? " + tree.getLeafNodeSplit() + " branchsplit? " + tree.getBranchSplit()
 					);
 					time = System.currentTimeMillis();

@@ -502,24 +502,24 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
 	 * 
-	 * @param
-	 * @return
+	 * @param Rectangle searchRectangle
+	 * @return Map<Rectangle, List<LocationItem>>
 	 * 
 	 */
 	public Map<Rectangle, List<LocationItem>> search(Rectangle searchRectangle) {
 		int curAdds = dynamoAdds();
-		int curUpdates = dynamoUpdates();
-		int curReads = dynamoReads();
+		int curUpdates = numUpdates();
+		int curReads = numReads();
 		
 		long time = System.currentTimeMillis();
 		Map<Rectangle, List<LocationItem>> result = new HashMap<Rectangle, List<LocationItem>>();
 		search(searchRectangle, getNode("root"), result, 0);
 		
 		
-		System.out.println("SEARCH consumed " + (dynamoAdds() - curAdds)  + " adds, " + (dynamoUpdates() - curUpdates) + " updates, " +
-				(dynamoReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
+		System.out.println("SEARCH consumed " + (dynamoAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
+				(numReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
 		return result;
 	}
 	
@@ -563,10 +563,10 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Delete item from tree
 	 * 
-	 * @param
-	 * @return
+	 * @param LocationItem toDelete
+	 * @return void
 	 * 
 	 */
 	public void delete(LocationItem toDelete) {
@@ -634,7 +634,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public int dynamoReads() {
+	public int numReads() {
 		return cacheContainer.getDBAccess().getNumReads();
 	}
 	
@@ -645,7 +645,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public int dynamoUpdates() {
+	public int numUpdates() {
 		return cacheContainer.getDBAccess().getNumUpdates();
 	}
 	
@@ -656,7 +656,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public long dynamoAddTime() {
+	public long getAddTime() {
 		return cacheContainer.getDBAccess().getAddTime();
 	}
 	
@@ -667,7 +667,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public long dynamoReadTime() {
+	public long getReadTime() {
 		return cacheContainer.getDBAccess().getReadTime();
 	}
 	
@@ -678,7 +678,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public long dynamoUpdateTime() {
+	public long getUpdateTime() {
 		return cacheContainer.getDBAccess().getUpdateTime();
 	}
 
