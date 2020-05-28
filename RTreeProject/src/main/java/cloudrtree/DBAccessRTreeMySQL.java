@@ -7,7 +7,7 @@ import java.sql.Statement;
 
 /**
  * 
- * Description TBD
+ * Implementation of persistent storage in MySQL
  * 
  * @author David Sergio
  *
@@ -49,7 +49,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 			String treeName, CloudRTreeCache cache) {
 		
 		
-		System.out.println("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: + " + rectangle);
+		System.out.println("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 		
 		
 		
@@ -57,8 +57,13 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 		
 		if (success) {
 			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+			Rectangle r = new Rectangle(rectangle);
+			node.rectangle = r;
+			node.setItemsJson(items);
+			
 			return node;
 		} else {
+			System.out.println("why am i returning null?");
 			return null;
 		}
 
@@ -125,19 +130,19 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	@Override
 	public boolean metaDataExists(String treeName) {
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public int getMaxChildren(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
+		// for now, use a static value, instead of lookup from metadata table
+		return 4;
 	}
 
 	@Override
 	public int getMaxItems(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
+		// for now, use a static value, instead of lookup from metadata table
+		return 4;
 	}
 
 	public String getTableName() {

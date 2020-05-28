@@ -66,18 +66,18 @@ public class CloudRTreeCache {
 	
 	public CloudRTreeNode getNode(String nodeId) {
 		
-		if (cache.containsKey(nodeId)) { // first try the cache
-			return cache.get(nodeId);
-		}
 		if (nodeId == null) {
 			return null;
 		}
 		
-		CloudRTreeNode newNode = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
-		
-		cache.put(nodeId, newNode);
-		
-		return newNode;
+		if (cache.containsKey(nodeId)) { // first try the cache
+			return cache.get(nodeId);
+		} else {		
+			CloudRTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
+			cache.put(nodeId, node);
+			
+			return node;
+		}
 	}
 	
 	
@@ -90,87 +90,84 @@ public class CloudRTreeCache {
 		System.out.println("items: " + items);
 		System.out.println("rectangle: " + rectangle);
 		
+		
+		CloudRTreeNode n = null;
 		if (cache.containsKey(nodeId)) {
 			
 			System.out.println("cache contains " + nodeId);
-			CloudRTreeNode n = cache.get(nodeId);
+			n = cache.get(nodeId);
 			
-			JSONParser parser;
-			Object obj;
-			
-//			Rectangle r = new Rectangle();
-//			parser = new JSONParser();
-//			try {
-//				if (rectangle != null) {
-//					obj = parser.parse(rectangle);
-//					JSONObject rectObj = (JSONObject) obj;
-//					r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
-//							Integer.parseInt(rectObj.get("x2").toString()), 
-//							Integer.parseInt(rectObj.get("y1").toString()),
-//							Integer.parseInt(rectObj.get("y2").toString()));
-//				}
-//				
-//				
-//			} catch (ParseException e1) {
-//				// TODO Auto-generated catch block
-//				e1.printStackTrace();
-//			}
-//
-//			if (items == null || items.equals("delete")) {
-//				n.locationItems = new ArrayList<LocationItem>();
-//			}
-//			n.setChildren(children);
-//			n.setRectangle(r);
-//			n.setParent(parent);
-			
-			if (children == null & parent == null && rectangle == null && items != null && !items.equals("delete")) {
-				n.locationItems = new ArrayList<LocationItem>();
-				parser = new JSONParser();
-				try {
-					if (items != null && !items.equals("delete")) {
-						obj = parser.parse(items);
-						JSONArray arr = (JSONArray) obj;
-						for (int i = 0; i < arr.size(); i++) {
-							JSONObject row = (JSONObject) arr.get(i);
-							LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
-							n.locationItems.add(item);
-							
-						}
-					}
-				} catch (ParseException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				
-			}
-		}
-		if (cloudType.equals("Local")) {
-			dbAccess.updateItem(treeName, nodeId, children, parent, items, rectangle);
 		} else {
-			cache.remove(nodeId);
-			dbAccess.updateItem(treeName, nodeId, children, parent, items, rectangle);
+			System.out.println("cache DOES NOT contain " + nodeId);
+			n = new CloudRTreeNode(nodeId, children, parent, this);
 		}
+			
+		JSONParser parser;
+		Object obj;
+		
+		Rectangle r = new Rectangle();
+		parser = new JSONParser();
+		try {
+			if (rectangle != null) {
+				obj = parser.parse(rectangle);
+				JSONObject rectObj = (JSONObject) obj;
+				r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
+						Integer.parseInt(rectObj.get("x2").toString()), 
+						Integer.parseInt(rectObj.get("y1").toString()),
+						Integer.parseInt(rectObj.get("y2").toString()));
+			}
+			
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		if (items == null || items.equals("delete")) {
+			n.locationItems = new ArrayList<LocationItem>();
+		}
+		n.setChildren(children);
+		n.setRectangle(r);
+		n.setParent(parent);
+		
+		if (items != null && !items.equals("delete")) {
+			n.locationItems = new ArrayList<LocationItem>();
+			parser = new JSONParser();
+			try {
+				if (items != null && !items.equals("delete")) {
+					obj = parser.parse(items);
+					JSONArray arr = (JSONArray) obj;
+					for (int i = 0; i < arr.size(); i++) {
+						JSONObject row = (JSONObject) arr.get(i);
+						LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+						n.locationItems.add(item);
+						
+					}
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		cache.put(nodeId, n);
+		
+		dbAccess.updateItem(treeName, nodeId, children, parent, items, rectangle);	
+		
 	}
 	
 	
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		
-		System.out.println("adding node " + nodeId + " node != null: " + (node != null));
+		System.out.println("adding node to cache " + nodeId + " node != null: " + (node != null));
 		if (node != null) {
-//			CloudRTreeNode newNode = new CloudRTreeNode(nodeId, null, parent);
-//			newNode.setChildren(node.getChildren());
-//			newNode.setRectangle(node.rectangle);
-//			for (LocationItem i : node.items()) {
-//				newNode.addItem(i);
-//			}
+			dbAccess.addCloudRTreeNode(nodeId, node.getChildrenJSON().toString(), node.getParent(), node.getItemsJSON().toString(), node.getRectangle().getJson().toString(), treeName, this);
 			cache.put(nodeId, node);
+		} else {
+			cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
 		}
-//		System.out.println("adding node....");
 		
-//		Map<String, AttributeValue> item = dynamoDBAccess.newNode(nodeId, children, parent, items, rectangle);
-//		dynamoDBAccess.addItemToTable(item, treeName);
-		
-		cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
 	}
 
 	public void remove(String node) {

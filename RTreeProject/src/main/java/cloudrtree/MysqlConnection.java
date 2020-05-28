@@ -53,17 +53,14 @@ public class MysqlConnection {
 			stmt.setString(c++, children);
 			
 			stmt.executeUpdate();
-			ResultSet resultSet = stmt.getGeneratedKeys();
-			if (resultSet.next()) {
-				return true;
-			}
+			
 			
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return false;
+		return true;
 	}
 	
 	public void update(String tableName, String nodeId, String children, String parent, String items,
@@ -71,10 +68,19 @@ public class MysqlConnection {
 		
 		String update = "UPDATE `" + tableName  + "` ";
 		String set = " SET nodeId = nodeId ";
-		set += ", `children` = ? ";
-		set += ", `parent` = ? ";
-		set += ", `items` = ? ";
-		set += ", `rectangle` = ? ";
+		
+		if (children != null) {
+			set += ", `children` = ? ";
+		}
+		if (parent != null) {
+			set += ", `parent` = ? ";
+		}
+		if (items != null) {
+			set += ", `items` = ? ";
+		}
+		if (rectangle != null) {
+			set += ", `rectangle` = ? ";
+		}
 		
 		String where = " WHERE `nodeId` = ?";
 
@@ -86,10 +92,19 @@ public class MysqlConnection {
 		try {
 			
 			PreparedStatement stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(c++, children);
-			stmt.setString(c++, parent);
-			stmt.setString(c++, items);
-			stmt.setString(c++, rectangle);
+			
+			if (children != null) {
+				stmt.setString(c++, children);
+			}
+			if (parent != null) {
+				stmt.setString(c++, parent);
+			}
+			if (items != null) {
+				stmt.setString(c++, items);
+			}
+			if (rectangle != null) {
+				stmt.setString(c++, rectangle);
+			}
 			stmt.setString(c++, nodeId);
 			
 			stmt.executeUpdate();
@@ -107,6 +122,8 @@ public class MysqlConnection {
 		String where = " WHERE `nodeId` = ?";
 		
 		String query = select + where;
+		
+		System.out.println("QUERY: " + query);
 		
 		PreparedStatement stmt;
 		try {
@@ -130,50 +147,18 @@ public class MysqlConnection {
 				return null;
 			}
 			
-			Rectangle r = new Rectangle();
+			Rectangle r = new Rectangle(rectangle);
 			
-			JSONParser parser = new JSONParser();
-			Object obj;
+			CloudRTreeNode node =  new CloudRTreeNode(nodeId, children, parent, cache);
+			node.setRectangle(r);
+			node.setItemsJson(items);
 			
-			try {
-				if (rectangle != null) {
-					obj = parser.parse(rectangle);
-					JSONObject rectObj = (JSONObject) obj;
-					r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
-							Integer.parseInt(rectObj.get("x2").toString()), 
-							Integer.parseInt(rectObj.get("y1").toString()),
-							Integer.parseInt(rectObj.get("y2").toString()));
-				}
-				
-				
-			} catch (ParseException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+			System.out.println("select: node rectangle: " + r.toString());
+			System.out.println("select: node items: " + node.getItemsJSON().toJSONString());
+			System.out.println("select: items: " + items);
 			
-			CloudRTreeNode newNode =  new CloudRTreeNode(nodeId, children, parent, cache);
 			
-			newNode.setRectangle(r);
-			
-			parser = new JSONParser();
-			
-			try {
-				if (items != null) {
-					
-					obj = parser.parse(items);
-					JSONArray arr = (JSONArray) obj;
-					for (int i = 0; i < arr.size(); i++) {
-						JSONObject row = (JSONObject) arr.get(i);
-						LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
-						newNode.locationItems.add(item);
-					}
-				}
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			return newNode;
+			return node;
 			
 			
 		} catch (SQLException e) {

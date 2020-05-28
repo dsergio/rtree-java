@@ -97,8 +97,10 @@ public class CloudRTreeNode {
 	public JSONArray getChildrenJSON() {
 		
 		JSONArray arr = new JSONArray();
-		for (String s : children) {
-			arr.add(s);
+		if (children != null) {
+			for (String s : children) {
+				arr.add(s);
+			}
 		}
 		return arr;
 	}
@@ -106,13 +108,15 @@ public class CloudRTreeNode {
 	public JSONArray getItemsJSON() {
 		
 		JSONArray arr = new JSONArray();
-		for (LocationItem i : locationItems) {
-			
-			JSONObject obj = new JSONObject();
-			obj.put("x", i.getX());
-			obj.put("y", i.getY());
-			obj.put("type", i.getType());
-			arr.add(obj);
+		if (locationItems != null) {
+			for (LocationItem i : locationItems) {
+				
+				JSONObject obj = new JSONObject();
+				obj.put("x", i.getX());
+				obj.put("y", i.getY());
+				obj.put("type", i.getType());
+				arr.add(obj);
+			}
 		}
 		return arr;
 	}
@@ -133,6 +137,7 @@ public class CloudRTreeNode {
 		for (LocationItem item : node.items()) {
 			jsonArr.add(item.getJson());
 		}
+		
 		out = new StringWriter();
 		jsonArr.writeJSONString(out);
 	    String itemsStr = out.toString();
@@ -267,7 +272,7 @@ public class CloudRTreeNode {
 	}
 
 	public boolean isLeafNode() {
-		return children == null;
+		return children == null || children.size() == 0;
 	}
 
 	public Rectangle getRectangle() {
@@ -298,5 +303,41 @@ public class CloudRTreeNode {
 		children = newChildren;
 
 	}
+	
+	@Override
+	public String toString() {
+		String str = "";
+		str += "children: " + this.getChildrenJSON().toJSONString() + ", ";
+		str += "items: " + this.getItemsJSON().toJSONString() + ", ";
+		str += "parent: " + this.parent + ", ";
+		str += "rectangle: " + this.getRectangle().toString();
+		return str;
+	}
+
+	public void setItemsJson(String items) {
+		
+		JSONParser parser = new JSONParser();
+		Object obj;
+		this.locationItems = new ArrayList<LocationItem>();
+		
+		try {
+			if (items != null && !items.equals("") && !items.equals("delete")) {
+				
+				obj = parser.parse(items);
+				JSONArray arr = (JSONArray) obj;
+				for (int i = 0; i < arr.size(); i++) {
+					JSONObject row = (JSONObject) arr.get(i);
+					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+					this.locationItems.add(item);
+				}
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			System.out.println("items: |" + items + "|");
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 }

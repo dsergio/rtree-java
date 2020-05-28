@@ -2,6 +2,8 @@ package cloudrtree;
 import java.util.List;
 
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * 
@@ -24,6 +26,28 @@ public class Rectangle {
 		this.x2 = x2;
 		this.y1 = y1;
 		this.y2 = y2;
+	}
+	
+	public Rectangle(String retangleStr) {
+		JSONParser parser;
+		Object obj;
+		
+		parser = new JSONParser();
+		try {
+			if (retangleStr != null) {
+				obj = parser.parse(retangleStr);
+				JSONObject rectObj = (JSONObject) obj;
+				this.x1 = Integer.parseInt(rectObj.get("x1").toString());
+				this.x2 = Integer.parseInt(rectObj.get("x2").toString());
+				this.y1 = Integer.parseInt(rectObj.get("y1").toString());
+				this.y2 = Integer.parseInt(rectObj.get("y2").toString());
+			}
+			
+			
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 	
 	public Rectangle() {

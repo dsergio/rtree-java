@@ -30,6 +30,7 @@ public class SplitQuadratic extends SplitBehavior {
 		for (LocationItem item : node.getPoints()) {
 			System.out.print(item + " ***** ");
 		}
+		System.out.println();
 		
 		int maxArea = 0;
 		int index1 = 0; // seed 1
@@ -50,6 +51,9 @@ public class SplitQuadratic extends SplitBehavior {
 				}
 			}
 		}
+		
+		System.out.println("Max area: " + maxArea + " index1: " + index1 + " index2: " + index2);
+		
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		
@@ -134,7 +138,7 @@ public class SplitQuadratic extends SplitBehavior {
 		node1.updateRectangle();
 		node2.updateRectangle();
 		
-		
+		System.out.println("adding to the cache... node1.getItemsJSON().toJSONString(): " + node1.getItemsJSON().toJSONString() + ", node1.getItemsJSON().toJSONString(): " + node2.getItemsJSON().toJSONString());
 		cache.addNode(node1.nodeId, null, node1.getParent(), node1.getItemsJSON().toJSONString(), node1.getRectangle().getJson().toJSONString(), node1);
 		cache.addNode(node2.nodeId, null, node2.getParent(), node2.getItemsJSON().toJSONString(), node2.getRectangle().getJson().toJSONString(), node2);
 		
@@ -147,7 +151,9 @@ public class SplitQuadratic extends SplitBehavior {
 		if (!node.nodeId.equals("root")) {
 			cache.updateNode(node.nodeId, null, null, "delete", null);
 		}
-
+		
+		System.out.println();
+		cache.printCache();
 	}
 
 	

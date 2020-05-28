@@ -286,9 +286,9 @@ public class CloudRTree {
 			// not a leaf node
 			System.out.println("not a leaf node");
 			
-			List<String> childrenStr = node.getChildren();
+			List<String> childrenArr = node.getChildren();
 			
-			for (String s : childrenStr) {
+			for (String s : childrenArr) {
 				CloudRTreeNode child = getNode(s);
 				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
 					insert(locationItem, child);
@@ -300,14 +300,14 @@ public class CloudRTree {
 			
 			int x = locationItem.getX();
 			int y = locationItem.getY();
-			int minEnlargementArea = getEnlargementArea(getNode(childrenStr.get(0)), x, y);
+			int minEnlargementArea = getEnlargementArea(getNode(childrenArr.get(0)), x, y);
 			int minEnlargementAreaIndex = 0;
 			
-			for (int i = 0; i < childrenStr.size(); i++) {
-				CloudRTreeNode child = getNode(childrenStr.get(i));
+			for (int i = 0; i < childrenArr.size(); i++) {
+				CloudRTreeNode child = getNode(childrenArr.get(i));
 				if (child.isLeafNode()) {
-					if (getEnlargementArea(getNode(childrenStr.get(i)), x, y) < minEnlargementArea) {
-						minEnlargementArea = getEnlargementArea(getNode(childrenStr.get(i)), x, y);
+					if (getEnlargementArea(getNode(childrenArr.get(i)), x, y) < minEnlargementArea) {
+						minEnlargementArea = getEnlargementArea(getNode(childrenArr.get(i)), x, y);
 						minEnlargementAreaIndex = i;
 					}
 				}
@@ -320,7 +320,7 @@ public class CloudRTree {
 			
 			addToRectangle(getNode(node.parent), node.rectangle);
 			
-			insert(locationItem, getNode(childrenStr.get(minEnlargementAreaIndex)));
+			insert(locationItem, getNode(childrenArr.get(minEnlargementAreaIndex)));
 			
 		}
 	}
@@ -407,6 +407,7 @@ public class CloudRTree {
 		} else {
 			for (String s : node.getChildren()) {
 				CloudRTreeNode child = getNode(s);
+				points.addAll(child.getPoints());
 				getPoints(child, points, depth);
 			}
 		}
