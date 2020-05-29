@@ -26,14 +26,19 @@ class CloudRTreeTests {
 	}
 
 	@Test
-	void test() {
+	void CreateTree_Success() {
 		// Arrange
 		
-		
 		// Act
+		try {
+			CloudRTree tree = new CloudRTree("TestTree1", 4, 4, "InMemory");
+		} catch (Exception e) {
+			fail("Failed to create tree");
+			e.printStackTrace();
+		}
 		
 		// Assert
-		fail("Not yet implemented");
+		assertTrue(true);
 	}
 
 }

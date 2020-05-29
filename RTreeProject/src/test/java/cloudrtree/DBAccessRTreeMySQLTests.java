@@ -30,9 +30,15 @@ class DBAccessRTreeMySQLTests {
 		// Arrange
 		
 		// Act
+		try {
+			DBAccessRTreeMySQL dbAccessMySQL = new DBAccessRTreeMySQL();
+		} catch (Exception e) {
+			fail("Failed to create database access object");
+			e.printStackTrace();
+		}
 				
 		// Assert
-		fail("Not yet implemented");
+		assertTrue(true);
 	}
 
 }

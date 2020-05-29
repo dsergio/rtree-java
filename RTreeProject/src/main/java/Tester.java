@@ -96,11 +96,17 @@ public class Tester {
 		CloudRTree tree = null;
 		
 		try {
+			
+			
 			if (inputMaxChildren != null && inputMaxItems != null) {
 				tree = new CloudRTree(inputTreeName, Integer.parseInt(inputMaxChildren), Integer.parseInt(inputMaxItems));
 			} else {
 				tree = new CloudRTree(inputTreeName);
 			}
+			
+			// use RAM if you want
+//			tree = new CloudRTree(inputTreeName, 4, 4, "InMemory");
+			
 		} catch(Exception e) {
 			e.printStackTrace();
 			System.exit(0);
