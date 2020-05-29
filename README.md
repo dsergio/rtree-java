@@ -16,8 +16,11 @@ Properties of RTree:
 ### MySQL
 This application reads a creds.txt file 2 directories up from the launch directory:
 >host=[host]
+
 >user=[user]
+
 >password=[password]
+
 >database=[database]
 
 ### AWS DynamoDB
