@@ -31,11 +31,17 @@ e.g. `Java Tester cli cloudtree28 ./wa_cities 100 8 8`
 
 The GUI is based on swing Java Graphics using a BorderLayout. 
 GUI Features
-* Show/Hide Tree Button: fetch the entire RTRee structure from DynamoDB if it is not cached. If it is cached, toggle between hiding and displaying the tree on the graph
-* Search Command Bar: Enter commands to interact with the RTree structure. E.g. o search [x] [y] [range]
-* Search the CloudRTree data structure o set range [range]
-* Set search range for right-click search o delete [x] [y] [type]
-* Delete an item o print ▪ Print textual representation of tree to stdout.
+* Show/Hide Tree Button: fetch the entire RTree structure from persistent storage if it is not cached. If it is cached, toggle between hiding and displaying the tree on the graph
+* Search Command Bar: Enter commands to interact with the RTree structure. 
+	* Search the CloudRTree data structure 
+		* e.g. `search [x] [y] [range]`
+	* Set search range for right-click search
+		* `set range [range]`
+	* Delete an item
+		* `delete [x] [y] [type]`
+	
+	* Print textual representation of tree to stdout.
+		* `print`
 * Click Interactions with Output:
 	* Right-clicking will search the coordinates
 	* Left-clicking will insert a new LocationItem with the x and y value of the click location, and a type value set to a random animal name.
