@@ -20,7 +20,7 @@ public class MysqlConnection {
 
 	private Connection conn;
 
-	public MysqlConnection(String creds) {
+	public MysqlConnection(String creds) throws Exception {
 		getConnection(creds);
 	}
 
@@ -186,7 +186,7 @@ public class MysqlConnection {
 		
 		DatabaseMetaData dbm = conn.getMetaData();
 		ResultSet rs = dbm.getTables(null, null, tableName, null);
-		if (rs.next()) {
+		if (rs.next()) { // already exists
 			return;
 		}
 
@@ -201,7 +201,7 @@ public class MysqlConnection {
 
 	}
 
-	private void getConnection(String creds) {
+	private void getConnection(String creds) throws Exception {
 		String username = "";
 		String password = "";
 		String endpoint = "";
@@ -214,6 +214,9 @@ public class MysqlConnection {
 			while (myReader.hasNextLine()) {
 
 				String data = myReader.nextLine();
+				if (data.split("=").length < 2) {
+					throw new Exception("MySQL creds.txt Invalid Format");
+				}
 				if (data.split("=")[0].equals("host")) {
 					endpoint = data.split("=")[1];
 				} else if (data.split("=")[0].equals("user")) {
@@ -223,13 +226,13 @@ public class MysqlConnection {
 				} else if (data.split("=")[0].equals("database")) {
 					database = data.split("=")[1];
 				}
-				System.out.println(data);
+//				System.out.println(data);
 			}
 
 			myReader.close();
 		} catch (FileNotFoundException e) {
 			System.out.println("Credentials File is missing.");
-			e.printStackTrace();
+			throw e;
 		}
 
 		String url = "jdbc:mysql://" + endpoint + ":3306/" + database;
@@ -239,6 +242,7 @@ public class MysqlConnection {
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
 			System.out.println("SQLException: " + e.getMessage());
+			throw e;
 		}
 
 		this.conn = conn;
