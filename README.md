@@ -14,17 +14,18 @@ Properties of RTree:
 
 
 ## Usage 
-The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the DynamoDB table, not in the command line argument.  
-Compile: `mvn package`
+The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
+
+To Compile: `mvn package`
 
 
 ## Run GUI 
-java Tester gui [treeName] [optional maxChildren] [optional maxItems] 
-E.g. Java Tester gui tree1
+`java Tester gui [treeName] [optional maxChildren] [optional maxItems]`
+e.g. `Java Tester gui tree1`
 
 ## Insert CLI and GUI 
-java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems] 
-E.g. Java Tester cli cloudtree28 ./wa_cities 100 8 8 
+`java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
+e.g. `Java Tester cli cloudtree28 ./wa_cities 100 8 8`
 
 ## Using the GUI
 
