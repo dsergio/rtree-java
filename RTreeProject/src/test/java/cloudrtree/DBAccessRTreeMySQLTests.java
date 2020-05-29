@@ -26,7 +26,7 @@ class DBAccessRTreeMySQLTests {
 	}
 
 	@Test
-	void test() {
+	void CreateDBAccess_Success() {
 		// Arrange
 		
 		// Act
