@@ -24,11 +24,15 @@ To Compile: `mvn package`
 
 
 ## Run GUI 
+
 `java Tester gui [treeName] [optional maxChildren] [optional maxItems]`
+
 e.g. `Java Tester gui tree1`
 
 ## Insert CLI and GUI 
+
 `java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
+
 e.g. `Java Tester cli cloudtree28 ./wa_cities 100 8 8`
 
 ## Using the GUI
