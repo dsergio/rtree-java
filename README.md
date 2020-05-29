@@ -11,11 +11,13 @@ Properties of RTree:
 * Each leaf node contains a rectangle and a set of point data.
 * Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.
 
-## Storage Configuration 
+## Storage Configuration
+
 TBD (In progress)
 
 
-## Usage 
+## Usage
+
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
 To Compile: `mvn package`
@@ -36,12 +38,11 @@ GUI Features
 * Show/Hide Tree Button: fetch the entire RTree structure from persistent storage if it is not cached. If it is cached, toggle between hiding and displaying the tree on the graph
 * Search Command Bar: Enter commands to interact with the RTree structure. 
 	* Search the CloudRTree data structure 
-		* e.g. `search [x] [y] [range]`
+		* `search [x] [y] [range]`
 	* Set search range for right-click search
 		* `set range [range]`
 	* Delete an item
 		* `delete [x] [y] [type]`
-	
 	* Print textual representation of tree to stdout.
 		* `print`
 * Click Interactions with Output:
