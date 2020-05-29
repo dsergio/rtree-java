@@ -9,7 +9,7 @@ import org.json.simple.JSONArray;
 
 /**
  * 
- * Description TBD
+ * This class is the quadratic split algorithm.
  * 
  * @author David Sergio
  *

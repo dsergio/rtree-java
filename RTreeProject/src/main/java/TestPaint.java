@@ -45,21 +45,16 @@ import cloudrtree.Rectangle;
 public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	final PaintPanel paintPan;
-
 	CloudRTree tree;
 	List<LocationItem> points;
 	private JTextField output;
-
 	private Rectangle searchRectangle = null;
-	
 	JButton searchButton = new JButton("Search");
 	JButton showTree = new JButton("Show Tree");
 	boolean showTreeOn = false;
 	JTextArea info = new JTextArea();
-	
 	Map<Rectangle, List<LocationItem>> searchResults;
 	JList list;
-	
 	int searchRange = 60;
 	
 	public TestPaint(CloudRTree tree, boolean showTreeOn) {
