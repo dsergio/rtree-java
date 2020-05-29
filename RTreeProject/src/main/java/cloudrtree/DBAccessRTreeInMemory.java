@@ -14,14 +14,14 @@ import org.json.simple.parser.ParseException;
  * @author David Sergio
  *
  */
-public class DBAccessRTreeLocal implements DBAccessRTree {
+public class DBAccessRTreeInMemory implements DBAccessRTree {
 	
 	private int maxItems;
 	private int maxChildren;
 	
 	private Map<String, CloudRTreeNode> localData;
 	
-	public DBAccessRTreeLocal() {
+	public DBAccessRTreeInMemory() {
 		localData = new HashMap<String, CloudRTreeNode>();
 	}
 

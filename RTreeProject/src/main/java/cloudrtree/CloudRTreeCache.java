@@ -30,9 +30,9 @@ public class CloudRTreeCache {
 		this.cloudType = cloudType;
 		
 		if (cloudType.equals("DynamoDB")) {
-			dbAccess = new DBAccessRTreeDynamoDB();
-		} else if (cloudType.equals("Local")) {
-			dbAccess = new DBAccessRTreeLocal();
+			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
+		} else if (cloudType.equals("InMemory")) {
+			dbAccess = new DBAccessRTreeInMemory();
 		} else if (cloudType.equals("MySQL")) {
 			try {
 				dbAccess = new DBAccessRTreeMySQL();

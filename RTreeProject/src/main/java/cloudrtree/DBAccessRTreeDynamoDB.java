@@ -70,15 +70,15 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 	private int numReads = 0;
 	private int numAdds = 0;
 	private int numUpdates = 0;
-	
 	private long readTime = 0;
 	private long addTime = 0;
 	private long updateTime = 0;
-
 	private AmazonDynamoDB dynamoDB;
-	private boolean dynamoLog = true;;
+	private boolean dynamoLog = true;
+	private String region;
 
-	public DBAccessRTreeDynamoDB() {
+	public DBAccessRTreeDynamoDB(String region) {
+		this.region = region;
 		try {
 			init();
 		} catch (Exception e) {
@@ -114,7 +114,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 					+ "Please make sure that your credentials file is at the correct "
 					+ "location (~/.aws/credentials), and is in valid format.", e);
 		}
-		dynamoDB = AmazonDynamoDBClientBuilder.standard().withCredentials(credentialsProvider).withRegion("us-west-2")
+		dynamoDB = AmazonDynamoDBClientBuilder.standard().withCredentials(credentialsProvider).withRegion(region)
 				.build();
 
 	}
