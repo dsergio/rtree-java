@@ -52,7 +52,7 @@ public class SplitQuadratic extends SplitBehavior {
 			}
 		}
 		
-		System.out.println("Max area: " + maxArea + " index1: " + index1 + " index2: " + index2);
+		System.out.println("Max area: " + maxArea + " points.get(index1): " + points.get(index1) + " points.get(index2): " + points.get(index2));
 		
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
@@ -108,15 +108,23 @@ public class SplitQuadratic extends SplitBehavior {
 		node1.locationItems.add(points.get(index1));
 		node2.locationItems.add(points.get(index2));
 		
+		
+		
 		for (int i = 0; i < points.size(); i++) {
 			if (i != index1 && i != index2) {
 				
-				Rectangle r1 = Rectangle.sumRectangles(node1.rectangle, points.get(i));
-				Rectangle r2 = Rectangle.sumRectangles(node2.rectangle, points.get(i));
+				Rectangle r1 = Rectangle.twoPointsRectangles(points.get(index1), points.get(i));
+				Rectangle r2 = Rectangle.twoPointsRectangles(points.get(index2), points.get(i));
+				
+				System.out.println("COMPARE seeds: " + points.get(i) + " r1.getArea(): " + r1.getArea() + " node1 area:" + node1.rectangle.getArea());
+				System.out.println("COMPARE seeds: " + points.get(i) + " r2.getArea(): " + r2.getArea() + " node2 area:" + node2.rectangle.getArea());
+				
 				if (r1.getArea() < r2.getArea()) {
 					node1.locationItems.add(points.get(i));
+					
 				} else {
 					node2.locationItems.add(points.get(i));
+					
 				}
 			}
 		}
@@ -140,7 +148,7 @@ public class SplitQuadratic extends SplitBehavior {
 		
 		System.out.println("adding to the cache... node1.getItemsJSON().toJSONString(): " + node1.getItemsJSON().toJSONString() + ", node1.getItemsJSON().toJSONString(): " + node2.getItemsJSON().toJSONString());
 		cache.addNode(node1.nodeId, null, node1.getParent(), node1.getItemsJSON().toJSONString(), node1.getRectangle().getJson().toJSONString(), node1);
-		cache.addNode(node2.nodeId, null, node2.getParent(), node2.getItemsJSON().toJSONString(), node2.getRectangle().getJson().toJSONString(), node2);
+		cache.addNode(node2.nodeId, null, node1.getParent(), node2.getItemsJSON().toJSONString(), node2.getRectangle().getJson().toJSONString(), node2);
 		
 		cache.remove(node1.getParent()); // ?
 		

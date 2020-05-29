@@ -123,7 +123,7 @@ public class MysqlConnection {
 		
 		String query = select + where;
 		
-		System.out.println("QUERY: " + query);
+		System.out.println("QUERY: " + query + " nodeId: " + nodeId);
 		
 		PreparedStatement stmt;
 		try {
@@ -156,7 +156,7 @@ public class MysqlConnection {
 			System.out.println("select: node rectangle: " + r.toString());
 			System.out.println("select: node items: " + node.getItemsJSON().toJSONString());
 			System.out.println("select: items: " + items);
-			
+			System.out.println("select: parent: " + node.parent);
 			
 			return node;
 			

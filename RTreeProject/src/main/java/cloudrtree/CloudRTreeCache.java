@@ -53,11 +53,13 @@ public class CloudRTreeCache {
 	}
 	
 	public void printCache() {
+		System.out.println();
 		System.out.println("Printing cache:");
 		for (String key : cache.keySet()) {
 			CloudRTreeNode cloudNode = cache.get(key);
 			System.out.println(key + ": " + cloudNode);
 		}
+		System.out.println();
 	}
 	
 	public DBAccessRTree getDBAccess() {
@@ -71,6 +73,7 @@ public class CloudRTreeCache {
 		}
 		
 		if (cache.containsKey(nodeId)) { // first try the cache
+			System.out.println("returning from cache");
 			return cache.get(nodeId);
 		} else {		
 			CloudRTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);

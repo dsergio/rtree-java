@@ -265,7 +265,11 @@ public class CloudRTree {
 			return;
 		}
 		
-		System.out.println("~INSERT: " + locationItem + " into " + node.nodeId);
+		cacheContainer.printCache();
+		
+		System.out.println("~~INSERT: " + locationItem + " into " + node.nodeId + " node.parent: " + node.parent);
+		
+		
 		
 		if (node.isLeafNode()) {
 			
@@ -290,6 +294,7 @@ public class CloudRTree {
 			
 			for (String s : childrenArr) {
 				CloudRTreeNode child = getNode(s);
+				System.out.println("child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
 					insert(locationItem, child);
 					

@@ -148,7 +148,7 @@ public class CloudRTreeNode {
 	    jsonRect.writeJSONString(out);
 	    String rectStr = out.toString();
 		
-		cache.updateNode(node.nodeId, null, null, itemsStr, rectStr);
+		cache.updateNode(node.nodeId, node.getChildrenJSON().toJSONString(), node.getParent(), itemsStr, rectStr);
 		
 		
 	}
@@ -307,6 +307,7 @@ public class CloudRTreeNode {
 	@Override
 	public String toString() {
 		String str = "";
+		str += "nodeId: " + nodeId + ", ";
 		str += "children: " + this.getChildrenJSON().toJSONString() + ", ";
 		str += "items: " + this.getItemsJSON().toJSONString() + ", ";
 		str += "parent: " + this.parent + ", ";

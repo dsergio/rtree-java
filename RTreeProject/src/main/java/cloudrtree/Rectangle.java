@@ -162,6 +162,21 @@ public class Rectangle {
 		return new Rectangle(minX, maxX, minY, maxY);
 		
 	}
+	static Rectangle twoPointsRectangles(LocationItem item1, LocationItem item2) {
+		if (item1 == null || item2 == null) {
+			return null;
+		}
+		
+		
+		int minX = Math.min(item1.getX(), item2.getX());
+		int maxX = Math.max(item1.getX(), item2.getX());
+		int minY = Math.min(item1.getY(), item2.getY());
+		int maxY = Math.max(item1.getY(), item2.getY());
+		
+		return new Rectangle(minX, maxX, minY, maxY);
+		
+	}
+	
 	static Rectangle sumRectangles(Rectangle r1, Rectangle r2) {
 		if (r1 == null && r2 == null) {
 			return null;
