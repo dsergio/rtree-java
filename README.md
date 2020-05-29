@@ -13,8 +13,18 @@ Properties of RTree:
 
 ## Storage Configuration
 
-TBD (In progress)
+### MySQL
+This application reads a creds.txt file 2 directories up from the launch directory:
+host=[host]
+user=[user]
+password=[password]
+database=[database]
 
+### AWS DynamoDB
+The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
+
+### Metadata Table
+TBD
 
 ## Usage
 
