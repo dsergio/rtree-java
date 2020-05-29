@@ -119,7 +119,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 
 	}
 
-	public void createTable(String name) {
+	public void createTable(String name) throws Exception {
 		try {
 			String tableName = name;
 
@@ -137,14 +137,16 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			try {
 				TableUtils.waitUntilActive(dynamoDB, tableName);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+				throw new Exception("DynamoDB table creation failed");
 			}
 
 			// Describe our new table
 			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
 			TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
 			System.out.println("Table Description: " + tableDescription);
+			
+			
 
 		} catch (AmazonServiceException ase) {
 			System.out.println("Caught an AmazonServiceException, which means your request made it "
@@ -154,12 +156,17 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			System.out.println("AWS Error Code:   " + ase.getErrorCode());
 			System.out.println("Error Type:       " + ase.getErrorType());
 			System.out.println("Request ID:       " + ase.getRequestId());
+			
+			throw new Exception("DynamoDB table creation failed");
 		} catch (AmazonClientException ace) {
 			System.out.println("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
 			System.out.println("Error Message: " + ace.getMessage());
+			
+			throw new Exception("DynamoDB table creation failed");
 		}
+		
 	}
 	
 	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, CloudRTreeCache cache) {

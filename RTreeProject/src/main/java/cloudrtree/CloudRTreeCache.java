@@ -24,7 +24,7 @@ public class CloudRTreeCache {
 	private String treeName;
 	private String cloudType;
 	
-	public CloudRTreeCache(String treeName, String cloudType) {
+	public CloudRTreeCache(String treeName, String cloudType) throws Exception {
 		cache = new HashMap<String, CloudRTreeNode>();
 		this.treeName = treeName;
 		this.cloudType = cloudType;
@@ -50,6 +50,7 @@ public class CloudRTreeCache {
 		}
 		
 		dbAccess.createTable(treeName);
+		
 	}
 	
 	public void printCache() {

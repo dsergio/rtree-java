@@ -12,7 +12,7 @@ public interface DBAccessRTree {
 	public void init() throws Exception;
 	public void close();
 	
-	public void createTable(String tableName);
+	public void createTable(String tableName) throws Exception;
 	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, CloudRTreeCache cache);
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache);

@@ -36,19 +36,20 @@ public class CloudRTree {
 	/**
 	 * Constructors:
 	 * Initialize the persistent storage type and set parameters
+	 * @throws Exception 
 	 * 
 	 */
-	public CloudRTree(String treeName, int maxChildren, int maxItems) {
+	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
 		this(treeName, maxChildren, maxItems, "MySQL");
 	}
-	public CloudRTree(String treeName, int maxChildren, int maxItems, String cloudType) {
+	public CloudRTree(String treeName, int maxChildren, int maxItems, String cloudType) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.cloudType = cloudType;
 		init();
 	}
-	public CloudRTree(String treeName) {
+	public CloudRTree(String treeName) throws Exception {
 		this(treeName, 4, 4);
 	}
 
@@ -58,10 +59,18 @@ public class CloudRTree {
 	 * 
 	 * @param None
 	 * @return void
+	 * @throws Exception 
 	 */
-	public void init() {
+	public void init() throws Exception {
 		
-		cacheContainer = new CloudRTreeCache(treeName, cloudType);
+		
+		try {
+			cacheContainer = new CloudRTreeCache(treeName, cloudType);
+		} catch (Exception e) {
+			System.out.println("Cache creation failed.");
+			e.printStackTrace();
+			throw new Exception("CloudRTree Init failed.");
+		}
 		
 		if (!metaDataExists()) {
 			addToMetaData(treeName, maxChildren, maxItems);

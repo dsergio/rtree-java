@@ -14,7 +14,7 @@ Properties of RTree:
 ## Storage Configuration
 
 ### MySQL
-This application reads a `creds.txt` file 2 directories up from the launch directory:
+This application attempts to reads a `creds.txt` file 2 directories up from the `RTreeProject` directory:
 >host=[host]
 >
 >user=[user]

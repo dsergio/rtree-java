@@ -40,7 +40,6 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	@Override
 	public void createTable(String tableName) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override

@@ -93,12 +93,17 @@ public class Tester {
 //		CloudRTree tree = new CloudRTree("cloudtree21", 4, 4);
 //		CloudRTree tree = new CloudRTree("cloudtree22", 10, 10);
 		
-		CloudRTree tree;
+		CloudRTree tree = null;
 		
-		if (inputMaxChildren != null && inputMaxItems != null) {
-			tree = new CloudRTree(inputTreeName, Integer.parseInt(inputMaxChildren), Integer.parseInt(inputMaxItems));
-		} else {
-			tree = new CloudRTree(inputTreeName);
+		try {
+			if (inputMaxChildren != null && inputMaxItems != null) {
+				tree = new CloudRTree(inputTreeName, Integer.parseInt(inputMaxChildren), Integer.parseInt(inputMaxItems));
+			} else {
+				tree = new CloudRTree(inputTreeName);
+			}
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.exit(0);
 		}
 		
 		if (tree.getMaxChildrenVar() == -1) {
