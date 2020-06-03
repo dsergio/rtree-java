@@ -17,6 +17,7 @@ public interface DBAccessRTree {
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache);
 	
+	// use these for performance analysis
 	public int getNumAdds();
 	public int getNumReads();
 	public int getNumUpdates();
@@ -25,9 +26,9 @@ public interface DBAccessRTree {
 	public long getUpdateTime();
 	
 	
-	public void addToMetaData(String tableName, int maxChildren, int maxItems);
-	public boolean metaDataExists(String treeName);
-	public int getMaxChildren(String treeName);
-	public int getMaxItems(String treeName);
+	public void addToMetaData(String treeName, int maxChildren, int maxItems) throws Exception; // store the maxChildren and maxItems values
+	public boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
+	public int getMaxChildren(String treeName); // get the persistent maxChildren value
+	public int getMaxItems(String treeName);  // get the persistent maxItems value
 	
 }

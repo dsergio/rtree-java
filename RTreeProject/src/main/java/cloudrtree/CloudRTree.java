@@ -39,12 +39,16 @@ public class CloudRTree {
 		SQLITE
 	}
 	
+	
 	/**
 	 * Constructors:
-	 * Initialize the persistent storage type and set parameters
+	 * Initialize the storage type and set parameters
 	 * @throws Exception 
 	 * 
 	 */
+	public CloudRTree(String treeName) throws Exception {
+		this(treeName, 4, 4);
+	}
 	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
 		this(treeName, maxChildren, maxItems, StorageType.MYSQL); // default to MySQL
 	}
@@ -54,9 +58,6 @@ public class CloudRTree {
 		this.treeName = treeName;
 		this.storageType = storageType;
 		init();
-	}
-	public CloudRTree(String treeName) throws Exception {
-		this(treeName, 4, 4);
 	}
 
 	
@@ -100,9 +101,10 @@ public class CloudRTree {
 	 * @param maxChildren
 	 * @param maxItems
 	 * @return void
+	 * @throws Exception 
 	 * 
 	 */
-	public void addToMetaData(String tableName, int maxChildren, int maxItems) {
+	public void addToMetaData(String tableName, int maxChildren, int maxItems) throws Exception {
 		cacheContainer.getDBAccess().addToMetaData(tableName, maxChildren, maxItems);
 	}
 	
@@ -111,9 +113,10 @@ public class CloudRTree {
 	 * 
 	 * @param
 	 * @return boolean
+	 * @throws Exception 
 	 * 
 	 */
-	public boolean metaDataExists() {
+	public boolean metaDataExists() throws Exception {
 		return cacheContainer.getDBAccess().metaDataExists(treeName);
 	}
 	
@@ -125,7 +128,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxChildren() {
-		if (storageType.equals("Local")) {
+		if (storageType.equals(StorageType.INMEMORY)) {
 			return maxChildren;
 		}
 		return cacheContainer.getDBAccess().getMaxChildren(treeName);
@@ -139,7 +142,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxItems() {
-		if (storageType.equals("Local")) {
+		if (storageType.equals(StorageType.INMEMORY)) {
 			return maxItems;
 		}
 		return cacheContainer.getDBAccess().getMaxItems(treeName);

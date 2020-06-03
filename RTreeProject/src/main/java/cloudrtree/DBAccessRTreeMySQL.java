@@ -3,6 +3,8 @@ package cloudrtree;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
@@ -122,27 +124,101 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	}
 
 	@Override
-	public void addToMetaData(String tableName, int maxChildren, int maxItems) {
-		// TODO Auto-generated method stub
+	public void addToMetaData(String treeName, int maxChildren, int maxItems) throws SQLException {
+		String query = "INSERT INTO `rtree_metadata` (`treeName`, `maxChildren`, `maxItems`) "
+				+ "VALUES (?, ?, ?);";
+
+		PreparedStatement stmt = null;
+		int c = 1;
+
+
+		stmt = connection.getConn().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+		stmt.setString(c++, treeName);
+		stmt.setInt(c++, maxChildren);
+		stmt.setInt(c++, maxItems);
+
+		stmt.executeUpdate();
+
+
 
 	}
 
 	@Override
-	public boolean metaDataExists(String treeName) {
-		// TODO Auto-generated method stub
-		return true;
+	public boolean metaDataExists(String treeName) throws Exception {
+		
+		String select = " SELECT * FROM `rtree_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		PreparedStatement stmt = connection.getConn().prepareStatement(query);
+
+		stmt.setString(1, treeName);
+		
+		ResultSet resultSet = stmt.executeQuery();
+		
+		if (resultSet.next()) {
+			return true;
+		}
+		
+		return false;
 	}
 
 	@Override
 	public int getMaxChildren(String treeName) {
-		// for now, use a static value, instead of lookup from metadata table
-		return 4;
+		
+		int maxChildren = 4; // default to 4
+		
+		String select = " SELECT * FROM `rtree_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		PreparedStatement stmt;
+		try {
+			stmt = connection.getConn().prepareStatement(query);
+			
+			stmt.setString(1, treeName);
+			
+			ResultSet resultSet = stmt.executeQuery();
+			
+			if (resultSet.next()) {
+				maxChildren = resultSet.getInt("maxChildren");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return maxChildren;
 	}
 
 	@Override
 	public int getMaxItems(String treeName) {
-		// for now, use a static value, instead of lookup from metadata table
-		return 4;
+		int maxItems = 4; // default to 4
+		
+		String select = " SELECT * FROM `rtree_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		PreparedStatement stmt;
+		try {
+			stmt = connection.getConn().prepareStatement(query);
+			
+			stmt.setString(1, treeName);
+			
+			ResultSet resultSet = stmt.executeQuery();
+			
+			if (resultSet.next()) {
+				maxItems = resultSet.getInt("maxItems");
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return maxItems;
 	}
 
 	public String getTableName() {

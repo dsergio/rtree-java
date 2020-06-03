@@ -176,13 +176,13 @@ public class MysqlConnection {
 			throw new IllegalArgumentException(treeName);
 		}
 		
-		// create metadata table
+		// create metadata table if it doesn't exist
 		// metadata table contains the maxChildren and maxItems parameters
 
 		Statement stmt = null;
 
 		String sql = "CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT, "
-				+ " tableName VARCHAR(255) NOT NULL, " + " maxChildren INT NULL, " + " maxItems INT NULL) ";
+				+ " treeName VARCHAR(255) NOT NULL, " + " maxChildren INT NULL, " + " maxItems INT NULL) ";
 		System.out.println("create table: \n" + sql);
 
 		stmt = conn.createStatement();

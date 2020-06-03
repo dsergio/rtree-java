@@ -9,6 +9,7 @@ import java.util.Map;
 
 import cloudrtree.CloudRTree;
 import cloudrtree.LocationItem;
+import cloudrtree.CloudRTree.StorageType;
 
 public class Tester {
 
@@ -95,17 +96,33 @@ public class Tester {
 		
 		CloudRTree tree = null;
 		
+		int inputMaxChildrenInt = 0;
+		int inputMaxItemsInt = 0;
+		
 		try {
 			
-			
 			if (inputMaxChildren != null && inputMaxItems != null) {
-				tree = new CloudRTree(inputTreeName, Integer.parseInt(inputMaxChildren), Integer.parseInt(inputMaxItems));
+				
+				inputMaxChildrenInt = Integer.parseInt(inputMaxChildren);
+				inputMaxItemsInt = Integer.parseInt(inputMaxItems);
+				
+				if (inputMaxChildrenInt < 2 || inputMaxChildrenInt > 10) {
+					throw new IllegalArgumentException("Invalid max children input. Value must be between 2 and 10 inclusive.");
+				}
+				if (inputMaxItemsInt < 2 || inputMaxItemsInt > 10) {
+					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
+				}
+				
+				tree = new CloudRTree(inputTreeName, inputMaxChildrenInt, inputMaxItemsInt);
+				
 			} else {
+				
 				tree = new CloudRTree(inputTreeName);
+				
 			}
 			
 			// use RAM if you want
-//			tree = new CloudRTree(inputTreeName, 4, 4, "InMemory");
+//			tree = new CloudRTree(inputTreeName, 4, 4, StorageType.INMEMORY);
 			
 		} catch(Exception e) {
 			e.printStackTrace();
