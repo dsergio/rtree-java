@@ -62,7 +62,7 @@ public class CloudRTree {
 
 	
 	/**
-	 * Initialize the split behavior, the cache container, and the root node configuration
+	 * Initialize the split behavior, the cache container, the max children and items, and the root node configuration
 	 * 
 	 * @param
 	 * @return void

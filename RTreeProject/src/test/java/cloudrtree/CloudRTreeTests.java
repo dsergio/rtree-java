@@ -48,6 +48,28 @@ class CloudRTreeTests {
 	}
 	
 	@Test
+	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
+		// Arrange
+		CloudRTree tree = null;
+		int numChildrenExpected = 2;
+		int numItemsExpected = 6;
+		try {
+			tree = new CloudRTree("TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY);
+		} catch (Exception e) {
+			fail("Failed to create tree");
+			e.printStackTrace();
+		}
+		
+		// Act
+		int numChildrenObserved = tree.getMaxChildren();
+		int numItemsObserved = tree.getMaxItems();
+		
+		// Assert
+		assertEquals(numChildrenExpected, numChildrenObserved);
+		assertEquals(numItemsExpected, numItemsObserved);
+	}
+	
+	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
 		CloudRTree tree = null;

@@ -27,7 +27,8 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 
 	@Override
 	public void init() throws Exception {
-		// TODO Auto-generated method stub
+		maxItems = 0;
+		maxChildren = 0;
 
 	}
 
@@ -150,27 +151,24 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	}
 
 	@Override
-	public void addToMetaData(String tableName, int maxChildren, int maxItems) {
-		// TODO Auto-generated method stub
-
+	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
+		this.maxChildren = maxChildren;
+		this.maxItems = maxItems;
 	}
 
 	@Override
 	public boolean metaDataExists(String treeName) {
-		// TODO Auto-generated method stub
-		return false;
+		return maxChildren != 0 && maxItems != 0;
 	}
 
 	@Override
 	public int getMaxChildren(String treeName) {
-		// TODO Auto-generated method stub
-		return 4;
+		return maxChildren;
 	}
 
 	@Override
 	public int getMaxItems(String treeName) {
-		// TODO Auto-generated method stub
-		return 4;
+		return maxItems;
 	}
 
 }
