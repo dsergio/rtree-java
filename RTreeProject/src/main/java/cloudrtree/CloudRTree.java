@@ -128,9 +128,6 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxChildren() {
-		if (storageType.equals(StorageType.INMEMORY)) {
-			return maxChildren;
-		}
 		return cacheContainer.getDBAccess().getMaxChildren(treeName);
 	}
 	
@@ -142,9 +139,6 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxItems() {
-		if (storageType.equals(StorageType.INMEMORY)) {
-			return maxItems;
-		}
 		return cacheContainer.getDBAccess().getMaxItems(treeName);
 	}
 	
@@ -533,7 +527,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public Map<Rectangle, List<LocationItem>> search(Rectangle searchRectangle) {
-		int curAdds = dynamoAdds();
+		int curAdds = numAdds();
 		int curUpdates = numUpdates();
 		int curReads = numReads();
 		
@@ -542,7 +536,7 @@ public class CloudRTree {
 		search(searchRectangle, getNode(treeName), result, 0);
 		
 		
-		System.out.println("SEARCH consumed " + (dynamoAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
+		System.out.println("SEARCH consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
 				(numReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
 		return result;
 	}
@@ -647,7 +641,7 @@ public class CloudRTree {
 	 * @return
 	 * 
 	 */
-	public int dynamoAdds() {
+	public int numAdds() {
 		return cacheContainer.getDBAccess().getNumAdds();
 	}
 	

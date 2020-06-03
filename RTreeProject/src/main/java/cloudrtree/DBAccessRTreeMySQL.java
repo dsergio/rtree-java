@@ -19,9 +19,15 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	private MysqlConnection connection;
 	private String tableName = null;
 	
+	private int numReads = 0;
+	private int numAdds = 0;
+	private int numUpdates = 0;
+	private long readTime = 0;
+	private long addTime = 0;
+	private long updateTime = 0;
+	
 	public DBAccessRTreeMySQL() throws Exception {
 		init();
-
 	}
 
 	@Override
@@ -50,7 +56,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, CloudRTreeCache cache) {
 		
-		
+		long time = System.currentTimeMillis();
 		System.out.println("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 		
 		
@@ -63,9 +69,11 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 			node.rectangle = r;
 			node.setItemsJson(items);
 			
+			numAdds++;
+			addTime += (System.currentTimeMillis() - time);
+			
 			return node;
 		} else {
-			System.out.println("why am i returning null?");
 			return null;
 		}
 
@@ -75,52 +83,53 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 		
+		long time = System.currentTimeMillis();
 		connection.update(tableName, nodeId, children, parent, items, rectangle);
-
+		
+		numUpdates++;
+		updateTime += (System.currentTimeMillis() - time);
 	}
 
 	@Override
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
 		
+		long time = System.currentTimeMillis();
 		CloudRTreeNode node = connection.select(tableName, nodeId, cache);
+		
+		numReads++;
+		readTime += (System.currentTimeMillis() - time);
 		
 		return node;
 	}
 
 	@Override
 	public int getNumAdds() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numAdds;
 	}
 
 	@Override
 	public int getNumReads() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numReads;
 	}
 
 	@Override
 	public int getNumUpdates() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numUpdates;
 	}
 
 	@Override
 	public long getAddTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return addTime;
 	}
 
 	@Override
 	public long getReadTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return readTime;
 	}
 
 	@Override
 	public long getUpdateTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return updateTime;
 	}
 
 	@Override

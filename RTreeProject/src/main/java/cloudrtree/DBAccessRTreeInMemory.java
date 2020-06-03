@@ -19,6 +19,13 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	private int maxItems;
 	private int maxChildren;
 	
+	private int numReads = 0;
+	private int numAdds = 0;
+	private int numUpdates = 0;
+	private long readTime = 0;
+	private long addTime = 0;
+	private long updateTime = 0;
+	
 	private Map<String, CloudRTreeNode> localData;
 	
 	public DBAccessRTreeInMemory() {
@@ -47,6 +54,7 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, CloudRTreeCache cache) {
 		
+		long time = System.currentTimeMillis();
 		System.out.println("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
 		System.out.println("nodeId: " + nodeId);
 		System.out.println("children: " + children);
@@ -57,6 +65,10 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 		// construct the node
 		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
 		localData.put(nodeId, node);
+		
+		numAdds++;
+		addTime += (System.currentTimeMillis() - time);
+		
 		return node;
 	}
 
@@ -64,6 +76,7 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 		
+		long time = System.currentTimeMillis();
 		System.out.println("Calling DBAccessRTreeLocal.updateItem with parameters: ");
 		System.out.println("tableName: " + tableName);
 		System.out.println("nodeId: " + nodeId);
@@ -100,15 +113,21 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 		}
 		
 		node.setRectangle(r);
-
+		
+		numUpdates++;
+		updateTime += (System.currentTimeMillis() - time);
 	}
 
 	@Override
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
 		
+		long time = System.currentTimeMillis();
 		System.out.println("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
 		System.out.println("tableName: " + tableName);
 		System.out.println("nodeId: " + nodeId);
+		
+		numReads++;
+		readTime += (System.currentTimeMillis() - time);
 		
 		return localData.get(nodeId);
 		
@@ -116,38 +135,32 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 
 	@Override
 	public int getNumAdds() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numAdds;
 	}
 
 	@Override
 	public int getNumReads() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numReads;
 	}
 
 	@Override
 	public int getNumUpdates() {
-		// TODO Auto-generated method stub
-		return 0;
+		return numUpdates;
 	}
 
 	@Override
 	public long getAddTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return addTime;
 	}
 
 	@Override
 	public long getReadTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return readTime;
 	}
 
 	@Override
 	public long getUpdateTime() {
-		// TODO Auto-generated method stub
-		return 0;
+		return updateTime;
 	}
 
 	@Override

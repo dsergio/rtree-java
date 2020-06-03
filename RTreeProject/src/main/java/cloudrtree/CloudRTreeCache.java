@@ -57,26 +57,6 @@ public class CloudRTreeCache {
 			}
 		}
 		
-//		if (cloudType.equals("DynamoDB")) {
-//			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
-//		} else if (cloudType.equals("InMemory")) {
-//			dbAccess = new DBAccessRTreeInMemory();
-//		} else if (cloudType.equals("MySQL")) {
-//			try {
-//				dbAccess = new DBAccessRTreeMySQL();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		} else { // default to MySQL
-//			try {
-//				dbAccess = new DBAccessRTreeMySQL();
-//			} catch (Exception e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-		
 		dbAccess.initializeStorage(treeName);
 		
 	}
