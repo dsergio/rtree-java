@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import cloudrtree.CloudRTree.StorageType;
+
 class CloudRTreeTests {
 
 	@BeforeAll
@@ -35,7 +37,7 @@ class CloudRTreeTests {
 		
 		// Act
 		try {
-			CloudRTree tree = new CloudRTree("TestTree1", 4, 4, "InMemory");
+			CloudRTree tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -51,7 +53,7 @@ class CloudRTreeTests {
 		CloudRTree tree = null;
 		
 		try {
-			tree = new CloudRTree("TestTree1", 4, 4, "InMemory");
+			tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -77,7 +79,7 @@ class CloudRTreeTests {
 		CloudRTree tree = null;
 		
 		try {
-			tree = new CloudRTree("TestTree1", 4, 4, "InMemory");
+			tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

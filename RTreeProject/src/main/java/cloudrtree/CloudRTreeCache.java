@@ -9,6 +9,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import cloudrtree.CloudRTree.StorageType;
+
 
 /**
  * 
@@ -22,25 +24,31 @@ public class CloudRTreeCache {
 	private Map<String, CloudRTreeNode> cache;
 	private DBAccessRTree dbAccess;
 	private String treeName;
-	private String cloudType;
+	private StorageType cloudType;
 	
-	public CloudRTreeCache(String treeName, String cloudType) throws Exception {
+	public CloudRTreeCache(String treeName, StorageType cloudType) throws Exception {
 		cache = new HashMap<String, CloudRTreeNode>();
 		this.treeName = treeName;
 		this.cloudType = cloudType;
 		
-		if (cloudType.equals("DynamoDB")) {
-			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
-		} else if (cloudType.equals("InMemory")) {
-			dbAccess = new DBAccessRTreeInMemory();
-		} else if (cloudType.equals("MySQL")) {
+		switch (cloudType) {
+		case MYSQL:
 			try {
 				dbAccess = new DBAccessRTreeMySQL();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else { // default to MySQL
+			break;
+		case INMEMORY:
+			dbAccess = new DBAccessRTreeInMemory();
+			break;
+		case DYNAMODB:
+			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
+			break;
+		case SQLITE:
+			break;
+		default:
 			try {
 				dbAccess = new DBAccessRTreeMySQL();
 			} catch (Exception e) {
@@ -48,6 +56,26 @@ public class CloudRTreeCache {
 				e.printStackTrace();
 			}
 		}
+		
+//		if (cloudType.equals("DynamoDB")) {
+//			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
+//		} else if (cloudType.equals("InMemory")) {
+//			dbAccess = new DBAccessRTreeInMemory();
+//		} else if (cloudType.equals("MySQL")) {
+//			try {
+//				dbAccess = new DBAccessRTreeMySQL();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		} else { // default to MySQL
+//			try {
+//				dbAccess = new DBAccessRTreeMySQL();
+//			} catch (Exception e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
 		dbAccess.initializeStorage(treeName);
 		

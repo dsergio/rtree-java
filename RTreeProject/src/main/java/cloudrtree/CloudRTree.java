@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  * 
- * R-Tree with configurable split algorithms and persistent storage types
+ * R-Tree with configurable split algorithms and configurable storage types
  * 
  * @author David Sergio
  * 
@@ -31,7 +31,13 @@ public class CloudRTree {
 	private int minYInserted;
 	private int maxXInserted;
 	private int maxYInserted;
-	private String cloudType;
+	private StorageType storageType;
+	public enum StorageType {
+		MYSQL,
+		INMEMORY,
+		DYNAMODB,
+		SQLITE
+	}
 	
 	/**
 	 * Constructors:
@@ -40,13 +46,13 @@ public class CloudRTree {
 	 * 
 	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
-		this(treeName, maxChildren, maxItems, "MySQL");
+		this(treeName, maxChildren, maxItems, StorageType.MYSQL); // default to MySQL
 	}
-	public CloudRTree(String treeName, int maxChildren, int maxItems, String cloudType) throws Exception {
+	public CloudRTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
-		this.cloudType = cloudType;
+		this.storageType = storageType;
 		init();
 	}
 	public CloudRTree(String treeName) throws Exception {
@@ -65,7 +71,7 @@ public class CloudRTree {
 		
 		
 		try {
-			cacheContainer = new CloudRTreeCache(treeName, cloudType);
+			cacheContainer = new CloudRTreeCache(treeName, storageType);
 		} catch (Exception e) {
 			System.out.println("Cache initialization failed.");
 			e.printStackTrace();
@@ -119,7 +125,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxChildren() {
-		if (cloudType.equals("Local")) {
+		if (storageType.equals("Local")) {
 			return maxChildren;
 		}
 		return cacheContainer.getDBAccess().getMaxChildren(treeName);
@@ -133,7 +139,7 @@ public class CloudRTree {
 	 * 
 	 */
 	public int getMaxItems() {
-		if (cloudType.equals("Local")) {
+		if (storageType.equals("Local")) {
 			return maxItems;
 		}
 		return cacheContainer.getDBAccess().getMaxItems(treeName);
