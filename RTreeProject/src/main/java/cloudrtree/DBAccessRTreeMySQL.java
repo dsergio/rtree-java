@@ -38,9 +38,9 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	}
 
 	@Override
-	public void createTable(String tableName) throws Exception {
+	public void initializeStorage(String tableName) throws Exception {
 		
-		connection.createTable(tableName);
+		connection.initializeDb(tableName);
 		this.tableName = tableName;
 	}
 

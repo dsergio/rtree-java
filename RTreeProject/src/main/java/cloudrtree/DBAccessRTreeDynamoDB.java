@@ -119,7 +119,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 
 	}
 
-	public void createTable(String name) throws Exception {
+	public void initializeStorage(String name) throws Exception {
 		try {
 			String tableName = name;
 

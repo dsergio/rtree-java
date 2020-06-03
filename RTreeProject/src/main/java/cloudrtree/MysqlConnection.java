@@ -169,12 +169,15 @@ public class MysqlConnection {
 
 	}
 
-	public void createTable(String tableName) throws Exception {
+	public void initializeDb(String treeName) throws Exception {
 
-		if (!tableName.matches("^[a-zA-Z0-9_]*$")) {
+		if (!treeName.matches("^[a-zA-Z0-9_]*$")) {
 			System.out.println("Illegal table name");
-			throw new IllegalArgumentException(tableName);
+			throw new IllegalArgumentException(treeName);
 		}
+		
+		// create metadata table
+		// metadata table contains the maxChildren and maxItems parameters
 
 		Statement stmt = null;
 
@@ -186,16 +189,11 @@ public class MysqlConnection {
 		stmt.executeUpdate(sql);
 		
 		
-		DatabaseMetaData dbm = conn.getMetaData();
-		ResultSet rs = dbm.getTables(null, null, tableName, null);
-		if (rs.next()) { // already exists
-			return;
-		}
-
+		// create data table if it doesn't exist
+		// all trees in one table 'rtree_data'
+		
 		stmt = conn.createStatement();
 		
-		
-		// all trees in one table 'rtree_data'
 		sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
 				+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 				+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";

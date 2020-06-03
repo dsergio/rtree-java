@@ -49,7 +49,7 @@ public class CloudRTreeCache {
 			}
 		}
 		
-		dbAccess.createTable(treeName);
+		dbAccess.initializeStorage(treeName);
 		
 	}
 	
