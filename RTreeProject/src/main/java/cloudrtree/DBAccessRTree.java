@@ -2,7 +2,7 @@ package cloudrtree;
 
 /**
  * 
- * Description TBD
+ * Storage Access Interface
  * 
  * @author David Sergio
  *

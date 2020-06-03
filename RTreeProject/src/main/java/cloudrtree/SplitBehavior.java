@@ -13,6 +13,7 @@ public abstract class SplitBehavior {
 	protected int maxChildren;
 	protected boolean branchSplit;
 	protected CloudRTreeNode root;
+	protected String treeName;
 	
 	public boolean didBranchSplit() {
 		return branchSplit;

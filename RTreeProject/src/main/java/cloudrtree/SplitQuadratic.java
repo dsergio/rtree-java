@@ -16,10 +16,11 @@ import org.json.simple.JSONArray;
  */
 public class SplitQuadratic extends SplitBehavior {
 
-	public SplitQuadratic(CloudRTreeCache cache, int maxChildren, CloudRTreeNode root) {
+	public SplitQuadratic(CloudRTreeCache cache, int maxChildren, CloudRTreeNode root, String treeName) {
 		this.cache = cache;
 		this.maxChildren = maxChildren;
 		this.root = root;
+		this.treeName = treeName;
 	}
 
 	@Override
@@ -68,18 +69,18 @@ public class SplitQuadratic extends SplitBehavior {
 			
 			System.out.println("we're at the root");
 			
-			String newRootId = "root";
+			String newRootId = treeName;
 			root = new CloudRTreeNode(newRootId, null, null, cache);
 			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
 			
 			root.setChildren(newChildren);
-			node1.setParent("root");
-			node2.setParent("root");
+			node1.setParent(treeName);
+			node2.setParent(treeName);
 			
 			
 	        JSONArray childrenArr = root.getChildrenJSON();
 	        System.out.println("trying to add " + childrenArr.toJSONString());
-			cache.updateNode("root", childrenArr.toJSONString(), null, "delete", Rectangle.sumRectangles(node.getRectangle(), locationItem).getJson().toJSONString());
+			cache.updateNode(treeName, childrenArr.toJSONString(), null, "delete", Rectangle.sumRectangles(node.getRectangle(), locationItem).getJson().toJSONString());
 			
 			
 		} else { // parent is not null
@@ -156,7 +157,7 @@ public class SplitQuadratic extends SplitBehavior {
 		
 		splitBranchNode(cache.getNode(node1.getParent()));
 		
-		if (!node.nodeId.equals("root")) {
+		if (!node.nodeId.equals(treeName)) {
 			cache.updateNode(node.nodeId, null, null, "delete", null);
 		}
 		
@@ -251,8 +252,8 @@ public class SplitQuadratic extends SplitBehavior {
 				newChildrenArr.add(node2.nodeId);
 				
 				System.out.println("*****newChildrenArr: " + newChildrenArr);
-				cache.updateNode("root", newChildrenArr.toJSONString(), null, null, cache.getNode("root").getRectangle().getJson().toJSONString());
-				root = cache.getNode("root");
+				cache.updateNode(treeName, newChildrenArr.toJSONString(), null, null, cache.getNode(treeName).getRectangle().getJson().toJSONString());
+				root = cache.getNode(treeName);
 				node1.setParent(root.nodeId);
 				node2.setParent(root.nodeId);
 				
@@ -274,8 +275,8 @@ public class SplitQuadratic extends SplitBehavior {
 				
 				node1.setRectangle(node1SumRect);
 				node2.setRectangle(node2SumRect);
-				cache.addNode(node1.nodeId, node1.getChildrenJSON().toJSONString(), "root", null, node1SumRect.getJson().toJSONString(), node1);
-				cache.addNode(node2.nodeId, node2.getChildrenJSON().toJSONString(), "root", null, node2SumRect.getJson().toJSONString(), node2);
+				cache.addNode(node1.nodeId, node1.getChildrenJSON().toJSONString(), treeName, null, node1SumRect.getJson().toJSONString(), node1);
+				cache.addNode(node2.nodeId, node2.getChildrenJSON().toJSONString(), treeName, null, node2SumRect.getJson().toJSONString(), node2);
 				
 				for (String child : childNodes1) {
 					System.out.println("=== childNodes1 |" + child);

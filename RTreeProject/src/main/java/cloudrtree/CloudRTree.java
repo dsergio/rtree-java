@@ -79,12 +79,12 @@ public class CloudRTree {
 		maxChildren = getMaxChildren();
 		maxItems = getMaxItems();
 		
-		root = getNode("root");
+		root = getNode(treeName);
 		if (root == null) {
-			addNode("root", null, null, null, null, null);
-			root = new CloudRTreeNode("root", null, null, cacheContainer);
+			addNode(treeName, null, null, null, null, null);
+			root = new CloudRTreeNode(treeName, null, null, cacheContainer);
 		}
-		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root);
+		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root, treeName);
 	}
 	
 	/**
@@ -379,7 +379,7 @@ public class CloudRTree {
 	 */
 	public List<Rectangle> getRectangles() {
 		List<Rectangle> allRectangles = new ArrayList<Rectangle>();
-		getRectangles(getNode("root"), allRectangles, 0);
+		getRectangles(getNode(treeName), allRectangles, 0);
 		return allRectangles;
 	}
 	
@@ -530,7 +530,7 @@ public class CloudRTree {
 		
 		long time = System.currentTimeMillis();
 		Map<Rectangle, List<LocationItem>> result = new HashMap<Rectangle, List<LocationItem>>();
-		search(searchRectangle, getNode("root"), result, 0);
+		search(searchRectangle, getNode(treeName), result, 0);
 		
 		
 		System.out.println("SEARCH consumed " + (dynamoAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
@@ -705,6 +705,6 @@ public class CloudRTree {
 	 * 
 	 */
 	public void updateRoot() {
-		root = getNode("root");
+		root = getNode(treeName);
 	}
 }
