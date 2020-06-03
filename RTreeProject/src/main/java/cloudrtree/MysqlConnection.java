@@ -35,8 +35,8 @@ public class MysqlConnection {
 
 	public boolean insert(String nodeId, String children, String parent, String items, String rectangle,
 			String tableName) {
-
-		String query = "INSERT INTO `" + tableName + "` (`nodeId`, `parent`, `rectangle`, `items`, `children`) "
+		
+		String query = "INSERT INTO `rtree_data` (`nodeId`, `parent`, `rectangle`, `items`, `children`) "
 				+ "VALUES (?, ?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
@@ -64,8 +64,9 @@ public class MysqlConnection {
 
 	public void update(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
-
-		String update = "UPDATE `" + tableName + "` ";
+		
+		String update = "UPDATE `rtree_data` ";
+		
 		String set = " SET nodeId = nodeId ";
 
 		if (children != null) {
@@ -116,8 +117,9 @@ public class MysqlConnection {
 	}
 
 	public CloudRTreeNode select(String tableName, String nodeId, CloudRTreeCache cache) {
-
-		String select = " SELECT * FROM " + tableName;
+		
+		String select = " SELECT * FROM rtree_data ";
+		
 		String where = " WHERE `nodeId` = ?";
 
 		String query = select + where;
@@ -191,8 +193,10 @@ public class MysqlConnection {
 		}
 
 		stmt = conn.createStatement();
-
-		sql = "CREATE TABLE IF NOT EXISTS " + tableName + " (nodeId VARCHAR(255) NOT NULL, "
+		
+		
+		// all trees in one table 'rtree_data'
+		sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
 				+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 				+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
 		System.out.println("create table: \n" + sql);
