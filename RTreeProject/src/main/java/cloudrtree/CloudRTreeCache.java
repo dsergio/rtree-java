@@ -115,7 +115,8 @@ public class CloudRTreeCache {
 			if (rectangle != null) {
 				obj = parser.parse(rectangle);
 				JSONObject rectObj = (JSONObject) obj;
-				r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
+				r = new Rectangle(
+						Integer.parseInt(rectObj.get("x1").toString()), 
 						Integer.parseInt(rectObj.get("x2").toString()), 
 						Integer.parseInt(rectObj.get("y1").toString()),
 						Integer.parseInt(rectObj.get("y2").toString()));
@@ -127,33 +128,31 @@ public class CloudRTreeCache {
 			e1.printStackTrace();
 		}
 
-		if (items == null || items.equals("delete")) {
-			n.locationItems = new ArrayList<LocationItem>();
-		}
+
 		n.setChildren(children);
 		n.setRectangle(r);
 		n.setParent(parent);
 		
-		if (items != null && !items.equals("delete")) {
-			n.locationItems = new ArrayList<LocationItem>();
-			parser = new JSONParser();
-			try {
-				if (items != null && !items.equals("delete")) {
-					obj = parser.parse(items);
-					JSONArray arr = (JSONArray) obj;
-					for (int i = 0; i < arr.size(); i++) {
-						JSONObject row = (JSONObject) arr.get(i);
-						LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
-						n.locationItems.add(item);
-						
-					}
+		
+		n.locationItems = new ArrayList<LocationItem>();
+		parser = new JSONParser();
+		try {
+			if (items != null) {
+				obj = parser.parse(items);
+				JSONArray arr = (JSONArray) obj;
+				for (int i = 0; i < arr.size(); i++) {
+					JSONObject row = (JSONObject) arr.get(i);
+					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+					n.locationItems.add(item);
+					
 				}
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
-			
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
+			
+
 		
 		cache.put(nodeId, n);
 		
@@ -161,7 +160,17 @@ public class CloudRTreeCache {
 		
 	}
 	
-	
+	/**
+	 * Todo: this method should be polymorphic - one that accepts strings as parameters, 
+	 * and another that accepts a node object as a parameter
+	 * 
+	 * @param nodeId
+	 * @param children
+	 * @param parent
+	 * @param items
+	 * @param rectangle
+	 * @param node
+	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		
 		System.out.println("adding node to cache " + nodeId + " node != null: " + (node != null));

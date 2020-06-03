@@ -57,7 +57,7 @@ public class CloudRTree {
 	/**
 	 * Initialize the split behavior, the cache container, and the root node configuration
 	 * 
-	 * @param None
+	 * @param
 	 * @return void
 	 * @throws Exception 
 	 */
@@ -67,9 +67,9 @@ public class CloudRTree {
 		try {
 			cacheContainer = new CloudRTreeCache(treeName, cloudType);
 		} catch (Exception e) {
-			System.out.println("Cache creation failed.");
+			System.out.println("Cache initialization failed.");
 			e.printStackTrace();
-			throw new Exception("CloudRTree Init failed.");
+			throw new Exception("CloudRTree initialization failed.");
 		}
 		
 		if (!metaDataExists()) {
