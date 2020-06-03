@@ -80,7 +80,7 @@ public class SplitQuadratic extends SplitBehavior {
 			
 	        JSONArray childrenArr = root.getChildrenJSON();
 	        System.out.println("trying to add " + childrenArr.toJSONString());
-			cache.updateNode(treeName, childrenArr.toJSONString(), null, "delete", Rectangle.sumRectangles(node.getRectangle(), locationItem).getJson().toJSONString());
+			cache.updateNode(treeName, childrenArr.toJSONString(), null, "[]", Rectangle.sumRectangles(node.getRectangle(), locationItem).getJson().toJSONString());
 			
 			
 		} else { // parent is not null
@@ -98,7 +98,7 @@ public class SplitQuadratic extends SplitBehavior {
 			newParent.setChildren(childrenList);
 			System.out.println("/*/*/newParent's new children: " + newParent.getChildrenJSON().toJSONString());
 			newParent.updateRectangle();
-			cache.updateNode(newParent.nodeId, newParent.getChildrenJSON().toJSONString(), newParent.getParent(), "delete", newParent.getRectangle().getJson().toJSONString());
+			cache.updateNode(newParent.nodeId, newParent.getChildrenJSON().toJSONString(), newParent.getParent(), "[]", newParent.getRectangle().getJson().toJSONString());
 			
 			node1.setParent(newParent.nodeId);
 			node2.setParent(newParent.nodeId);
@@ -158,7 +158,7 @@ public class SplitQuadratic extends SplitBehavior {
 		splitBranchNode(cache.getNode(node1.getParent()));
 		
 		if (!node.nodeId.equals(treeName)) {
-			cache.updateNode(node.nodeId, null, null, "delete", null);
+			cache.updateNode(node.nodeId, null, null, "[]", null);
 		}
 		
 		System.out.println();
