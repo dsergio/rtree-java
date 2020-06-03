@@ -2,7 +2,7 @@ package cloudrtree;
 
 /**
  * 
- * Description TBD
+ * Example of another RTree storage implementation
  * 
  * @author David Sergio
  *

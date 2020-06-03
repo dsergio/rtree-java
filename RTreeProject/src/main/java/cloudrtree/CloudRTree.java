@@ -9,7 +9,7 @@ import java.util.Random;
 
 /**
  * 
- * R-Tree with configurable split algorithms and configurable storage types
+ * R-Tree with configurable split algorithms and configurable storage implementations
  * 
  * @author David Sergio
  * 
@@ -41,17 +41,36 @@ public class CloudRTree {
 	
 	
 	/**
-	 * Constructors:
-	 * Initialize the storage type and set parameters
-	 * @throws Exception 
+	 * Constructor
 	 * 
+	 * @param treeName String
+	 * @throws Exception
 	 */
 	public CloudRTree(String treeName) throws Exception {
 		this(treeName, 4, 4);
 	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param treeName String
+	 * @param maxChildren int
+	 * @param maxItems int
+	 * @throws Exception
+	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
 		this(treeName, maxChildren, maxItems, StorageType.MYSQL); // default to MySQL
 	}
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param treeName String
+	 * @param maxChildren int
+	 * @param maxItems int
+	 * @param storageType StorageType
+	 * @throws Exception
+	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
@@ -144,7 +163,7 @@ public class CloudRTree {
 	
 	
 	/**
-	 * TBD
+	 * temporary
 	 * 
 	 * @param
 	 * @return
@@ -155,7 +174,7 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * temporary
 	 * 
 	 * @param
 	 * @return
@@ -166,44 +185,45 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Get node with given nodeId
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @param nodeId String
+	 * @return CloudRTreeNode
 	 */
 	public CloudRTreeNode getNode(String nodeId) {
 		return cacheContainer.getNode(nodeId);
 	}
 	
 	/**
-	 * TBD
+	 * Update node with given Id
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @param nodeId
+	 * @param children
+	 * @param parent
+	 * @param items
+	 * @param rectangle
 	 */
 	public void updateNode(String nodeId, String children, String parent, String items, String rectangle) {
 		cacheContainer.updateNode(nodeId, children, parent, items, rectangle);
 	}
 	
 	/**
-	 * TBD
+	 * Add node with parameters
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @param nodeId
+	 * @param children
+	 * @param parent
+	 * @param items
+	 * @param rectangle
+	 * @param node
 	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		cacheContainer.addNode(nodeId, children, parent, items, rectangle, node);
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return boolean
 	 */
 	public boolean getLeafNodeSplit() {
 		return leafNodeSplit;
@@ -211,22 +231,16 @@ public class CloudRTree {
 	
 	/**
 	 * 
-	 * TBD
-	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return boolean
 	 */
 	public boolean getBranchSplit() {
 		return branchSplit;
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @param locationItem
+	 * @throws IOException
 	 */
 	public void insertType(LocationItem locationItem) throws IOException {
 		
@@ -376,8 +390,7 @@ public class CloudRTree {
 	/**
 	 * TBD
 	 * 
-	 * @param
-	 * @return
+	 * @return List<Rectangle>
 	 * 
 	 */
 	public List<Rectangle> getRectangles() {
@@ -402,10 +415,11 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
+	 * Get all items in this tree
+	 * Caution: could be a big operation
 	 * 
 	 * @param
-	 * @return
+	 * @return List<LocationItem>
 	 * 
 	 */
 	public List<LocationItem> getPoints() {
