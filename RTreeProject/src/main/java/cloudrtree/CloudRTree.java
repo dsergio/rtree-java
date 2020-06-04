@@ -353,12 +353,7 @@ public class CloudRTree {
 	}
 	
 
-	/**
-	 * TBD
-	 * 
-	 * @return List<Rectangle>
-	 * 
-	 */
+	
 	public List<Rectangle> getRectangles() {
 		List<Rectangle> allRectangles = new ArrayList<Rectangle>();
 		getRectangles(getNode(treeName), allRectangles, 0);
@@ -384,8 +379,7 @@ public class CloudRTree {
 	 * Get all items in this tree
 	 * Caution: could be a big operation
 	 * 
-	 * @param
-	 * @return List<LocationItem>
+	 * @return all items in this tree
 	 * 
 	 */
 	public List<LocationItem> getPoints() {
@@ -411,13 +405,7 @@ public class CloudRTree {
 		
 	}
 	
-	/**
-	 * TBD
-	 * 
-	 * @param
-	 * @return
-	 * 
-	 */
+	
 	public Map<LocationItem, Integer> getPointsWithDepth() {
 		Map<LocationItem, Integer> points = new HashMap<LocationItem, Integer>();
 		
@@ -443,13 +431,7 @@ public class CloudRTree {
 		
 	}
 	
-	/**
-	 * TBD
-	 * 
-	 * @param
-	 * @return
-	 * 
-	 */
+	
 	public void printTree() {
 		System.out.println("PRINTING TREE: ");
 		System.out.print("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
@@ -503,7 +485,7 @@ public class CloudRTree {
 	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
 	 * 
 	 * @param Rectangle searchRectangle
-	 * @return Map<Rectangle, List<LocationItem>>
+	 * @return a map of rectangles containing search results
 	 * 
 	 */
 	public Map<Rectangle, List<LocationItem>> search(Rectangle searchRectangle) {
@@ -563,8 +545,7 @@ public class CloudRTree {
 	/**
 	 * Delete item from tree
 	 * 
-	 * @param LocationItem toDelete
-	 * @return void
+	 * @param toDelete Item to be deleted
 	 * 
 	 */
 	public void delete(LocationItem toDelete) {
@@ -604,89 +585,62 @@ public class CloudRTree {
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return tree name
 	 */
 	public String getName() {
 		return treeName;
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return number of add operations
 	 */
 	public int numAdds() {
 		return cacheContainer.getDBAccess().getNumAdds();
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return number of read operations
 	 */
 	public int numReads() {
 		return cacheContainer.getDBAccess().getNumReads();
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return number of update operations
 	 */
 	public int numUpdates() {
 		return cacheContainer.getDBAccess().getNumUpdates();
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return total add time
 	 */
 	public long getAddTime() {
 		return cacheContainer.getDBAccess().getAddTime();
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return total read time
 	 */
 	public long getReadTime() {
 		return cacheContainer.getDBAccess().getReadTime();
 	}
 	
 	/**
-	 * TBD
 	 * 
-	 * @param
-	 * @return
-	 * 
+	 * @return total update time
 	 */
 	public long getUpdateTime() {
 		return cacheContainer.getDBAccess().getUpdateTime();
 	}
 
-	/**
-	 * TBD
-	 * 
-	 * @param
-	 * @return
-	 * 
-	 */
+	
 	public void updateRoot() {
 		root = getNode(treeName);
 	}
