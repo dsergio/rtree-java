@@ -14,7 +14,7 @@ import org.json.simple.parser.ParseException;
  * @author David Sergio
  *
  */
-public class DBAccessRTreeInMemory implements DBAccessRTree {
+public class DataStorageInMemory implements IDataStorage {
 	
 	private int maxItems;
 	private int maxChildren;
@@ -26,13 +26,13 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	private long addTime = 0;
 	private long updateTime = 0;
 	
-	private Map<String, CloudRTreeNode> localData;
+	private Map<String, RTreeNode> localData;
 	
 	private ILogger logger;
 	
-	public DBAccessRTreeInMemory(ILogger logger) {
+	public DataStorageInMemory(ILogger logger) {
 		this.logger = logger;
-		localData = new HashMap<String, CloudRTreeNode>();
+		localData = new HashMap<String, RTreeNode>();
 	}
 
 	@Override
@@ -54,8 +54,8 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, CloudRTreeCache cache) {
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
@@ -66,7 +66,7 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 		logger.log("rectangle: " + rectangle);
 		
 		// construct the node
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
+		RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
 		localData.put(nodeId, node);
 		
 		numAdds++;
@@ -89,7 +89,7 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 		logger.log("rectangle: " + rectangle);
 		
 		
-		CloudRTreeNode node = localData.get(nodeId);
+		RTreeNode node = localData.get(nodeId);
 		node.setChildren(children);
 		node.setParent(parent);
 		
@@ -122,7 +122,7 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
+	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");

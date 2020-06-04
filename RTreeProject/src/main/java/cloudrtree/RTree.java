@@ -17,9 +17,9 @@ import cloudrtree.ILogger.LogLevel;
  * 
  *
  */
-public class CloudRTree {
+public class RTree {
 
-	private CloudRTreeNode root;
+	private RTreeNode root;
 	private int maxChildren;
 	private int maxItems;
 	private String treeName;
@@ -28,7 +28,7 @@ public class CloudRTree {
 	private boolean leafNodeSplit = false;
 	private boolean branchSplit = false;
 	private SplitBehavior splitBehavior;
-	CloudRTreeCache cacheContainer;
+	RTreeCache cacheContainer;
 	private int minXInserted;
 	private int minYInserted;
 	private int maxXInserted;
@@ -49,7 +49,7 @@ public class CloudRTree {
 	 * @param treeName String
 	 * @throws Exception
 	 */
-	public CloudRTree(String treeName) throws Exception {
+	public RTree(String treeName) throws Exception {
 		this(treeName, 4, 4);
 	}
 	
@@ -61,7 +61,7 @@ public class CloudRTree {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
+	public RTree(String treeName, int maxChildren, int maxItems) throws Exception {
 		this(treeName, maxChildren, maxItems, StorageType.MYSQL); // default to MySQL
 	}
 	
@@ -74,7 +74,7 @@ public class CloudRTree {
 	 * @param storageType
 	 * @throws Exception
 	 */
-	public CloudRTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
+	public RTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
@@ -94,7 +94,7 @@ public class CloudRTree {
 		
 		
 		try {
-			cacheContainer = new CloudRTreeCache(treeName, storageType, logger);
+			cacheContainer = new RTreeCache(treeName, storageType, logger);
 		} catch (Exception e) {
 			logger.log("Cache initialization failed.");
 			e.printStackTrace();
@@ -111,7 +111,7 @@ public class CloudRTree {
 		root = getNode(treeName);
 		if (root == null) {
 			addNode(treeName, null, null, null, null, null);
-			root = new CloudRTreeNode(treeName, null, null, cacheContainer, logger);
+			root = new RTreeNode(treeName, null, null, cacheContainer, logger);
 		}
 		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root, treeName, logger);
 	}
@@ -177,7 +177,7 @@ public class CloudRTree {
 	 * @param nodeId
 	 * @return CloudRTreeNode object defined by nodeId
 	 */
-	public CloudRTreeNode getNode(String nodeId) {
+	public RTreeNode getNode(String nodeId) {
 		return cacheContainer.getNode(nodeId);
 	}
 	
@@ -204,7 +204,7 @@ public class CloudRTree {
 	 * @param rectangle
 	 * @param node
 	 */
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle, RTreeNode node) {
 		cacheContainer.addNode(nodeId, children, parent, items, rectangle, node);
 	}
 	
@@ -256,7 +256,7 @@ public class CloudRTree {
 //		printTree();
 	}
 	
-	private void insert(LocationItem locationItem, CloudRTreeNode node) throws IOException {
+	private void insert(LocationItem locationItem, RTreeNode node) throws IOException {
 		
 		if (node == null) {
 			return;
@@ -290,7 +290,7 @@ public class CloudRTree {
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
-				CloudRTreeNode child = getNode(s);
+				RTreeNode child = getNode(s);
 				logger.log("child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
 					insert(locationItem, child);
@@ -306,7 +306,7 @@ public class CloudRTree {
 			int minEnlargementAreaIndex = 0;
 			
 			for (int i = 0; i < childrenArr.size(); i++) {
-				CloudRTreeNode child = getNode(childrenArr.get(i));
+				RTreeNode child = getNode(childrenArr.get(i));
 				if (child.isLeafNode()) {
 					if (getEnlargementArea(getNode(childrenArr.get(i)), x, y) < minEnlargementArea) {
 						minEnlargementArea = getEnlargementArea(getNode(childrenArr.get(i)), x, y);
@@ -328,7 +328,7 @@ public class CloudRTree {
 	}
 	
 	
-	private void addToRectangle(CloudRTreeNode node, Rectangle r) {
+	private void addToRectangle(RTreeNode node, Rectangle r) {
 		if (node == null) {
 			return;
 		}
@@ -338,7 +338,7 @@ public class CloudRTree {
 		addToRectangle(getNode(node.parent), sumRectangle);
 	}
 	
-	private int getEnlargementArea(CloudRTreeNode node, int x, int y) {
+	private int getEnlargementArea(RTreeNode node, int x, int y) {
 		
 		if (node.getNumberOfItems() == 0) {
 			logger.log("empty, so enlargement is 0 for " + x + ", " + y);
@@ -365,7 +365,7 @@ public class CloudRTree {
 		return allRectangles;
 	}
 	
-	private void getRectangles(CloudRTreeNode node, List<Rectangle> rectangles, int depth) {
+	private void getRectangles(RTreeNode node, List<Rectangle> rectangles, int depth) {
 		depth++;
 		if (node != null && node.getRectangle() != null) {
 			node.getRectangle().setLevel(depth);
@@ -373,7 +373,7 @@ public class CloudRTree {
 		}
 		if (node != null && !node.isLeafNode()) {
 			for (String s : node.getChildren()) {
-				CloudRTreeNode child = getNode(s);
+				RTreeNode child = getNode(s);
 				getRectangles(child, rectangles, depth);
 			}
 		}
@@ -393,7 +393,7 @@ public class CloudRTree {
 		return points;
 	}
 	
-	private void getPoints(CloudRTreeNode node, List<LocationItem> points, int depth) {
+	private void getPoints(RTreeNode node, List<LocationItem> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
@@ -402,7 +402,7 @@ public class CloudRTree {
 			points.addAll(node.getPoints());
 		} else {
 			for (String s : node.getChildren()) {
-				CloudRTreeNode child = getNode(s);
+				RTreeNode child = getNode(s);
 				points.addAll(child.getPoints());
 				getPoints(child, points, depth);
 			}
@@ -418,7 +418,7 @@ public class CloudRTree {
 		return points;
 	}
 	
-	private void getPointsWithDepth(CloudRTreeNode node, Map<LocationItem, Integer> points, int depth) {
+	private void getPointsWithDepth(RTreeNode node, Map<LocationItem, Integer> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
@@ -429,7 +429,7 @@ public class CloudRTree {
 			}
 		} else {
 			for (String s : node.getChildren()) {
-				CloudRTreeNode child = getNode(s);
+				RTreeNode child = getNode(s);
 				getPointsWithDepth(child, points, depth);
 			}
 		}
@@ -454,7 +454,7 @@ public class CloudRTree {
 		logger.setLogLevel(temp);
 	}
 
-	private void printTree(CloudRTreeNode node, int depth) {
+	private void printTree(RTreeNode node, int depth) {
 		if (node == null) {
 			return;
 		}
@@ -483,7 +483,7 @@ public class CloudRTree {
 		depth++;
 		if (node.getChildren() != null) {
 			for (String s : node.getChildren()) {
-				CloudRTreeNode child = getNode(s);
+				RTreeNode child = getNode(s);
 				printTree(child, depth);
 			}
 		}
@@ -511,7 +511,7 @@ public class CloudRTree {
 		return result;
 	}
 	
-	private void search(Rectangle searchRectangle, CloudRTreeNode node, Map<Rectangle, List<LocationItem>> result, int depth) {
+	private void search(Rectangle searchRectangle, RTreeNode node, Map<Rectangle, List<LocationItem>> result, int depth) {
 		node.rectangle.setLevel(depth);
 		if (node.isLeafNode()) {
 			
@@ -560,7 +560,7 @@ public class CloudRTree {
 		delete(toDelete, root);
 	}
 	
-	private void delete(LocationItem toDelete, CloudRTreeNode node) {
+	private void delete(LocationItem toDelete, RTreeNode node) {
 		
 		if (node.isLeafNode()) {
 			for (int i = 0; i < node.getNumberOfItems(); i++) {
@@ -582,7 +582,7 @@ public class CloudRTree {
 			if (node != null && node.getChildren() != null) {
 				
 				for (String s : node.getChildren()) {
-					CloudRTreeNode child = getNode(s);
+					RTreeNode child = getNode(s);
 					Rectangle r = child.getRectangle();
 					if (r.containsPoint(toDelete.getX(), toDelete.getY())) {
 						delete(toDelete, child);

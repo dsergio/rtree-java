@@ -7,7 +7,7 @@ package cloudrtree;
  * @author David Sergio
  *
  */
-public class DBAccessRTreeSqLite implements DBAccessRTree {
+public class DataStorageSqlite implements IDataStorage {
 
 	@Override
 	public void init() throws Exception {
@@ -27,8 +27,8 @@ public class DBAccessRTreeSqLite implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, CloudRTreeCache cache) {
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, RTreeCache cache) {
 		return null;
 
 	}
@@ -41,7 +41,7 @@ public class DBAccessRTreeSqLite implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
+	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import cloudrtree.ILogger.LogLevel;
 
-class DBAccessRTreeMySQLTests {
+class DataStorageMySQLTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -35,7 +35,7 @@ class DBAccessRTreeMySQLTests {
 		// Act
 		try {
 			
-			DBAccessRTreeMySQL dbAccessMySQL = new DBAccessRTreeMySQL(logger);
+			DataStorageMySQL dbAccessMySQL = new DataStorageMySQL(logger);
 		} catch (Exception e) {
 			fail("Failed to create database access object");
 			e.printStackTrace();

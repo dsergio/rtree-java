@@ -16,7 +16,7 @@ import org.json.simple.JSONArray;
  */
 public class SplitQuadratic extends SplitBehavior {
 
-	public SplitQuadratic(CloudRTreeCache cache, int maxChildren, CloudRTreeNode root, String treeName, ILogger logger) {
+	public SplitQuadratic(RTreeCache cache, int maxChildren, RTreeNode root, String treeName, ILogger logger) {
 		this.cache = cache;
 		this.maxChildren = maxChildren;
 		this.root = root;
@@ -25,7 +25,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	@Override
-	public void splitLeafNode(CloudRTreeNode node, LocationItem locationItem) {
+	public void splitLeafNode(RTreeNode node, LocationItem locationItem) {
 		
 		// full leaf node, so split leaf node
 		logger.log("We're full, splitting leaf node: " + node.nodeId + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
@@ -59,8 +59,8 @@ public class SplitQuadratic extends SplitBehavior {
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		
-		CloudRTreeNode node1 = new CloudRTreeNode(node1Id, null, null, cache, logger);
-		CloudRTreeNode node2 = new CloudRTreeNode(node2Id, null, null, cache, logger);
+		RTreeNode node1 = new RTreeNode(node1Id, null, null, cache, logger);
+		RTreeNode node2 = new RTreeNode(node2Id, null, null, cache, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.nodeId);
 		newChildren.add(node2.nodeId);
@@ -71,7 +71,7 @@ public class SplitQuadratic extends SplitBehavior {
 			logger.log("we're at the root");
 			
 			String newRootId = treeName;
-			root = new CloudRTreeNode(newRootId, null, null, cache, logger);
+			root = new RTreeNode(newRootId, null, null, cache, logger);
 			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
 			
 			root.setChildren(newChildren);
@@ -86,7 +86,7 @@ public class SplitQuadratic extends SplitBehavior {
 			
 		} else { // parent is not null
 			
-			CloudRTreeNode newParent = cache.getNode(node.getParent());
+			RTreeNode newParent = cache.getNode(node.getParent());
 			
 			List<String> childrenList = new ArrayList<String>();
 			for (String s : newParent.getChildren()) {
@@ -167,7 +167,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	
-	public void splitBranchNode(CloudRTreeNode node) {
+	public void splitBranchNode(RTreeNode node) {
 		
 		if (node == null) {
 			return;
@@ -225,10 +225,10 @@ public class SplitQuadratic extends SplitBehavior {
 			String node1Id = UUID.randomUUID().toString();
 			String node2Id = UUID.randomUUID().toString();
 			
-			CloudRTreeNode node1 = new CloudRTreeNode(node1Id, null, null, cache, logger);
-			CloudRTreeNode node2 = new CloudRTreeNode(node2Id, null, null, cache, logger);
+			RTreeNode node1 = new RTreeNode(node1Id, null, null, cache, logger);
+			RTreeNode node2 = new RTreeNode(node2Id, null, null, cache, logger);
 			
-			List<CloudRTreeNode> newChildren = new ArrayList<CloudRTreeNode>();
+			List<RTreeNode> newChildren = new ArrayList<RTreeNode>();
 			newChildren.add(node1);
 			newChildren.add(node2);
 			node1.setChildren(childNodes1);
@@ -293,7 +293,7 @@ public class SplitQuadratic extends SplitBehavior {
 				splitBranchNode(root);
 				
 			} else {
-				CloudRTreeNode newParent = cache.getNode(node.getParent());
+				RTreeNode newParent = cache.getNode(node.getParent());
 				
 				JSONArray newChildrenArr = new JSONArray();
 				newChildrenArr.add(node1.nodeId);

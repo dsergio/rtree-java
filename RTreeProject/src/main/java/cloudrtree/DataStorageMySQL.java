@@ -14,9 +14,9 @@ import java.sql.Statement;
  * @author David Sergio
  *
  */
-public class DBAccessRTreeMySQL implements DBAccessRTree {
+public class DataStorageMySQL implements IDataStorage {
 	
-	private MysqlConnection connection;
+	private DataStorageMysqlConnection connection;
 	private String tableName = null;
 	
 	private int numReads = 0;
@@ -28,7 +28,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	
 	private ILogger logger;
 	
-	public DBAccessRTreeMySQL(ILogger logger) throws Exception {
+	public DataStorageMySQL(ILogger logger) throws Exception {
 		this.logger = logger;
 		init();
 	}
@@ -37,7 +37,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	public void init() throws Exception {
 		
 		String creds = "../../creds.txt";
-		connection = new MysqlConnection(creds, logger);
+		connection = new DataStorageMysqlConnection(creds, logger);
 
 	}
 
@@ -56,8 +56,8 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, CloudRTreeCache cache) {
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
@@ -67,7 +67,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 		boolean success = connection.insert(nodeId, children, parent, items, rectangle, tableName);
 		
 		if (success) {
-			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
+			RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
 			Rectangle r = new Rectangle(rectangle);
 			node.rectangle = r;
 			node.setItemsJson(items);
@@ -94,10 +94,10 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	}
 
 	@Override
-	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
+	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		CloudRTreeNode node = connection.select(tableName, nodeId, cache);
+		RTreeNode node = connection.select(tableName, nodeId, cache);
 		
 		numReads++;
 		readTime += (System.currentTimeMillis() - time);

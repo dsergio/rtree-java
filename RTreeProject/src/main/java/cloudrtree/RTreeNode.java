@@ -18,17 +18,17 @@ import org.json.simple.parser.ParseException;
  * @author David Sergio
  *
  */
-public class CloudRTreeNode {
+public class RTreeNode {
 
 	List<String> children;
 	String parent;
 	List<LocationItem> locationItems;
 	Rectangle rectangle;
 	String nodeId;
-	CloudRTreeCache cache;
+	RTreeCache cache;
 	private ILogger logger;
 
-	public CloudRTreeNode(String nodeId, String childrenStr, String parent, CloudRTreeCache cache, ILogger logger) {
+	public RTreeNode(String nodeId, String childrenStr, String parent, RTreeCache cache, ILogger logger) {
 		this.cache = cache;
 		this.logger = logger;
 		this.nodeId = nodeId;
@@ -121,7 +121,7 @@ public class CloudRTreeNode {
 		return locationItems;
 	}
 
-	public void addItem(LocationItem locationItem, CloudRTreeNode node) throws IOException {
+	public void addItem(LocationItem locationItem, RTreeNode node) throws IOException {
 		
 		logger.log("CloudRTreeNode - addItem");
 		locationItems.add(locationItem);
@@ -192,7 +192,7 @@ public class CloudRTreeNode {
 		}
 	}
 	
-	public void updateRectangle(CloudRTreeNode node) {
+	public void updateRectangle(RTreeNode node) {
 		
 		logger.log("BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
 		
@@ -204,7 +204,7 @@ public class CloudRTreeNode {
 		int maxY = node.rectangle.getY2();
 		
 		if (node.children != null) {
-			CloudRTreeNode firstChild = cache.getNode(node.getChildren().get(0));
+			RTreeNode firstChild = cache.getNode(node.getChildren().get(0));
 			if (firstChild != null && firstChild.rectangle != null) {
 				minX = firstChild.getRectangle().getX1();
 				minY = firstChild.getRectangle().getY1();
@@ -219,7 +219,7 @@ public class CloudRTreeNode {
 			
 			for (String child : node.children) {
 				
-				CloudRTreeNode childNode = cache.getNode(child);
+				RTreeNode childNode = cache.getNode(child);
 				if (childNode != null && childNode.rectangle != null) {
 					
 					logger.log("childSum: " + childSum);

@@ -38,7 +38,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultCaret;
 
-import cloudrtree.CloudRTree;
+import cloudrtree.RTree;
 import cloudrtree.ILogger;
 import cloudrtree.LocationItem;
 import cloudrtree.Rectangle;
@@ -46,7 +46,7 @@ import cloudrtree.Rectangle;
 public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	final PaintPanel paintPan;
-	CloudRTree tree;
+	RTree tree;
 	List<LocationItem> points;
 	private JTextField output;
 	private Rectangle searchRectangle = null;
@@ -59,7 +59,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	int searchRange = 60;
 	private ILogger logger;
 	
-	public TestPaint(CloudRTree tree, boolean showTreeOn, ILogger logger) {
+	public TestPaint(RTree tree, boolean showTreeOn, ILogger logger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
@@ -125,7 +125,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	}
 	
-	public TestPaint(CloudRTree tree, ILogger logger) {
+	public TestPaint(RTree tree, ILogger logger) {
 		this(tree, false, logger);
 	}
 

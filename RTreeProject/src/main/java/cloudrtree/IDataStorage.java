@@ -7,15 +7,15 @@ package cloudrtree;
  * @author David Sergio
  *
  */
-public interface DBAccessRTree {
+public interface IDataStorage {
 	
 	public void init() throws Exception;
 	public void close();
 	
 	public void initializeStorage(String treeName) throws Exception;
-	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, CloudRTreeCache cache);
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, RTreeCache cache);
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
-	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache);
+	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache);
 	
 	// use these for performance analysis
 	public int getNumAdds();

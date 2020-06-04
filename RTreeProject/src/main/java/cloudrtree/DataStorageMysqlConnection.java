@@ -16,12 +16,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public class MysqlConnection {
+public class DataStorageMysqlConnection {
 
 	private Connection conn;
 	private ILogger logger;
 
-	public MysqlConnection(String creds, ILogger logger) throws Exception {
+	public DataStorageMysqlConnection(String creds, ILogger logger) throws Exception {
 		this.logger = logger;
 		getConnection(creds);
 	}
@@ -118,7 +118,7 @@ public class MysqlConnection {
 
 	}
 
-	public CloudRTreeNode select(String tableName, String nodeId, CloudRTreeCache cache) {
+	public RTreeNode select(String tableName, String nodeId, RTreeCache cache) {
 		
 		String select = " SELECT * FROM rtree_data ";
 		
@@ -151,7 +151,7 @@ public class MysqlConnection {
 
 			Rectangle r = new Rectangle(rectangle);
 
-			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
+			RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
 			node.setRectangle(r);
 			node.setItemsJson(items);
 

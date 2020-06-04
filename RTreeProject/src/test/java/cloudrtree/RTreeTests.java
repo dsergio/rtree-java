@@ -11,9 +11,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import cloudrtree.CloudRTree.StorageType;
+import cloudrtree.RTree.StorageType;
 
-class CloudRTreeTests {
+class RTreeTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -37,7 +37,7 @@ class CloudRTreeTests {
 		
 		// Act
 		try {
-			CloudRTree tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
+			RTree tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -50,11 +50,11 @@ class CloudRTreeTests {
 	@Test
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
-		CloudRTree tree = null;
+		RTree tree = null;
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new CloudRTree("TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY);
+			tree = new RTree("TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -72,10 +72,10 @@ class CloudRTreeTests {
 	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
-		CloudRTree tree = null;
+		RTree tree = null;
 		
 		try {
-			tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
+			tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -98,10 +98,10 @@ class CloudRTreeTests {
 	@Test
 	void InMemoryTree_Query_Success() {
 		// Arrange
-		CloudRTree tree = null;
+		RTree tree = null;
 		
 		try {
-			tree = new CloudRTree("TestTree1", 4, 4, StorageType.INMEMORY);
+			tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

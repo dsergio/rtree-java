@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import cloudrtree.CloudRTree;
+import cloudrtree.RTree;
 import cloudrtree.LocationItem;
 import cloudrtree.StdOutLogger;
-import cloudrtree.CloudRTree.StorageType;
+import cloudrtree.RTree.StorageType;
 import cloudrtree.ILogger;
 import cloudrtree.ILogger.LogLevel;
 
@@ -97,7 +97,7 @@ public class Tester {
 //		CloudRTree tree = new CloudRTree("cloudtree21", 4, 4);
 //		CloudRTree tree = new CloudRTree("cloudtree22", 10, 10);
 		
-		CloudRTree tree = null;
+		RTree tree = null;
 		
 		int inputMaxChildrenInt = 0;
 		int inputMaxItemsInt = 0;
@@ -116,11 +116,11 @@ public class Tester {
 					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 				
-				tree = new CloudRTree(inputTreeName, inputMaxChildrenInt, inputMaxItemsInt);
+				tree = new RTree(inputTreeName, inputMaxChildrenInt, inputMaxItemsInt);
 				
 			} else {
 				
-				tree = new CloudRTree(inputTreeName);
+				tree = new RTree(inputTreeName);
 				
 			}
 			

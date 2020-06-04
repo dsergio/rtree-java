@@ -9,10 +9,10 @@ package cloudrtree;
  */
 public abstract class SplitBehavior {
 	
-	protected CloudRTreeCache cache;
+	protected RTreeCache cache;
 	protected int maxChildren;
 	protected boolean branchSplit;
-	protected CloudRTreeNode root;
+	protected RTreeNode root;
 	protected String treeName;
 	protected ILogger logger;
 	
@@ -21,8 +21,8 @@ public abstract class SplitBehavior {
 	}
 	
 	
-	public abstract void splitLeafNode(CloudRTreeNode node, LocationItem locationItem);
-	public abstract void splitBranchNode(CloudRTreeNode node);
+	public abstract void splitLeafNode(RTreeNode node, LocationItem locationItem);
+	public abstract void splitBranchNode(RTreeNode node);
 	
 
 }

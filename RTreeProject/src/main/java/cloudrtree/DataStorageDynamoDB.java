@@ -45,7 +45,7 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils;
  * 
  *
  */
-public class DBAccessRTreeDynamoDB implements DBAccessRTree {
+public class DataStorageDynamoDB implements IDataStorage {
 
 	/*
 	 * Before running the code: Fill in your AWS access credentials in the provided
@@ -78,7 +78,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 	private String region;
 	private ILogger logger;
 
-	public DBAccessRTreeDynamoDB(String region, ILogger logger) {
+	public DataStorageDynamoDB(String region, ILogger logger) {
 		this.region = region;
 		this.logger = logger;
 		try {
@@ -171,11 +171,11 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 		
 	}
 	
-	public CloudRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, CloudRTreeCache cache) {
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, RTreeCache cache) {
 		Map<String, AttributeValue> item = newNode(nodeId, children, parent, items, rectangle);
 		addItemToTable(item, treeName);
 		
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
+		RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
 		return node;
 	}
 
@@ -267,7 +267,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 		}
 	}
 	
-	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
+	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
 		
 		JSONParser parser;
 		Object obj;
@@ -331,7 +331,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 //		logger.log("rectangle: " + r);
 		
 		
-		CloudRTreeNode newNode =  new CloudRTreeNode(nodeId, children, parent, cache, logger);
+		RTreeNode newNode =  new RTreeNode(nodeId, children, parent, cache, logger);
 		
 		newNode.setRectangle(r);
 		

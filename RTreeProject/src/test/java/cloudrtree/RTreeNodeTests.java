@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import cloudrtree.ILogger.LogLevel;
 
-class CloudRTreeNodeTests {
+class RTreeNodeTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -39,14 +39,14 @@ class CloudRTreeNodeTests {
 		String nodeId = UUID.randomUUID().toString();
 		ILogger logger = new StdOutLogger(LogLevel.DEV);
 		
-		CloudRTreeNode node1 = new CloudRTreeNode(node1Id, null, null, null, logger);
-		CloudRTreeNode node2 = new CloudRTreeNode(node2Id, null, null, null, logger);
+		RTreeNode node1 = new RTreeNode(node1Id, null, null, null, logger);
+		RTreeNode node2 = new RTreeNode(node2Id, null, null, null, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.nodeId);
 		newChildren.add(node2.nodeId);
 		
 		// Act
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, "", "", null, logger);
+		RTreeNode node = new RTreeNode(nodeId, "", "", null, logger);
 		node.setChildren(newChildren);
 		
 		
