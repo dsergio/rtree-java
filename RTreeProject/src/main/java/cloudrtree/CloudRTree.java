@@ -53,9 +53,9 @@ public class CloudRTree {
 	/**
 	 * Constructor
 	 * 
-	 * @param treeName String
-	 * @param maxChildren int
-	 * @param maxItems int
+	 * @param treeName
+	 * @param maxChildren
+	 * @param maxItems
 	 * @throws Exception
 	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems) throws Exception {
@@ -65,10 +65,10 @@ public class CloudRTree {
 	/**
 	 * Constructor
 	 * 
-	 * @param treeName String
-	 * @param maxChildren int
-	 * @param maxItems int
-	 * @param storageType StorageType
+	 * @param treeName
+	 * @param maxChildren
+	 * @param maxItems
+	 * @param storageType
 	 * @throws Exception
 	 */
 	public CloudRTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
@@ -83,8 +83,6 @@ public class CloudRTree {
 	/**
 	 * Initialize the split behavior, the cache container, the max children and items, and the root node configuration
 	 * 
-	 * @param
-	 * @return void
 	 * @throws Exception 
 	 */
 	public void init() throws Exception {
@@ -131,7 +129,7 @@ public class CloudRTree {
 	 * Check if metadata exists for the member treeName
 	 * 
 	 * @param
-	 * @return boolean
+	 * @return true if metadata for this tree is defined
 	 * @throws Exception 
 	 * 
 	 */
@@ -142,8 +140,7 @@ public class CloudRTree {
 	/**
 	 * Get max children
 	 * 
-	 * @param
-	 * @return int maxChildren
+	 * @return maxChildren
 	 * 
 	 */
 	public int getMaxChildren() {
@@ -153,8 +150,7 @@ public class CloudRTree {
 	/**
 	 * Get max items
 	 * 
-	 * @param
-	 * @return int maxItems
+	 * @return maxItems
 	 * 
 	 */
 	public int getMaxItems() {
@@ -162,24 +158,10 @@ public class CloudRTree {
 	}
 	
 	
-	/**
-	 * temporary
-	 * 
-	 * @param
-	 * @return
-	 * 
-	 */
 	public int getMaxChildrenVar() {
 		return maxChildren;
 	}
 	
-	/**
-	 * temporary
-	 * 
-	 * @param
-	 * @return
-	 * 
-	 */
 	public int getMaxItemsVar() {
 		return maxItems;
 	}
@@ -187,8 +169,8 @@ public class CloudRTree {
 	/**
 	 * Get node with given nodeId
 	 * 
-	 * @param nodeId String
-	 * @return CloudRTreeNode
+	 * @param nodeId
+	 * @return CloudRTreeNode object defined by nodeId
 	 */
 	public CloudRTreeNode getNode(String nodeId) {
 		return cacheContainer.getNode(nodeId);
@@ -219,22 +201,6 @@ public class CloudRTree {
 	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		cacheContainer.addNode(nodeId, children, parent, items, rectangle, node);
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public boolean getLeafNodeSplit() {
-		return leafNodeSplit;
-	}
-	
-	/**
-	 * 
-	 * @return boolean
-	 */
-	public boolean getBranchSplit() {
-		return branchSplit;
 	}
 	
 	/**
