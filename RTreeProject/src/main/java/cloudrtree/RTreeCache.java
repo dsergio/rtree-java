@@ -9,8 +9,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import cloudrtree.RTree.StorageType;
-
 
 /**
  * 
@@ -27,37 +25,12 @@ public class RTreeCache {
 	private StorageType cloudType;
 	private ILogger logger;
 	
-	public RTreeCache(String treeName, StorageType cloudType, ILogger logger) throws Exception {
+	public RTreeCache(String treeName, StorageType cloudType, ILogger logger, IDataStorage dataStorage) throws Exception {
 		cache = new HashMap<String, RTreeNode>();
 		this.treeName = treeName;
 		this.cloudType = cloudType;
 		this.logger = logger;
-		
-		switch (cloudType) {
-		case MYSQL:
-			try {
-				dbAccess = new DataStorageMySQL(logger);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			break;
-		case INMEMORY:
-			dbAccess = new DataStorageInMemory(logger);
-			break;
-		case DYNAMODB:
-			dbAccess = new DataStorageDynamoDB("us-west-2", logger); // use a static value for now
-			break;
-		case SQLITE:
-			break;
-		default:
-			try {
-				dbAccess = new DataStorageMySQL(logger);
-			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+		this.dbAccess = dataStorage;
 		
 		dbAccess.initializeStorage(treeName);
 		

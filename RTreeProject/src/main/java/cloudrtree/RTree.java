@@ -34,12 +34,7 @@ public class RTree {
 	private int maxXInserted;
 	private int maxYInserted;
 	private StorageType storageType;
-	public enum StorageType {
-		MYSQL,
-		INMEMORY,
-		DYNAMODB,
-		SQLITE
-	}
+	
 	private ILogger logger;
 	
 	
@@ -49,8 +44,8 @@ public class RTree {
 	 * @param treeName String
 	 * @throws Exception
 	 */
-	public RTree(String treeName) throws Exception {
-		this(treeName, 4, 4);
+	public RTree(IDataStorage dataStorage, String treeName) throws Exception {
+		this(dataStorage, treeName, 4, 4);
 	}
 	
 	/**
@@ -61,8 +56,8 @@ public class RTree {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTree(String treeName, int maxChildren, int maxItems) throws Exception {
-		this(treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.PROD)); // default to MySQL, PROD
+	public RTree(IDataStorage dataStorage, String treeName, int maxChildren, int maxItems) throws Exception {
+		this(dataStorage, treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.PROD)); // default to MySQL, PROD
 	}
 	
 	/**
@@ -74,14 +69,15 @@ public class RTree {
 	 * @param storageType
 	 * @throws Exception
 	 */
-	public RTree(String treeName, int maxChildren, int maxItems, StorageType storageType, ILogger logger) throws Exception {
+	public RTree(IDataStorage dataStorage, String treeName, int maxChildren, int maxItems, StorageType storageType, ILogger logger) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.storageType = storageType;
 		this.logger = logger;
+		
 		System.out.println("Cloud RTree initializing. Log level set to " + logger.getLogLevel() + ".");
-		init();
+		init(dataStorage);
 	}
 
 	
@@ -90,11 +86,12 @@ public class RTree {
 	 * 
 	 * @throws Exception 
 	 */
-	public void init() throws Exception {
+	public void init(IDataStorage dataStorage) throws Exception {
 		
 		
 		try {
-			cacheContainer = new RTreeCache(treeName, storageType, logger);
+			
+			cacheContainer = new RTreeCache(treeName, storageType, logger, dataStorage);
 		} catch (Exception e) {
 			logger.log("Cache initialization failed.");
 			e.printStackTrace();

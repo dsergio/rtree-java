@@ -12,7 +12,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import cloudrtree.ILogger.LogLevel;
-import cloudrtree.RTree.StorageType;
 
 class RTreeTests {
 
@@ -35,10 +34,12 @@ class RTreeTests {
 	@Test
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		// Act
 		try {
-			RTree tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY, new LoggerStdOut(LogLevel.PROD));
+			RTree tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -52,10 +53,12 @@ class RTreeTests {
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
 		RTree tree = null;
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTree("TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY, new LoggerStdOut(LogLevel.PROD));
+			tree = new RTree(dataStorage, "TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -74,9 +77,11 @@ class RTreeTests {
 	void InMemoryTree_Insert_Success() {
 		// Arrange
 		RTree tree = null;
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY, new LoggerStdOut(LogLevel.PROD));
+			tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -100,9 +105,11 @@ class RTreeTests {
 	void InMemoryTree_Query_Success() {
 		// Arrange
 		RTree tree = null;
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree("TestTree1", 4, 4, StorageType.INMEMORY, new LoggerStdOut(LogLevel.PROD));
+			tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
