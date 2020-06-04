@@ -62,7 +62,7 @@ public class RTree {
 	 * @throws Exception
 	 */
 	public RTree(String treeName, int maxChildren, int maxItems) throws Exception {
-		this(treeName, maxChildren, maxItems, StorageType.MYSQL); // default to MySQL
+		this(treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.PROD)); // default to MySQL, PROD
 	}
 	
 	/**
@@ -74,12 +74,12 @@ public class RTree {
 	 * @param storageType
 	 * @throws Exception
 	 */
-	public RTree(String treeName, int maxChildren, int maxItems, StorageType storageType) throws Exception {
+	public RTree(String treeName, int maxChildren, int maxItems, StorageType storageType, ILogger logger) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.storageType = storageType;
-		logger = new LoggerStdOut(LogLevel.PROD);
+		this.logger = logger;
 		System.out.println("Cloud RTree initializing. Log level set to " + logger.getLogLevel() + ".");
 		init();
 	}
