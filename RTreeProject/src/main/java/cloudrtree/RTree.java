@@ -79,7 +79,7 @@ public class RTree {
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.storageType = storageType;
-		logger = new StdOutLogger(LogLevel.PROD);
+		logger = new LoggerStdOut(LogLevel.PROD);
 		System.out.println("Cloud RTree initializing. Log level set to " + logger.getLogLevel() + ".");
 		init();
 	}

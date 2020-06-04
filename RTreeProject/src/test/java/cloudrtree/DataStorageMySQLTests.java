@@ -30,7 +30,7 @@ class DataStorageMySQLTests {
 	@Test
 	void CreateDBAccess_Success() {
 		// Arrange
-		ILogger logger = new StdOutLogger(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		
 		// Act
 		try {

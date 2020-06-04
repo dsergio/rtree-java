@@ -1,10 +1,10 @@
 package cloudrtree;
 
-public class StdOutLogger implements ILogger {
+public class LoggerStdOut implements ILogger {
 
 	private LogLevel logLevel;
 	
-	public StdOutLogger(LogLevel logLevel) {
+	public LoggerStdOut(LogLevel logLevel) {
 		this.logLevel = logLevel;
 	}
 	

@@ -37,7 +37,7 @@ class RTreeNodeTests {
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		String nodeId = UUID.randomUUID().toString();
-		ILogger logger = new StdOutLogger(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		
 		RTreeNode node1 = new RTreeNode(node1Id, null, null, null, logger);
 		RTreeNode node2 = new RTreeNode(node2Id, null, null, null, logger);

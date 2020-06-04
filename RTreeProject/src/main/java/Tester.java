@@ -9,7 +9,7 @@ import java.util.Map;
 
 import cloudrtree.RTree;
 import cloudrtree.LocationItem;
-import cloudrtree.StdOutLogger;
+import cloudrtree.LoggerStdOut;
 import cloudrtree.RTree.StorageType;
 import cloudrtree.ILogger;
 import cloudrtree.ILogger.LogLevel;
@@ -29,7 +29,7 @@ public class Tester {
 		
 		Map<String, String> cityNameLatLong = new HashMap<String, String>();
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
-		ILogger logger = new StdOutLogger(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
