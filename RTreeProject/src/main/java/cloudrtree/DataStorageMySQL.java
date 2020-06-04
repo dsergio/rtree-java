@@ -9,7 +9,7 @@ import java.sql.Statement;
 
 /**
  * 
- * Implementation of persistent storage in MySQL
+ * MySQL Storage Implementation
  * 
  * @author David Sergio
  *

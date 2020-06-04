@@ -16,6 +16,12 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+/**
+ * MySQL Connection Implementation
+ * 
+ * @author David Sergio
+ *
+ */
 public class DataStorageMysqlConnection {
 
 	private Connection conn;

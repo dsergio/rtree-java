@@ -10,12 +10,8 @@ import org.json.simple.parser.ParseException;
 
 import com.amazonaws.AmazonClientException;
 import com.amazonaws.AmazonServiceException;
-import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.profile.ProfileCredentialsProvider;
-import com.amazonaws.regions.Region;
-import com.amazonaws.regions.Regions;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.AttributeDefinition;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
@@ -37,11 +33,11 @@ import com.amazonaws.services.dynamodbv2.model.UpdateItemRequest;
 import com.amazonaws.services.dynamodbv2.model.UpdateItemResult;
 import com.amazonaws.services.dynamodbv2.util.TableUtils;
 
-
-
 /**
  * 
- * Description TBD
+ * This implementation requires an active AWS account. This was the original
+ * implementation, but since I do not have a free tier account anymore, I can't
+ * test it
  * 
  *
  */
@@ -66,7 +62,7 @@ public class DataStorageDynamoDB implements IDataStorage {
 	 * WARNING: To avoid accidental leakage of your credentials, DO NOT keep the
 	 * credentials file in your source directory.
 	 */
-	
+
 	private int numReads = 0;
 	private int numAdds = 0;
 	private int numUpdates = 0;
@@ -147,8 +143,6 @@ public class DataStorageDynamoDB implements IDataStorage {
 			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
 			TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
 			logger.log("Table Description: " + tableDescription);
-			
-			
 
 		} catch (AmazonServiceException ase) {
 			logger.log("Caught an AmazonServiceException, which means your request made it "
@@ -158,23 +152,24 @@ public class DataStorageDynamoDB implements IDataStorage {
 			logger.log("AWS Error Code:   " + ase.getErrorCode());
 			logger.log("Error Type:       " + ase.getErrorType());
 			logger.log("Request ID:       " + ase.getRequestId());
-			
+
 			throw new Exception("DynamoDB table creation failed");
 		} catch (AmazonClientException ace) {
 			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
 			logger.log("Error Message: " + ace.getMessage());
-			
+
 			throw new Exception("DynamoDB table creation failed");
 		}
-		
+
 	}
-	
-	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, RTreeCache cache) {
+
+	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, RTreeCache cache) {
 		Map<String, AttributeValue> item = newNode(nodeId, children, parent, items, rectangle);
 		addItemToTable(item, treeName);
-		
+
 		RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
 		return node;
 	}
@@ -184,16 +179,16 @@ public class DataStorageDynamoDB implements IDataStorage {
 
 			// Add an item
 			long time = System.currentTimeMillis();
-			
+
 			PutItemRequest putItemRequest = new PutItemRequest(tableName, item);
 			PutItemResult putItemResult = dynamoDB.putItem(putItemRequest);
-			
+
 			if (dynamoLog) {
 				logger.log(" -> DynamoDB ADD " + item.values().toString());
 				logger.log("..." + putItemResult);
 			}
 			numAdds++;
-			
+
 			addTime += (System.currentTimeMillis() - time);
 
 		} catch (AmazonServiceException ase) {
@@ -211,40 +206,39 @@ public class DataStorageDynamoDB implements IDataStorage {
 			logger.log("Error Message: " + ace.getMessage());
 		}
 	}
-	
-	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle) {
+
+	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
+			String rectangle) {
 		try {
 
 			// Update item
 //			UpdateItemRequest updateItemRequest = new UpdateItemRequest(tableName, item, null);
-			
+
 			long time = System.currentTimeMillis();
-			Map<String,AttributeValue> key = new HashMap<>();
-		    key.put("nodeId",new AttributeValue().withS(nodeId));
-		    
-			UpdateItemRequest updateItemRequest = new UpdateItemRequest()
-			        .withTableName(tableName)
-			        .withKey(key);
-			        		
-    		Map<String, AttributeValueUpdate> map = new HashMap<>();
-    		if (children != null) {
-    			map.put("children", new AttributeValueUpdate(new AttributeValue(children),"PUT"));
-    		}
-    		if (parent != null) {
-    			map.put("parent", new AttributeValueUpdate(new AttributeValue(parent),"PUT"));
-    		}
-    		if (items != null) {
-    			map.put("items", new AttributeValueUpdate(new AttributeValue(items),"PUT"));
-    		}
-    		if (rectangle != null) {
-    			map.put("rectangle", new AttributeValueUpdate(new AttributeValue(rectangle),"PUT"));
-    		}
-	        
-	        updateItemRequest.setAttributeUpdates(map);
-			
+			Map<String, AttributeValue> key = new HashMap<>();
+			key.put("nodeId", new AttributeValue().withS(nodeId));
+
+			UpdateItemRequest updateItemRequest = new UpdateItemRequest().withTableName(tableName).withKey(key);
+
+			Map<String, AttributeValueUpdate> map = new HashMap<>();
+			if (children != null) {
+				map.put("children", new AttributeValueUpdate(new AttributeValue(children), "PUT"));
+			}
+			if (parent != null) {
+				map.put("parent", new AttributeValueUpdate(new AttributeValue(parent), "PUT"));
+			}
+			if (items != null) {
+				map.put("items", new AttributeValueUpdate(new AttributeValue(items), "PUT"));
+			}
+			if (rectangle != null) {
+				map.put("rectangle", new AttributeValueUpdate(new AttributeValue(rectangle), "PUT"));
+			}
+
+			updateItemRequest.setAttributeUpdates(map);
+
 			UpdateItemResult updateItemResult = dynamoDB.updateItem(updateItemRequest);
-			
-			if (dynamoLog ) {
+
+			if (dynamoLog) {
 				logger.log(" -> DynamoDB UPDATE " + nodeId);
 				logger.log("..." + updateItemResult);
 			}
@@ -266,85 +260,83 @@ public class DataStorageDynamoDB implements IDataStorage {
 			logger.log("Error Message: " + ace.getMessage());
 		}
 	}
-	
+
 	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
-		
+
 		JSONParser parser;
 		Object obj;
-		
+
 		String children = null;
 		String parent = null;
 		String items = null;
 		String rectangle = null;
-		
+
 		Map<String, AttributeValue> cloudNode = getNode(tableName, nodeId);
 		if (cloudNode == null) {
 			return null;
 		} else {
 			if (cloudNode.get("children") != null) {
 				children = cloudNode.get("children").getS();
-				if (children.equals("delete")) { 
+				if (children.equals("delete")) {
 					children = null;
 				}
 			}
 			if (cloudNode.get("parent") != null) {
 				parent = cloudNode.get("parent").getS();
-				if (parent.equals("delete")) { 
+				if (parent.equals("delete")) {
 					parent = null;
 				}
 			}
 			if (cloudNode.get("items") != null) {
 				items = cloudNode.get("items").getS();
-				if (items.equals("delete")) { 
+				if (items.equals("delete")) {
 					items = null;
 				}
 			}
-			
+
 			if (cloudNode.get("rectangle") != null) {
 				rectangle = cloudNode.get("rectangle").getS();
-				if (rectangle.equals("delete")) { 
+				if (rectangle.equals("delete")) {
 					rectangle = null;
 				}
 			}
-			
+
 		}
 //		logger.log("getNode children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
-		
+
 		Rectangle r = new Rectangle();
-		
+
 		parser = new JSONParser();
 		try {
 			if (rectangle != null) {
 				obj = parser.parse(rectangle);
 				JSONObject rectObj = (JSONObject) obj;
-				r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
-						Integer.parseInt(rectObj.get("x2").toString()), 
-						Integer.parseInt(rectObj.get("y1").toString()),
+				r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()),
+						Integer.parseInt(rectObj.get("x2").toString()), Integer.parseInt(rectObj.get("y1").toString()),
 						Integer.parseInt(rectObj.get("y2").toString()));
 			}
-			
-			
+
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 //		logger.log("rectangle: " + r);
-		
-		
-		RTreeNode newNode =  new RTreeNode(nodeId, children, parent, cache, logger);
-		
+
+		RTreeNode newNode = new RTreeNode(nodeId, children, parent, cache, logger);
+
 		newNode.setRectangle(r);
-		
+
 		parser = new JSONParser();
-		
+
 		try {
 			if (items != null) {
-				
+
 				obj = parser.parse(items);
 				JSONArray arr = (JSONArray) obj;
 				for (int i = 0; i < arr.size(); i++) {
 					JSONObject row = (JSONObject) arr.get(i);
-					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()),
+							Integer.parseInt(row.get("y").toString()), row.get("type").toString());
 					newNode.locationItems.add(item);
 				}
 			}
@@ -352,10 +344,10 @@ public class DataStorageDynamoDB implements IDataStorage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		return newNode;
 	}
-	
+
 	public Map<String, AttributeValue> getNode(String tableName, String nodeId) {
 		try {
 
@@ -363,19 +355,19 @@ public class DataStorageDynamoDB implements IDataStorage {
 			HashMap<String, Condition> scanFilter = new HashMap<String, Condition>();
 			Condition condition = new Condition().withComparisonOperator(ComparisonOperator.EQ.toString())
 					.withAttributeValueList(new AttributeValue().withS(nodeId));
-			
+
 			scanFilter.put("nodeId", condition);
 			ScanRequest scanRequest = new ScanRequest(tableName).withScanFilter(scanFilter);
 			ScanResult scanResult = dynamoDB.scan(scanRequest);
-			
+
 			if (dynamoLog) {
 				logger.log(" -> DynamoDB getNode('" + nodeId + "')...");
 				logger.log("..." + scanResult.toString());
 			}
 			numReads++;
-			
+
 			readTime += (System.currentTimeMillis() - time);
-			
+
 			if (scanResult.getCount() == 1) {
 				return scanResult.getItems().get(0);
 			} else {
@@ -396,16 +388,17 @@ public class DataStorageDynamoDB implements IDataStorage {
 					+ "such as not being able to access the network.");
 			logger.log("Error Message: " + ace.getMessage());
 		}
-		
+
 		return null;
 	}
 
-	public Map<String, AttributeValue> newNode(String nodeId, String children, String parent, String items, String rectangle) {
-		
+	public Map<String, AttributeValue> newNode(String nodeId, String children, String parent, String items,
+			String rectangle) {
+
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-		
+
 		item.put("nodeId", new AttributeValue(nodeId));
-		
+
 		if (children != null) {
 			item.put("children", new AttributeValue(children));
 		}
@@ -418,15 +411,15 @@ public class DataStorageDynamoDB implements IDataStorage {
 		if (rectangle != null) {
 			item.put("rectangle", new AttributeValue(rectangle));
 		}
-		
+
 		return item;
 	}
 
 	public Map<String, AttributeValue> newNode(String treeName, int maxChildren, int maxItems) {
 		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-		
+
 		item.put("nodeId", new AttributeValue(treeName));
-		
+
 		if (maxChildren > 1) {
 			item.put("maxChildren", new AttributeValue("" + maxChildren));
 		}
@@ -447,7 +440,7 @@ public class DataStorageDynamoDB implements IDataStorage {
 	public int getNumUpdates() {
 		return numUpdates;
 	}
-	
+
 	public long getReadTime() {
 		return readTime;
 	}
@@ -463,7 +456,7 @@ public class DataStorageDynamoDB implements IDataStorage {
 	@Override
 	public void close() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -496,7 +489,7 @@ public class DataStorageDynamoDB implements IDataStorage {
 	public int getMaxItems(String treeName) {
 		int maxItems = -1;
 		Map<String, AttributeValue> metadata = getNode("metadata", treeName);
-		
+
 		if (metadata == null) {
 			return -1;
 		} else {
@@ -506,26 +499,5 @@ public class DataStorageDynamoDB implements IDataStorage {
 		}
 		return maxItems;
 	}
-
-	
-	
-//	public Map<String, AttributeValue> newTree(String rootId, String size) {
-//		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-//		
-//		item.put("id", new AttributeValue(rootId));
-//		item.put("data", new AttributeValue(size));
-//
-//		return item;
-//	}
-
-//	private Map<String, AttributeValue> newItem(String name, int year, String rating, String... fans) {
-//		Map<String, AttributeValue> item = new HashMap<String, AttributeValue>();
-//		item.put("name", new AttributeValue(name));
-//		item.put("year", new AttributeValue().withN(Integer.toString(year)));
-//		item.put("rating", new AttributeValue(rating));
-//		item.put("fans", new AttributeValue().withSS(fans));
-//
-//		return item;
-//	}
 
 }
