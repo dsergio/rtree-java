@@ -25,32 +25,34 @@ public class CloudRTreeCache {
 	private DBAccessRTree dbAccess;
 	private String treeName;
 	private StorageType cloudType;
+	private ILogger logger;
 	
-	public CloudRTreeCache(String treeName, StorageType cloudType) throws Exception {
+	public CloudRTreeCache(String treeName, StorageType cloudType, ILogger logger) throws Exception {
 		cache = new HashMap<String, CloudRTreeNode>();
 		this.treeName = treeName;
 		this.cloudType = cloudType;
+		this.logger = logger;
 		
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dbAccess = new DBAccessRTreeMySQL();
+				dbAccess = new DBAccessRTreeMySQL(logger);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dbAccess = new DBAccessRTreeInMemory();
+			dbAccess = new DBAccessRTreeInMemory(logger);
 			break;
 		case DYNAMODB:
-			dbAccess = new DBAccessRTreeDynamoDB("us-west-2");
+			dbAccess = new DBAccessRTreeDynamoDB("us-west-2", logger); // use a static value for now
 			break;
 		case SQLITE:
 			break;
 		default:
 			try {
-				dbAccess = new DBAccessRTreeMySQL();
+				dbAccess = new DBAccessRTreeMySQL(logger);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -62,13 +64,13 @@ public class CloudRTreeCache {
 	}
 	
 	public void printCache() {
-		System.out.println();
-		System.out.println("Printing cache:");
+		logger.log();
+		logger.log("Printing cache:");
 		for (String key : cache.keySet()) {
 			CloudRTreeNode cloudNode = cache.get(key);
-			System.out.println(key + ": " + cloudNode);
+			logger.log(key + ": " + cloudNode);
 		}
-		System.out.println();
+		logger.log();
 	}
 	
 	public DBAccessRTree getDBAccess() {
@@ -82,7 +84,7 @@ public class CloudRTreeCache {
 		}
 		
 		if (cache.containsKey(nodeId)) { // first try the cache
-			System.out.println("returning from cache");
+			logger.log("returning from cache");
 			return cache.get(nodeId);
 		} else {		
 			CloudRTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
@@ -95,23 +97,23 @@ public class CloudRTreeCache {
 	
 	public void updateNode(String nodeId, String children, String parent, String items, String rectangle) {
 		
-		System.out.println("calling CloudRTreeCache.updateNode with parameters: ");
-		System.out.println("nodeId: " + nodeId);
-		System.out.println("children: " +children);
-		System.out.println("parent: " + parent);
-		System.out.println("items: " + items);
-		System.out.println("rectangle: " + rectangle);
+		logger.log("calling CloudRTreeCache.updateNode with parameters: ");
+		logger.log("nodeId: " + nodeId);
+		logger.log("children: " +children);
+		logger.log("parent: " + parent);
+		logger.log("items: " + items);
+		logger.log("rectangle: " + rectangle);
 		
 		
 		CloudRTreeNode n = null;
 		if (cache.containsKey(nodeId)) {
 			
-			System.out.println("cache contains " + nodeId);
+			logger.log("cache contains " + nodeId);
 			n = cache.get(nodeId);
 			
 		} else {
-			System.out.println("cache DOES NOT contain " + nodeId);
-			n = new CloudRTreeNode(nodeId, children, parent, this);
+			logger.log("cache DOES NOT contain " + nodeId);
+			n = new CloudRTreeNode(nodeId, children, parent, this, logger);
 		}
 			
 		JSONParser parser;
@@ -181,7 +183,7 @@ public class CloudRTreeCache {
 	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, CloudRTreeNode node) {
 		
-		System.out.println("adding node to cache " + nodeId + " node != null: " + (node != null));
+		logger.log("adding node to cache " + nodeId + " node != null: " + (node != null));
 		if (node != null) {
 			dbAccess.addCloudRTreeNode(nodeId, node.getChildrenJSON().toString(), node.getParent(), node.getItemsJSON().toString(), node.getRectangle().getJson().toString(), treeName, this);
 			cache.put(nodeId, node);

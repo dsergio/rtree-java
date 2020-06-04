@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import cloudrtree.ILogger.LogLevel;
+
 class CloudRTreeNodeTests {
 
 	@BeforeAll
@@ -35,15 +37,16 @@ class CloudRTreeNodeTests {
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		String nodeId = UUID.randomUUID().toString();
+		ILogger logger = new StdOutLogger(LogLevel.DEV);
 		
-		CloudRTreeNode node1 = new CloudRTreeNode(node1Id, null, null, null);
-		CloudRTreeNode node2 = new CloudRTreeNode(node2Id, null, null, null);
+		CloudRTreeNode node1 = new CloudRTreeNode(node1Id, null, null, null, logger);
+		CloudRTreeNode node2 = new CloudRTreeNode(node2Id, null, null, null, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.nodeId);
 		newChildren.add(node2.nodeId);
 		
 		// Act
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, "", "", null);
+		CloudRTreeNode node = new CloudRTreeNode(nodeId, "", "", null, logger);
 		node.setChildren(newChildren);
 		
 		

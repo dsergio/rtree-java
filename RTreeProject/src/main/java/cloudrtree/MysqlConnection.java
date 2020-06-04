@@ -19,8 +19,10 @@ import org.json.simple.parser.ParseException;
 public class MysqlConnection {
 
 	private Connection conn;
+	private ILogger logger;
 
-	public MysqlConnection(String creds) throws Exception {
+	public MysqlConnection(String creds, ILogger logger) throws Exception {
+		this.logger = logger;
 		getConnection(creds);
 	}
 
@@ -85,7 +87,7 @@ public class MysqlConnection {
 		String where = " WHERE `nodeId` = ?";
 
 		String query = update + set + where;
-		System.out.println("QUERY: " + query);
+		logger.log("QUERY: " + query);
 
 		int c = 1;
 
@@ -124,7 +126,7 @@ public class MysqlConnection {
 
 		String query = select + where;
 
-		System.out.println("QUERY: " + query + " nodeId: " + nodeId);
+		logger.log("QUERY: " + query + " nodeId: " + nodeId);
 
 		PreparedStatement stmt;
 		try {
@@ -149,14 +151,14 @@ public class MysqlConnection {
 
 			Rectangle r = new Rectangle(rectangle);
 
-			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
 			node.setRectangle(r);
 			node.setItemsJson(items);
 
-			System.out.println("select: node rectangle: " + r.toString());
-			System.out.println("select: node items: " + node.getItemsJSON().toJSONString());
-			System.out.println("select: items: " + items);
-			System.out.println("select: parent: " + node.parent);
+			logger.log("select: node rectangle: " + r.toString());
+			logger.log("select: node items: " + node.getItemsJSON().toJSONString());
+			logger.log("select: items: " + items);
+			logger.log("select: parent: " + node.parent);
 
 			return node;
 
@@ -172,7 +174,7 @@ public class MysqlConnection {
 	public void initializeDb(String treeName) throws Exception {
 
 		if (!treeName.matches("^[a-zA-Z0-9_]*$")) {
-			System.out.println("Illegal table name");
+			logger.log("Illegal table name");
 			throw new IllegalArgumentException(treeName);
 		}
 		
@@ -183,7 +185,7 @@ public class MysqlConnection {
 
 		String sql = "CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT, "
 				+ " treeName VARCHAR(255) NOT NULL, " + " maxChildren INT NULL, " + " maxItems INT NULL) ";
-		System.out.println("create table: \n" + sql);
+		logger.log("create table: \n" + sql);
 
 		stmt = conn.createStatement();
 		stmt.executeUpdate(sql);
@@ -197,7 +199,7 @@ public class MysqlConnection {
 		sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
 				+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 				+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
-		System.out.println("create table: \n" + sql);
+		logger.log("create table: \n" + sql);
 
 		stmt.executeUpdate(sql);
 
@@ -228,12 +230,12 @@ public class MysqlConnection {
 				} else if (data.split("=")[0].equals("database")) {
 					database = data.split("=")[1];
 				}
-//				System.out.println(data);
+//				logger.log(data);
 			}
 
 			myReader.close();
 		} catch (FileNotFoundException e) {
-			System.out.println("Credentials File is missing.");
+			logger.log("Credentials File is missing.");
 			throw e;
 		}
 
@@ -243,7 +245,7 @@ public class MysqlConnection {
 		try {
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
-			System.out.println("SQLException: " + e.getMessage());
+			logger.log("SQLException: " + e.getMessage());
 			throw e;
 		}
 

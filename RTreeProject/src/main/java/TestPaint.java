@@ -39,6 +39,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultCaret;
 
 import cloudrtree.CloudRTree;
+import cloudrtree.ILogger;
 import cloudrtree.LocationItem;
 import cloudrtree.Rectangle;
 
@@ -56,10 +57,12 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	Map<Rectangle, List<LocationItem>> searchResults;
 	JList list;
 	int searchRange = 60;
+	private ILogger logger;
 	
-	public TestPaint(CloudRTree tree, boolean showTreeOn) {
+	public TestPaint(CloudRTree tree, boolean showTreeOn, ILogger logger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
+		this.logger = logger;
 //		points = tree.getPoints();
 		
 		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildrenVar() + " MAX ITEMS: " + tree.getMaxItems() + " - CSCD 467 Final Project, Spring 2019 - David Sergio");
@@ -122,8 +125,8 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	}
 	
-	public TestPaint(CloudRTree tree) {
-		this(tree, false);
+	public TestPaint(CloudRTree tree, ILogger logger) {
+		this(tree, false, logger);
 	}
 
 
@@ -153,14 +156,14 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				
 				searchResults = tree.search(searchRectangle);
 				for (Rectangle r : searchResults.keySet()) {
-					System.out.println("search results: " + r);
+					logger.log("search results: " + r);
 					for (LocationItem i : searchResults.get(r)) {
-						System.out.println("..." + i);
+						logger.log("..." + i);
 					}
 					
 				}
 
-				System.out.println("searchRectangle: " + searchRectangle);
+				logger.log("searchRectangle: " + searchRectangle);
 				paintPan.repaint();
 				
 			} else {
@@ -328,7 +331,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						Stroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 						drawImage.setStroke(dashed);
 						
-						System.out.println("Rectangle traverse: " + r + ", level: " + r.getLevel());
+						logger.log("Rectangle traverse: " + r + ", level: " + r.getLevel());
 						
 						int offset = 0;
 						if (r.getLevel() == 0) {
@@ -416,14 +419,14 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		// System.out.println(output.getText());
+		// logger.log(output.getText());
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode(); // study KeyEvent class API
 		if (keyCode == KeyEvent.VK_ENTER) {
-			System.out.println(output.getText());
+			logger.log(output.getText());
 			if (output.getText().trim().matches("search\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s*")) {
 				int x = Integer.parseInt(output.getText().split("\\s+")[1]);
 				int y = Integer.parseInt(output.getText().split("\\s+")[2]);
@@ -431,20 +434,20 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				
 				searchRange = range;
 
-				System.out.println("you want to search for x: " + x + " y: " + y + " in range: " + range);
+				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range);
 				String[] data = {"Searching..."};
 				list.setListData(data);
 				searchRectangle = new Rectangle(x, x + range, y, y + range);
 				searchResults = tree.search(searchRectangle);
 				for (Rectangle r : searchResults.keySet()) {
-					System.out.println("search results: " + r);
+					logger.log("search results: " + r);
 					for (LocationItem i : searchResults.get(r)) {
-						System.out.println("..." + i);
+						logger.log("..." + i);
 					}
 					
 				}
 
-				System.out.println("searchRectangle: " + searchRectangle);
+				logger.log("searchRectangle: " + searchRectangle);
 				repaint();
 
 			} else if (output.getText().trim().matches("delete\\s+[0-9]+\\s+[0-9]+\\s+\"[a-zA-Z][a-zA-Z0-9\\s+\\-,]+\"\\s*")) {
@@ -453,7 +456,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				int y = Integer.parseInt(output.getText().split("\\s+")[2]);
 				String type = output.getText().split("\"")[1].replaceAll("\"", "");
 
-				System.out.println("you want to delete x: " + x + " y: " + y + " type: " + type);
+				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
 
 				LocationItem toDelete = new LocationItem(x, y, type);
 				tree.delete(toDelete);

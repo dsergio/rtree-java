@@ -76,9 +76,11 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 	private AmazonDynamoDB dynamoDB;
 	private boolean dynamoLog = true;
 	private String region;
+	private ILogger logger;
 
-	public DBAccessRTreeDynamoDB(String region) {
+	public DBAccessRTreeDynamoDB(String region, ILogger logger) {
 		this.region = region;
+		this.logger = logger;
 		try {
 			init();
 		} catch (Exception e) {
@@ -144,25 +146,25 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			// Describe our new table
 			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
 			TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
-			System.out.println("Table Description: " + tableDescription);
+			logger.log("Table Description: " + tableDescription);
 			
 			
 
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.log("Caught an AmazonServiceException, which means your request made it "
 					+ "to AWS, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.log("Error Message:    " + ase.getMessage());
+			logger.log("HTTP Status Code: " + ase.getStatusCode());
+			logger.log("AWS Error Code:   " + ase.getErrorCode());
+			logger.log("Error Type:       " + ase.getErrorType());
+			logger.log("Request ID:       " + ase.getRequestId());
 			
 			throw new Exception("DynamoDB table creation failed");
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.log("Error Message: " + ace.getMessage());
 			
 			throw new Exception("DynamoDB table creation failed");
 		}
@@ -173,7 +175,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 		Map<String, AttributeValue> item = newNode(nodeId, children, parent, items, rectangle);
 		addItemToTable(item, treeName);
 		
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
 		return node;
 	}
 
@@ -187,26 +189,26 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			PutItemResult putItemResult = dynamoDB.putItem(putItemRequest);
 			
 			if (dynamoLog) {
-				System.out.println(" -> DynamoDB ADD " + item.values().toString());
-				System.out.println("..." + putItemResult);
+				logger.log(" -> DynamoDB ADD " + item.values().toString());
+				logger.log("..." + putItemResult);
 			}
 			numAdds++;
 			
 			addTime += (System.currentTimeMillis() - time);
 
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.log("Caught an AmazonServiceException, which means your request made it "
 					+ "to AWS, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.log("Error Message:    " + ase.getMessage());
+			logger.log("HTTP Status Code: " + ase.getStatusCode());
+			logger.log("AWS Error Code:   " + ase.getErrorCode());
+			logger.log("Error Type:       " + ase.getErrorType());
+			logger.log("Request ID:       " + ase.getRequestId());
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.log("Error Message: " + ace.getMessage());
 		}
 	}
 	
@@ -243,25 +245,25 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			UpdateItemResult updateItemResult = dynamoDB.updateItem(updateItemRequest);
 			
 			if (dynamoLog ) {
-				System.out.println(" -> DynamoDB UPDATE " + nodeId);
-				System.out.println("..." + updateItemResult);
+				logger.log(" -> DynamoDB UPDATE " + nodeId);
+				logger.log("..." + updateItemResult);
 			}
 			numUpdates++;
 			updateTime += (System.currentTimeMillis() - time);
 
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.log("Caught an AmazonServiceException, which means your request made it "
 					+ "to AWS, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.log("Error Message:    " + ase.getMessage());
+			logger.log("HTTP Status Code: " + ase.getStatusCode());
+			logger.log("AWS Error Code:   " + ase.getErrorCode());
+			logger.log("Error Type:       " + ase.getErrorType());
+			logger.log("Request ID:       " + ase.getRequestId());
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.log("Error Message: " + ace.getMessage());
 		}
 	}
 	
@@ -306,7 +308,7 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			}
 			
 		}
-//		System.out.println("getNode children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
+//		logger.log("getNode children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 		
 		Rectangle r = new Rectangle();
 		
@@ -326,10 +328,10 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-//		System.out.println("rectangle: " + r);
+//		logger.log("rectangle: " + r);
 		
 		
-		CloudRTreeNode newNode =  new CloudRTreeNode(nodeId, children, parent, cache);
+		CloudRTreeNode newNode =  new CloudRTreeNode(nodeId, children, parent, cache, logger);
 		
 		newNode.setRectangle(r);
 		
@@ -367,8 +369,8 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			ScanResult scanResult = dynamoDB.scan(scanRequest);
 			
 			if (dynamoLog) {
-				System.out.println(" -> DynamoDB getNode('" + nodeId + "')...");
-				System.out.println("..." + scanResult.toString());
+				logger.log(" -> DynamoDB getNode('" + nodeId + "')...");
+				logger.log("..." + scanResult.toString());
 			}
 			numReads++;
 			
@@ -381,18 +383,18 @@ public class DBAccessRTreeDynamoDB implements DBAccessRTree {
 			}
 
 		} catch (AmazonServiceException ase) {
-			System.out.println("Caught an AmazonServiceException, which means your request made it "
+			logger.log("Caught an AmazonServiceException, which means your request made it "
 					+ "to AWS, but was rejected with an error response for some reason.");
-			System.out.println("Error Message:    " + ase.getMessage());
-			System.out.println("HTTP Status Code: " + ase.getStatusCode());
-			System.out.println("AWS Error Code:   " + ase.getErrorCode());
-			System.out.println("Error Type:       " + ase.getErrorType());
-			System.out.println("Request ID:       " + ase.getRequestId());
+			logger.log("Error Message:    " + ase.getMessage());
+			logger.log("HTTP Status Code: " + ase.getStatusCode());
+			logger.log("AWS Error Code:   " + ase.getErrorCode());
+			logger.log("Error Type:       " + ase.getErrorType());
+			logger.log("Request ID:       " + ase.getRequestId());
 		} catch (AmazonClientException ace) {
-			System.out.println("Caught an AmazonClientException, which means the client encountered "
+			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
-			System.out.println("Error Message: " + ace.getMessage());
+			logger.log("Error Message: " + ace.getMessage());
 		}
 		
 		return null;

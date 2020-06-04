@@ -26,17 +26,13 @@ public class CloudRTreeNode {
 	Rectangle rectangle;
 	String nodeId;
 	CloudRTreeCache cache;
+	private ILogger logger;
 
-	public CloudRTreeNode(String nodeId, String childrenStr, String parent, CloudRTreeCache cache) {
+	public CloudRTreeNode(String nodeId, String childrenStr, String parent, CloudRTreeCache cache, ILogger logger) {
 		this.cache = cache;
-		
+		this.logger = logger;
 		this.nodeId = nodeId;
 		
-		if (cache == null) {
-			System.out.println("Cache is null...");
-		}
-		
-//		System.out.println("==|children: " + children + " ... " + childrenStr);
 		JSONParser parser = new JSONParser();
 		Object obj;
 		try {
@@ -127,7 +123,7 @@ public class CloudRTreeNode {
 
 	public void addItem(LocationItem locationItem, CloudRTreeNode node) throws IOException {
 		
-		System.out.println("CloudRTreeNode - addItem");
+		logger.log("CloudRTreeNode - addItem");
 		locationItems.add(locationItem);
 		updateRectangle();
 		
@@ -188,7 +184,7 @@ public class CloudRTreeNode {
 		rectangle.setY1(minY);
 		rectangle.setY2(maxY);
 
-		// System.out.println("This node has a bounding box of " + rectangle.toString()
+		// logger.log("This node has a bounding box of " + rectangle.toString()
 		// + " has parent? " + (parent != null) + "... child rect: " + childRectangle);
 
 		if (parent != null && cache.getNode(parent) != null && goUp) {
@@ -198,7 +194,7 @@ public class CloudRTreeNode {
 	
 	public void updateRectangle(CloudRTreeNode node) {
 		
-		System.out.println("BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
+		logger.log("BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
 		
 		Rectangle childSum = node.rectangle;
 		
@@ -226,7 +222,7 @@ public class CloudRTreeNode {
 				CloudRTreeNode childNode = cache.getNode(child);
 				if (childNode != null && childNode.rectangle != null) {
 					
-					System.out.println("childSum: " + childSum);
+					logger.log("childSum: " + childSum);
 					Rectangle childRectangle = cache.getNode(child).getRectangle();
 					
 					childSum = Rectangle.sumRectangles(childSum, childRectangle);
@@ -334,7 +330,7 @@ public class CloudRTreeNode {
 			}
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
-			System.out.println("items: |" + items + "|");
+			logger.log("items: |" + items + "|");
 			e.printStackTrace();
 		}
 		

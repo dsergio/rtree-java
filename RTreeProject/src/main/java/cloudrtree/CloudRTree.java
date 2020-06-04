@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import cloudrtree.ILogger.LogLevel;
+
 /**
  * 
  * R-Tree with configurable split algorithms and configurable storage implementations
@@ -38,6 +40,7 @@ public class CloudRTree {
 		DYNAMODB,
 		SQLITE
 	}
+	private ILogger logger;
 	
 	
 	/**
@@ -76,6 +79,8 @@ public class CloudRTree {
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.storageType = storageType;
+		logger = new StdOutLogger(LogLevel.PROD);
+		System.out.println("Cloud RTree initializing. Log level set to " + logger.getLogLevel() + ".");
 		init();
 	}
 
@@ -89,9 +94,9 @@ public class CloudRTree {
 		
 		
 		try {
-			cacheContainer = new CloudRTreeCache(treeName, storageType);
+			cacheContainer = new CloudRTreeCache(treeName, storageType, logger);
 		} catch (Exception e) {
-			System.out.println("Cache initialization failed.");
+			logger.log("Cache initialization failed.");
 			e.printStackTrace();
 			throw new Exception("CloudRTree initialization failed.");
 		}
@@ -106,9 +111,9 @@ public class CloudRTree {
 		root = getNode(treeName);
 		if (root == null) {
 			addNode(treeName, null, null, null, null, null);
-			root = new CloudRTreeNode(treeName, null, null, cacheContainer);
+			root = new CloudRTreeNode(treeName, null, null, cacheContainer, logger);
 		}
-		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root, treeName);
+		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root, treeName, logger);
 	}
 	
 	/**
@@ -210,7 +215,7 @@ public class CloudRTree {
 	 */
 	public void insertType(LocationItem locationItem) throws IOException {
 		
-		System.out.println("GOING TO INSERT: " + locationItem);
+		logger.log("GOING TO INSERT: " + locationItem);
 		if (locationItem.getX() < minXInserted) {
 			minXInserted = locationItem.getX();
 		}
@@ -229,7 +234,7 @@ public class CloudRTree {
 		
 //		printTree();
 		
-		System.out.println("MIN X: " + minXInserted + " MIN Y: " + minYInserted + " MAX X: " + maxXInserted + " MAX Y: " + maxYInserted);
+		logger.log("MIN X: " + minXInserted + " MIN Y: " + minYInserted + " MAX X: " + maxXInserted + " MAX Y: " + maxYInserted);
 	}
 	
 	/**
@@ -243,11 +248,11 @@ public class CloudRTree {
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
 		
-		System.out.println();
+		logger.log();
 		leafNodeSplit = false;
 		branchSplit = false;
 		insert(locationItem, root);
-		System.out.println();
+		logger.log();
 //		printTree();
 	}
 	
@@ -259,7 +264,7 @@ public class CloudRTree {
 		
 		cacheContainer.printCache();
 		
-		System.out.println("~~INSERT: " + locationItem + " into " + node.nodeId + " node.parent: " + node.parent);
+		logger.log("~~INSERT: " + locationItem + " into " + node.nodeId + " node.parent: " + node.parent);
 		
 		
 		
@@ -267,7 +272,7 @@ public class CloudRTree {
 			
 			if (node.getNumberOfItems() < maxItems) {
 				
-				System.out.println("Is leaf node and less than max, so let's add to " + node.nodeId);
+				logger.log("Is leaf node and less than max, so let's add to " + node.nodeId);
 				node.addItem(locationItem, node);
 				
 			} else {
@@ -280,13 +285,13 @@ public class CloudRTree {
 			}
 		} else {
 			// not a leaf node
-			System.out.println("not a leaf node");
+			logger.log("not a leaf node");
 			
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
 				CloudRTreeNode child = getNode(s);
-				System.out.println("child: " + child.toString());
+				logger.log("child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
 					insert(locationItem, child);
 					
@@ -309,7 +314,7 @@ public class CloudRTree {
 					}
 				}
 			}
-			System.out.println("min enlargement area for " + locationItem + " is " + minEnlargementArea + ", index=" + minEnlargementAreaIndex);
+			logger.log("min enlargement area for " + locationItem + " is " + minEnlargementArea + ", index=" + minEnlargementAreaIndex);
 			
 			Rectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, locationItem);
 			node.setRectangle(sumRectangle);
@@ -336,7 +341,7 @@ public class CloudRTree {
 	private int getEnlargementArea(CloudRTreeNode node, int x, int y) {
 		
 		if (node.getNumberOfItems() == 0) {
-			System.out.println("empty, so enlargement is 0 for " + x + ", " + y);
+			logger.log("empty, so enlargement is 0 for " + x + ", " + y);
 			return 0;
 		}
 		
@@ -433,17 +438,20 @@ public class CloudRTree {
 	
 	
 	public void printTree() {
-		System.out.println("PRINTING TREE: ");
-		System.out.print("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
+		LogLevel temp = logger.getLogLevel();
+		logger.setLogLevel(LogLevel.DEV);
+		logger.log("PRINTING TREE: ");
+		logger.logExact("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
 //		for (int i = 0; i < maxItems; i++) {
-//			System.out.print("\titem");
+//			logger.logExact("\titem");
 //		}
 		for (int i = 0; i < maxChildren; i++) {
-			System.out.print("\tchild");
+			logger.logExact("\tchild");
 		}
-		System.out.println();
+		logger.log();
 		printTree(root, 0);
-		System.out.println();
+		logger.log();
+		logger.setLogLevel(temp);
 	}
 
 	private void printTree(CloudRTreeNode node, int depth) {
@@ -455,23 +463,23 @@ public class CloudRTree {
 			numChildren = node.getChildren().size();
 		}
 		
-		System.out.print("_" + node.nodeId + "\t" + node.getParent() + "\t" + node.getRectangle() + 
+		logger.logExact("_" + node.nodeId + "\t" + node.getParent() + "\t" + node.getRectangle() + 
 				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth);
 		
 		
 		List<LocationItem> tempPoints = node.getPoints();
-		System.out.print("\t");
+		logger.logExact("\t");
 		for (int i = 0; i < tempPoints.size(); i++) {
-			System.out.print(tempPoints.get(i) + ";");
+			logger.logExact(tempPoints.get(i) + ";");
 			
 		}
 		
 		if (node.getChildren() != null) {
 			for (String s : node.getChildren()) {
-				System.out.print("\t" + s);
+				logger.logExact("\t" + s);
 			}
 		}
-		System.out.println();
+		logger.log();
 		depth++;
 		if (node.getChildren() != null) {
 			for (String s : node.getChildren()) {
@@ -498,7 +506,7 @@ public class CloudRTree {
 		search(searchRectangle, getNode(treeName), result, 0);
 		
 		
-		System.out.println("SEARCH consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
+		logger.log("SEARCH consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
 				(numReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
 		return result;
 	}
@@ -510,7 +518,7 @@ public class CloudRTree {
 			for (LocationItem item : node.items()) {
 				
 				if (item.getX() > searchRectangle.getX1() && item.getX() < searchRectangle.getX2() && item.getY() > searchRectangle.getY1() && item.getY() < searchRectangle.getY2()) {
-					System.out.println("Merry Christmas " + item + " nodeId: " + node.nodeId);
+					logger.log("Merry Christmas " + item + " nodeId: " + node.nodeId);
 					
 					if (result.containsKey(searchRectangle)) {
 						if (!result.get(searchRectangle).contains(item)) {
@@ -531,11 +539,11 @@ public class CloudRTree {
 					Rectangle r = getNode(child).getRectangle();
 					
 					if (Rectangle.rectanglesOverlap(r, searchRectangle)) {
-						System.out.println("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
+						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
 						result.put(r, new ArrayList<LocationItem>());
 						search(searchRectangle, getNode(child), result, depth + 1);
 					} else {
-						System.out.println("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
+						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
 					}
 				}
 			}
@@ -556,7 +564,7 @@ public class CloudRTree {
 		
 		if (node.isLeafNode()) {
 			for (int i = 0; i < node.getNumberOfItems(); i++) {
-				System.out.println("comparing node " + node.items().get(i) + " and " + toDelete);
+				logger.log("comparing node " + node.items().get(i) + " and " + toDelete);
 				if (node.items().get(i).getX() == toDelete.getX() && node.items().get(i).getY() == toDelete.getY() && node.items().get(i).getType().equals(toDelete.getType())) {
 					node.items().remove(i);
 					node.updateRectangle(true);
@@ -565,7 +573,7 @@ public class CloudRTree {
 						
 					}
 					
-					System.out.println("deleted " + toDelete);
+					logger.log("deleted " + toDelete);
 					updateNode(node.nodeId, null, null, node.getItemsJSON().toJSONString(), node.getRectangle().getJson().toJSONString());
 				}
 			}

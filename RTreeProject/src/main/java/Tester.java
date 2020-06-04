@@ -9,7 +9,10 @@ import java.util.Map;
 
 import cloudrtree.CloudRTree;
 import cloudrtree.LocationItem;
+import cloudrtree.StdOutLogger;
 import cloudrtree.CloudRTree.StorageType;
+import cloudrtree.ILogger;
+import cloudrtree.ILogger.LogLevel;
 
 public class Tester {
 
@@ -26,11 +29,11 @@ public class Tester {
 		
 		Map<String, String> cityNameLatLong = new HashMap<String, String>();
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
-		
+		ILogger logger = new StdOutLogger(LogLevel.PROD);
 		
 		if (args.length < 2)  {
-			System.out.println("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
-			System.out.println("Usage: java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]");
+			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
+			logger.log("Usage: java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]");
 			return;
 		}
 		
@@ -47,8 +50,8 @@ public class Tester {
 			
 		} else if (args[0].equals("cli")) {
 			if (args.length < 3) {
-				System.out.println("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
-				System.out.println("Usage: java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]");
+				logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
+				logger.log("Usage: java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]");
 			}
 			inputFile = args[2];
 			numInserts = Integer.parseInt(args[3]);
@@ -77,7 +80,7 @@ public class Tester {
 			    	
 			    }
 			} catch (FileNotFoundException e) {
-				System.out.println("File not found");
+				logger.log("File not found");
 				return;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -130,7 +133,7 @@ public class Tester {
 		}
 		
 		if (tree.getMaxChildrenVar() == -1) {
-			System.out.println("Tree meta data not set");
+			logger.log("Tree meta data not set");
 			System.exit(0);
 		}
 		
@@ -144,7 +147,7 @@ public class Tester {
 		
 		if (insertGui) {
 			
-			testPaint = new TestPaint(tree, true);
+			testPaint = new TestPaint(tree, true, logger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
@@ -159,7 +162,7 @@ public class Tester {
 		
 		if (gui) {
 			
-			testPaint = new TestPaint(tree);
+			testPaint = new TestPaint(tree, logger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
@@ -207,7 +210,7 @@ public class Tester {
 						if (longitude > longMax) {
 							longMax = longitude;
 						}
-						System.out.println("longZero: " + longZero + ", longMax: " + longMax);
+						logger.log("longZero: " + longZero + ", longMax: " + longMax);
 						cityNameLatLongToInsert.put(key, cityNameLatLong.get(key));
 						
 					}
@@ -253,7 +256,7 @@ public class Tester {
 						tree.getAddTime() + "\t" + tree.getReadTime() + "\t" + tree.getUpdateTime() + "\t" + "\n";
 								
 					
-					System.out.println(
+					logger.log(
 							"Inserted " + count + " of " + size + " (" + numInserts + ") total items (" + latitude + ", " + longitude + ") " + 
 							key + " current insert: " + (curTime - time) + "ms total so far: " + (curTime - startTime) + "ms total" + 
 							" adds: " + tree.numAdds() + " reads: " + tree.numReads() + " updates: " + tree.numUpdates() +
@@ -262,13 +265,13 @@ public class Tester {
 					time = System.currentTimeMillis();
 				}
 					
-				System.out.println("COUNT\tSIZE\tKEY\tINSERT TIME (ms)\tTOTAL TIME (ms)\tADDS\tREADS\tUPDATES\tADD TOT (ms)\tREAD TOT (ms)\tUPDATE TOT (ms)\t\t");
-				System.out.println(performanceOutput);
+				logger.log("COUNT\tSIZE\tKEY\tINSERT TIME (ms)\tTOTAL TIME (ms)\tADDS\tREADS\tUPDATES\tADD TOT (ms)\tREAD TOT (ms)\tUPDATE TOT (ms)\t\t");
+				logger.log(performanceOutput);
 				
-				System.out.println("\nlatZero: " + latZero + " latMax: " + latMax + " longZero: " + longZero + " longMax: " + longMax);
-				System.out.println("Inserted the following: \n");
+				logger.log("\nlatZero: " + latZero + " latMax: " + latMax + " longZero: " + longZero + " longMax: " + longMax);
+				logger.log("Inserted the following: \n");
 				for (String key : cityNameLatLongToInsert.keySet()) {
-					System.out.println(key + ": " + cityNameLatLongToInsert.get(key));
+					logger.log(key + ": " + cityNameLatLongToInsert.get(key));
 				}
 				
 				

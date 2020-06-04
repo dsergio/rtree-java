@@ -28,7 +28,10 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	
 	private Map<String, CloudRTreeNode> localData;
 	
-	public DBAccessRTreeInMemory() {
+	private ILogger logger;
+	
+	public DBAccessRTreeInMemory(ILogger logger) {
+		this.logger = logger;
 		localData = new HashMap<String, CloudRTreeNode>();
 	}
 
@@ -55,15 +58,15 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 			String treeName, CloudRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		System.out.println("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
-		System.out.println("nodeId: " + nodeId);
-		System.out.println("children: " + children);
-		System.out.println("parent: " + parent);
-		System.out.println("items: " + items);
-		System.out.println("rectangle: " + rectangle);
+		logger.log("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
+		logger.log("nodeId: " + nodeId);
+		logger.log("children: " + children);
+		logger.log("parent: " + parent);
+		logger.log("items: " + items);
+		logger.log("rectangle: " + rectangle);
 		
 		// construct the node
-		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+		CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
 		localData.put(nodeId, node);
 		
 		numAdds++;
@@ -77,13 +80,13 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 			String rectangle) {
 		
 		long time = System.currentTimeMillis();
-		System.out.println("Calling DBAccessRTreeLocal.updateItem with parameters: ");
-		System.out.println("tableName: " + tableName);
-		System.out.println("nodeId: " + nodeId);
-		System.out.println("children: " + children);
-		System.out.println("parent: " + parent);
-		System.out.println("items: " + items);
-		System.out.println("rectangle: " + rectangle);
+		logger.log("Calling DBAccessRTreeLocal.updateItem with parameters: ");
+		logger.log("tableName: " + tableName);
+		logger.log("nodeId: " + nodeId);
+		logger.log("children: " + children);
+		logger.log("parent: " + parent);
+		logger.log("items: " + items);
+		logger.log("rectangle: " + rectangle);
 		
 		
 		CloudRTreeNode node = localData.get(nodeId);
@@ -122,9 +125,9 @@ public class DBAccessRTreeInMemory implements DBAccessRTree {
 	public CloudRTreeNode getCloudRTreeNode(String tableName, String nodeId, CloudRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		System.out.println("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
-		System.out.println("tableName: " + tableName);
-		System.out.println("nodeId: " + nodeId);
+		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
+		logger.log("tableName: " + tableName);
+		logger.log("nodeId: " + nodeId);
 		
 		numReads++;
 		readTime += (System.currentTimeMillis() - time);

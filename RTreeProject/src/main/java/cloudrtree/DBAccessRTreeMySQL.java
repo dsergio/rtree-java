@@ -26,7 +26,10 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	private long addTime = 0;
 	private long updateTime = 0;
 	
-	public DBAccessRTreeMySQL() throws Exception {
+	private ILogger logger;
+	
+	public DBAccessRTreeMySQL(ILogger logger) throws Exception {
+		this.logger = logger;
 		init();
 	}
 
@@ -34,7 +37,7 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 	public void init() throws Exception {
 		
 		String creds = "../../creds.txt";
-		connection = new MysqlConnection(creds);
+		connection = new MysqlConnection(creds, logger);
 
 	}
 
@@ -57,14 +60,14 @@ public class DBAccessRTreeMySQL implements DBAccessRTree {
 			String treeName, CloudRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		System.out.println("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
+		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 		
 		
 		
 		boolean success = connection.insert(nodeId, children, parent, items, rectangle, tableName);
 		
 		if (success) {
-			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache);
+			CloudRTreeNode node = new CloudRTreeNode(nodeId, children, parent, cache, logger);
 			Rectangle r = new Rectangle(rectangle);
 			node.rectangle = r;
 			node.setItemsJson(items);
