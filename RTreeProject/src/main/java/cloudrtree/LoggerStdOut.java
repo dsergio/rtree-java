@@ -11,7 +11,7 @@ public class LoggerStdOut implements ILogger {
 	@Override
 	public void log(String message) {
 		
-		if (logLevel.equals(LogLevel.DEV)) {
+		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
 			System.out.println(message);
 		}
 		
@@ -25,7 +25,7 @@ public class LoggerStdOut implements ILogger {
 	@Override
 	public void logExact(String message) {
 		
-		if (logLevel.equals(LogLevel.DEV)) {
+		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
 			System.out.print(message);
 		}
 		

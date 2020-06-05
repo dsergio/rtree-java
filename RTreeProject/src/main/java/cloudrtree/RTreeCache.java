@@ -38,7 +38,7 @@ public class RTreeCache {
 	
 	public void printCache() {
 		logger.log();
-		logger.log("Printing cache:");
+		logger.log("__CACHE: " + "Printing cache:");
 		for (String key : cache.keySet()) {
 			RTreeNode cloudNode = cache.get(key);
 			logger.log(key + ": " + cloudNode);
@@ -57,7 +57,7 @@ public class RTreeCache {
 		}
 		
 		if (cache.containsKey(nodeId)) { // first try the cache
-			logger.log("returning from cache");
+//			logger.log("__CACHE: " + "returning " + nodeId + " from cache");
 			return cache.get(nodeId);
 		} else {		
 			RTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
@@ -70,22 +70,22 @@ public class RTreeCache {
 	
 	public void updateNode(String nodeId, String children, String parent, String items, String rectangle) {
 		
-		logger.log("calling CloudRTreeCache.updateNode with parameters: ");
-		logger.log("nodeId: " + nodeId);
-		logger.log("children: " +children);
-		logger.log("parent: " + parent);
-		logger.log("items: " + items);
-		logger.log("rectangle: " + rectangle);
+//		logger.log("calling CloudRTreeCache.updateNode with parameters: ");
+//		logger.log("nodeId: " + nodeId);
+//		logger.log("children: " +children);
+//		logger.log("parent: " + parent);
+//		logger.log("items: " + items);
+//		logger.log("rectangle: " + rectangle);
 		
 		
 		RTreeNode n = null;
 		if (cache.containsKey(nodeId)) {
 			
-			logger.log("cache contains " + nodeId);
+//			logger.log("__CACHE: " + "cache contains " + nodeId);
 			n = cache.get(nodeId);
 			
 		} else {
-			logger.log("cache DOES NOT contain " + nodeId);
+//			logger.log("__CACHE: " + "cache DOES NOT contain " + nodeId);
 			n = new RTreeNode(nodeId, children, parent, this, logger);
 		}
 			
@@ -112,28 +112,36 @@ public class RTreeCache {
 		}
 
 
-		n.setChildren(children);
-		n.setRectangle(r);
-		n.setParent(parent);
-		
-		
-		n.locationItems = new ArrayList<LocationItem>();
-		parser = new JSONParser();
-		try {
-			if (items != null) {
-				obj = parser.parse(items);
-				JSONArray arr = (JSONArray) obj;
-				for (int i = 0; i < arr.size(); i++) {
-					JSONObject row = (JSONObject) arr.get(i);
-					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
-					n.locationItems.add(item);
-					
-				}
-			}
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (children != null) {
+			n.setChildren(children);
 		}
+		if (rectangle != null) {
+			n.setRectangle(r);
+		}
+		if (parent != null) {
+			n.setParent(parent);
+		}
+		
+		if (items != null) {
+			n.locationItems = new ArrayList<LocationItem>();
+			parser = new JSONParser();
+			try {
+				if (items != null) {
+					obj = parser.parse(items);
+					JSONArray arr = (JSONArray) obj;
+					for (int i = 0; i < arr.size(); i++) {
+						JSONObject row = (JSONObject) arr.get(i);
+						LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+						n.locationItems.add(item);
+						
+					}
+				}
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 			
 
 		
@@ -156,7 +164,7 @@ public class RTreeCache {
 	 */
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle, RTreeNode node) {
 		
-		logger.log("adding node to cache " + nodeId + " node != null: " + (node != null));
+//		logger.log("__CACHE: " + "adding node to cache " + nodeId + " node != null: " + (node != null));
 		if (node != null) {
 			dbAccess.addCloudRTreeNode(nodeId, node.getChildrenJSON().toString(), node.getParent(), node.getItemsJSON().toString(), node.getRectangle().getJson().toString(), treeName, this);
 			cache.put(nodeId, node);

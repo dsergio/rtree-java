@@ -4,6 +4,7 @@ public interface ILogger {
 	
 	public enum LogLevel {
 		DEV,
+		DEV2,
 		PROD
 	}
 	public void log(String message); // include a newline

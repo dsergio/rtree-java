@@ -60,7 +60,7 @@ public class DataStorageMySQL implements IDataStorage {
 			String treeName, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
+//		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 		
 		
 		

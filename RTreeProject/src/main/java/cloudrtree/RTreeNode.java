@@ -280,7 +280,11 @@ public class RTreeNode {
 	}
 
 	public List<String> getChildren() {
-		return children;
+		if (children != null) {
+			return children;
+		} else {
+			return new ArrayList<String>();
+		}
 	}
 
 	public void setParent(String node) {

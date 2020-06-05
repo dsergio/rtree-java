@@ -57,7 +57,7 @@ public class RTree {
 	 * @throws Exception
 	 */
 	public RTree(IDataStorage dataStorage, String treeName, int maxChildren, int maxItems) throws Exception {
-		this(dataStorage, treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.PROD)); // default to MySQL, PROD
+		this(dataStorage, treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.DEV)); // default to MySQL, DEV
 	}
 	
 	/**
@@ -246,10 +246,12 @@ public class RTree {
 		locationItem.setType(animals[x]);
 		
 		logger.log();
+		logger.log();
 		leafNodeSplit = false;
 		branchSplit = false;
-		insert(locationItem, root);
-		logger.log();
+		logger.log("~~INSERT: " + "START");
+		insert(locationItem, getNode(root.nodeId));
+		logger.log("**************************************************************************************************************************");
 //		printTree();
 	}
 	
@@ -259,7 +261,7 @@ public class RTree {
 			return;
 		}
 		
-		cacheContainer.printCache();
+//		cacheContainer.printCache();
 		
 		logger.log("~~INSERT: " + locationItem + " into " + node.nodeId + " node.parent: " + node.parent);
 		
@@ -269,7 +271,7 @@ public class RTree {
 			
 			if (node.getNumberOfItems() < maxItems) {
 				
-				logger.log("Is leaf node and less than max, so let's add to " + node.nodeId);
+				logger.log("~~INSERT: " + "Is leaf node and less than max, so let's add to " + node.nodeId);
 				node.addItem(locationItem, node);
 				
 			} else {
@@ -282,13 +284,13 @@ public class RTree {
 			}
 		} else {
 			// not a leaf node
-			logger.log("not a leaf node");
+			logger.log("~~INSERT: " + "not a leaf node, drill down");
 			
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
 				RTreeNode child = getNode(s);
-				logger.log("child: " + child.toString());
+				logger.log("~~INSERT: " + "child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
 					insert(locationItem, child);
 					
@@ -311,7 +313,7 @@ public class RTree {
 					}
 				}
 			}
-			logger.log("min enlargement area for " + locationItem + " is " + minEnlargementArea + ", index=" + minEnlargementAreaIndex);
+//			logger.log("min enlargement area for " + locationItem + " is " + minEnlargementArea + ", index=" + minEnlargementAreaIndex);
 			
 			Rectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, locationItem);
 			node.setRectangle(sumRectangle);

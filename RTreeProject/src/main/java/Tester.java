@@ -32,7 +32,7 @@ public class Tester {
 		
 		Map<String, String> cityNameLatLong = new HashMap<String, String>();
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");

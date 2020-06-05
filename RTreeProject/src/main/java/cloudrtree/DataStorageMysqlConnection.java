@@ -59,6 +59,8 @@ public class DataStorageMysqlConnection {
 			stmt.setString(c++, rectangle);
 			stmt.setString(c++, items);
 			stmt.setString(c++, children);
+			
+			logger.log("[MYSQL]: " + stmt.toString().replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", ""));
 
 			stmt.executeUpdate();
 
@@ -93,7 +95,7 @@ public class DataStorageMysqlConnection {
 		String where = " WHERE `nodeId` = ?";
 
 		String query = update + set + where;
-		logger.log("QUERY: " + query);
+//		logger.log("QUERY: " + query);
 
 		int c = 1;
 
@@ -114,6 +116,8 @@ public class DataStorageMysqlConnection {
 				stmt.setString(c++, rectangle);
 			}
 			stmt.setString(c++, nodeId);
+			
+			logger.log("[MYSQL]: " + stmt.toString().replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", ""));
 
 			stmt.executeUpdate();
 
@@ -132,13 +136,18 @@ public class DataStorageMysqlConnection {
 
 		String query = select + where;
 
-		logger.log("QUERY: " + query + " nodeId: " + nodeId);
+		
+		
+		RTreeNode returnNode = null;
 
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(query);
-
+			
 			stmt.setString(1, nodeId);
+			
+			logger.log("[MYSQL]: " + stmt.toString().replace("com.mysql.cj.jdbc.ClientPreparedStatement: ", ""));
+			
 			ResultSet resultSet = stmt.executeQuery();
 
 			String children = null;
@@ -146,27 +155,36 @@ public class DataStorageMysqlConnection {
 			String rectangle = null;
 			String items = null;
 
+			Rectangle r = new Rectangle();
 			if (resultSet.next()) {
 				children = resultSet.getString("children");
 				parent = resultSet.getString("parent");
 				rectangle = resultSet.getString("rectangle");
 				items = resultSet.getString("items");
+				
+				r = new Rectangle(rectangle);
+
+				returnNode = new RTreeNode(nodeId, children, parent, cache, logger);
+				returnNode.setRectangle(r);
+				returnNode.setItemsJson(items);
+				
+				logger.log("select: nodeId: " + nodeId);
+				logger.log("select: node children: " + returnNode.children);
+				logger.log("select: node rectangle: " + r.toString());
+				logger.log("select: node items: " + returnNode.getItemsJSON().toJSONString());
+				logger.log("select: items: " + items);
+				logger.log("select: parent: " + returnNode.parent);
 			} else {
-				return null;
+
+				logger.log("select: nodeId: " + nodeId);
+				logger.log("select: node children: ");
+				logger.log("select: node rectangle: ");
+				logger.log("select: node items: ");
+				logger.log("select: items: ");
+				logger.log("select: parent: ");
 			}
-
-			Rectangle r = new Rectangle(rectangle);
-
-			RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
-			node.setRectangle(r);
-			node.setItemsJson(items);
-
-			logger.log("select: node rectangle: " + r.toString());
-			logger.log("select: node items: " + node.getItemsJSON().toJSONString());
-			logger.log("select: items: " + items);
-			logger.log("select: parent: " + node.parent);
-
-			return node;
+			
+			return returnNode;
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
