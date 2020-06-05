@@ -27,7 +27,7 @@ This application attempts to reads a `creds.txt` file 2 directories up from the 
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
 
 ### Metadata Table
-TBD
+The metadata table contains the tree name, the max items and the max children 
 
 ## Usage
 
@@ -38,15 +38,15 @@ To Compile: `mvn package`
 
 ## Run GUI 
 
-`java Tester gui [treeName] [optional maxChildren] [optional maxItems]`
+`java -cp .\target\rtree-1.0.jar Tester gui [treeName] [optional maxChildren] [optional maxItems]`
 
-e.g. `Java Tester gui tree1`
+e.g. `java -cp .\target\rtree-1.0.jar Tester gui tree1`
 
 ## Insert CLI and GUI 
 
-`java Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
+`java -cp .\target\rtree-1.0.jar Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
 
-e.g. `Java Tester cli cloudtree28 ./wa_cities 100 8 8`
+e.g. `java -cp .\target\rtree-1.0.jar Tester cli cloudtree28 ../wa_cities 100 8 8`
 
 ## Using the GUI
 
