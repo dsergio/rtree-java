@@ -389,6 +389,8 @@ public class RTree {
 	public List<LocationItem> getPoints() {
 		List<LocationItem> points = new ArrayList<LocationItem>();
 		getPoints(root, points, 0);
+		logger.log("RTree.getPoints() points: " + points);
+		logger.log("RTree.getPoints() returned a list of size " + points.size());
 		return points;
 	}
 	
@@ -402,7 +404,6 @@ public class RTree {
 		} else {
 			for (String s : node.getChildren()) {
 				RTreeNode child = getNode(s);
-				points.addAll(child.getPoints());
 				getPoints(child, points, depth);
 			}
 		}

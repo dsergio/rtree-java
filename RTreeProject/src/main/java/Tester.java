@@ -270,12 +270,12 @@ public class Tester {
 					tree.insertType(newCity(latitude, longitude, key, latZero, latMax, longZero, longMax, mapSize));
 					tree.updateRoot();
 					
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+//					try {
+//						Thread.sleep(500);
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
 					
 					
 					if (insertGui) {
