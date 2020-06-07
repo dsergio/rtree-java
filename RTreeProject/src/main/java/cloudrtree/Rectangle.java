@@ -7,12 +7,12 @@ import org.json.simple.parser.ParseException;
 
 /**
  * 
- * Description TBD
+ * 2-dimensional Rectangle class
  * 
  * @author David Sergio
  *
  */
-public class Rectangle {
+public class Rectangle extends CuboidBase {
 	
 	private int x1;
 	private int x2;
@@ -22,6 +22,7 @@ public class Rectangle {
 	private int level;
 	
 	public Rectangle(int x1, int x2, int y1, int y2) {
+		super(2);
 		this.x1 = x1;
 		this.x2 = x2;
 		this.y1 = y1;
@@ -29,6 +30,7 @@ public class Rectangle {
 	}
 	
 	public Rectangle(String retangleStr) {
+		super(2);
 		JSONParser parser;
 		Object obj;
 		

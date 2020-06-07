@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import cloudrtree.ILogger.LogLevel;
-
 /**
  * 
  * R-Tree with configurable split algorithms and configurable storage implementations
@@ -159,8 +157,8 @@ public class RTree {
 	 * @throws Exception 
 	 * 
 	 */
-	public void addToMetaData(String tableName, int maxChildren, int maxItems) throws Exception {
-		cacheContainer.getDBAccess().addToMetaData(tableName, maxChildren, maxItems);
+	public void addToMetaData(String treeName, int maxChildren, int maxItems) throws Exception {
+		cacheContainer.getDBAccess().addToMetaData(treeName, maxChildren, maxItems);
 	}
 	
 	/**
@@ -308,7 +306,7 @@ public class RTree {
 			if (node.getNumberOfItems() < maxItems) {
 				
 				logger.log("~~INSERT: " + "Is leaf node and less than max, so let's add to " + node.nodeId);
-				node.addItem(locationItem, node);
+				node.addItem(locationItem);
 				
 				boolean updateBoundaries = false;
 				if (locationItem.getX() > maxX || !boundariesSet) {

@@ -1,11 +1,20 @@
 package cloudrtree;
 
-public class LoggerStdOut extends LoggerBase {
+import java.awt.Graphics2D;
+
+public class LoggerPaint extends LoggerBase implements ILoggerPaint {
 	
-	public LoggerStdOut(LogLevel logLevel) {
+	public LoggerPaint(LogLevel logLevel) {
 		super(logLevel);
 	}
 	
+	public void log(String message, Graphics2D drawImage, int x, int y) {
+		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
+			drawImage.drawString(message, x, y);
+			log(message + ", x = " + x + ", y = " + y);
+		}
+	}
+
 	@Override
 	public void log(String message) {
 		
@@ -30,7 +39,5 @@ public class LoggerStdOut extends LoggerBase {
 		}
 		
 	}
-
-	
 
 }

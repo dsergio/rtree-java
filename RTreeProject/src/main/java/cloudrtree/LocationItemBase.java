@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
-public abstract class LocationItemBase {
+public abstract class LocationItemBase implements ILocationItem {
 
 	protected List<Integer> dimensionArray;
 	protected int numberDimensions;
@@ -102,5 +104,30 @@ public abstract class LocationItemBase {
 			}
 		}
 		return arr;
+	}
+	
+	public static List<LocationItem> getLocationItemListFromJson(String items) {
+		
+		JSONParser parser = new JSONParser();
+		Object obj;
+		List<LocationItem> locationItems = new ArrayList<LocationItem>();
+		
+		try {
+			if (items != null && !items.equals("") && !items.equals("delete")) {
+				
+				obj = parser.parse(items);
+				JSONArray arr = (JSONArray) obj;
+				for (int i = 0; i < arr.size(); i++) {
+					JSONObject row = (JSONObject) arr.get(i);
+					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+					locationItems.add(item);
+				}
+			}
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return locationItems;
 	}
 }

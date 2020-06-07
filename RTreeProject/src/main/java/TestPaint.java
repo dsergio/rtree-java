@@ -40,6 +40,7 @@ import javax.swing.text.DefaultCaret;
 
 import cloudrtree.RTree;
 import cloudrtree.ILogger;
+import cloudrtree.ILoggerPaint;
 import cloudrtree.LocationItem;
 import cloudrtree.Rectangle;
 
@@ -59,6 +60,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	JList list;
 	int searchRange = 60;
 	private ILogger logger;
+	private ILoggerPaint paintLogger;
 	
 	private int paintInitialWidth = 800;
 	private int paintInitialHeight = 650;
@@ -70,10 +72,11 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	private int maxX = paintInitialWidth;
 	private int maxY = paintInitialHeight;
 	
-	public TestPaint(RTree tree, boolean showTreeOn, ILogger logger) {
+	public TestPaint(RTree tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
+		this.paintLogger = paintLogger;
 //		points = tree.getPoints();
 		
 		list = new JList();
@@ -140,8 +143,8 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	}
 	
-	public TestPaint(RTree tree, ILogger logger) {
-		this(tree, false, logger);
+	public TestPaint(RTree tree, ILogger logger, ILoggerPaint paintLogger) {
+		this(tree, false, logger, paintLogger);
 	}
 	
 //	public int convertScaleX(int input) {
@@ -334,9 +337,12 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 					drawImage = (Graphics2D) g;
 					if (color != null) {
 						drawImage.setColor(color);
-						drawImage.drawOval(x, y, 5, 5);
-						drawImage.drawString("(" + x + ", " + y + ")", x, y);
-						drawImage.drawString(item.getType(), x, y + 20);
+						drawImage.fillOval(x, y, 5, 5);
+						paintLogger.log("(" + x + ", " + y + ")", drawImage, x, y);
+						paintLogger.log(item.getType(), drawImage, x, y + 20);
+//						drawImage.drawString("(" + x + ", " + y + ")", x, y);
+//						drawImage.drawString(item.getType(), x, y + 20);
+						
 					}
 				}
 				List<Rectangle> rectangles = new ArrayList<Rectangle>();
@@ -375,7 +381,8 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 						drawImage.setColor(color);
 						drawImage.drawRect(x, y, width, height);
-						drawImage.drawString("area: " + r.getArea(), x, y + height - 20);
+						paintLogger.log("area: " + r.getArea(), drawImage, x, y + height - 20);
+//						drawImage.drawString("area: " + r.getArea(), x, y + height - 20);
 
 					}
 				}

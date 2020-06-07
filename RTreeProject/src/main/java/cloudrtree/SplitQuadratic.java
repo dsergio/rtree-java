@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import org.json.simple.JSONArray;
 
-import cloudrtree.ILogger.LogLevel;
-
 
 /**
  * 

@@ -11,6 +11,8 @@ import cloudrtree.RTree;
 import cloudrtree.SplitBehavior;
 import cloudrtree.SplitQuadratic;
 import cloudrtree.LocationItem;
+import cloudrtree.LogLevel;
+import cloudrtree.LoggerPaint;
 import cloudrtree.LoggerStdOut;
 import cloudrtree.DataStorageBase;
 import cloudrtree.DataStorageDynamoDB;
@@ -18,7 +20,7 @@ import cloudrtree.DataStorageInMemory;
 import cloudrtree.DataStorageMySQL;
 import cloudrtree.IDataStorage;
 import cloudrtree.ILogger;
-import cloudrtree.ILogger.LogLevel;
+import cloudrtree.ILoggerPaint;
 
 public class Tester {
 
@@ -36,6 +38,7 @@ public class Tester {
 		Map<String, String> cityNameLatLong = new HashMap<String, String>();
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.PROD);
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
@@ -184,7 +187,7 @@ public class Tester {
 		
 		if (insertGui) {
 			
-			testPaint = new TestPaint(tree, true, logger);
+			testPaint = new TestPaint(tree, true, logger, paintLogger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
@@ -199,7 +202,7 @@ public class Tester {
 		
 		if (gui) {
 			
-			testPaint = new TestPaint(tree, logger);
+			testPaint = new TestPaint(tree, logger, paintLogger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);

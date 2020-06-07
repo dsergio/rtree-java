@@ -123,7 +123,7 @@ public class RTreeNode {
 		return locationItems;
 	}
 
-	public void addItem(LocationItem locationItem, RTreeNode node) throws IOException {
+	public void addItem(LocationItem locationItem) throws IOException {
 		
 		logger.log("CloudRTreeNode - addItem");
 		locationItems.add(locationItem);
@@ -132,7 +132,7 @@ public class RTreeNode {
 		StringWriter out;
 		
 		JSONArray jsonArr = new JSONArray();
-		for (LocationItem item : node.items()) {
+		for (LocationItem item : this.items()) {
 			jsonArr.add(item.getJson());
 		}
 		
@@ -142,11 +142,11 @@ public class RTreeNode {
 	    
 	    
 	    out = new StringWriter();
-	    JSONObject jsonRect = node.getRectangle().getJson();
+	    JSONObject jsonRect = this.getRectangle().getJson();
 	    jsonRect.writeJSONString(out);
 	    String rectStr = out.toString();
 		
-		cache.updateNode(node.nodeId, node.getChildrenJSON().toJSONString(), node.getParent(), itemsStr, rectStr);
+		cache.updateNode(this.nodeId, this.getChildrenJSON().toJSONString(), this.getParent(), itemsStr, rectStr);
 		
 		
 	}
