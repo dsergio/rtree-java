@@ -17,13 +17,16 @@ import cloudrtree.ILogger.LogLevel;
  *
  */
 public class SplitQuadratic extends SplitBehavior {
-
-	public SplitQuadratic(RTreeCache cache, int maxChildren, RTreeNode root, String treeName, ILogger logger) {
-		this.cache = cache;
-		this.maxChildren = maxChildren;
-		this.root = root;
-		this.treeName = treeName;
-		this.logger = logger;
+	
+	final String description;
+	
+	public SplitQuadratic() {
+		description = "Quadratic Split";
+	}
+	
+	@Override
+	public String getDescription() {
+		return description;
 	}
 
 	@Override
@@ -383,4 +386,8 @@ public class SplitQuadratic extends SplitBehavior {
 		}
 		logger.setLogLevel(temp);
 	}
+
+
+
+	
 }

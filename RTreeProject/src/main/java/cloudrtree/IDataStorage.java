@@ -1,5 +1,7 @@
 package cloudrtree;
 
+import java.sql.SQLException;
+
 /**
  * 
  * Storage Access Interface
@@ -30,5 +32,6 @@ public interface IDataStorage {
 	public boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
 	public int getMaxChildren(String treeName); // get the persistent maxChildren value
 	public int getMaxItems(String treeName);  // get the persistent maxItems value
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY);
 	
 }

@@ -9,6 +9,16 @@ package cloudrtree;
  */
 public class SplitLinear extends SplitBehavior {
 
+	final String description;
+	
+	public SplitLinear() {
+		description = "Linear Split";
+	}
+	
+	@Override
+	public String getDescription() {
+		return description;
+	}
 	@Override
 	public void splitLeafNode(RTreeNode node, LocationItem locationItem) {
 		// TODO Auto-generated method stub

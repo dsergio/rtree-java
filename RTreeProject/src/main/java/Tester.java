@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cloudrtree.RTree;
+import cloudrtree.SplitBehavior;
+import cloudrtree.SplitQuadratic;
 import cloudrtree.LocationItem;
 import cloudrtree.LoggerStdOut;
+import cloudrtree.DataStorageBase;
 import cloudrtree.DataStorageDynamoDB;
 import cloudrtree.DataStorageInMemory;
 import cloudrtree.DataStorageMySQL;
@@ -102,7 +105,7 @@ public class Tester {
 		
 		
 		cloudrtree.StorageType cloudType = cloudrtree.StorageType.MYSQL;
-		IDataStorage dataStorage = null;
+		DataStorageBase dataStorage = null;
 		
 		switch (cloudType) {
 		case MYSQL:

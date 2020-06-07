@@ -41,7 +41,7 @@ import com.amazonaws.services.dynamodbv2.util.TableUtils;
  * 
  *
  */
-public class DataStorageDynamoDB implements IDataStorage {
+public class DataStorageDynamoDB extends DataStorageBase {
 
 	/*
 	 * Before running the code: Fill in your AWS access credentials in the provided
@@ -75,6 +75,7 @@ public class DataStorageDynamoDB implements IDataStorage {
 	private ILogger logger;
 
 	public DataStorageDynamoDB(String region, ILogger logger) {
+		super(StorageType.DYNAMODB);
 		this.region = region;
 		this.logger = logger;
 		try {
@@ -498,6 +499,12 @@ public class DataStorageDynamoDB implements IDataStorage {
 			}
 		}
 		return maxItems;
+	}
+
+	@Override
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

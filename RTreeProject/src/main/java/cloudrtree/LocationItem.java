@@ -3,18 +3,21 @@ import org.json.simple.JSONObject;
 
 /**
  * 
- * Description TBD
+ * LocationItem Implementation
  * 
  * @author David Sergio
  *
  */
-public class LocationItem {
+public class LocationItem extends LocationItemBase{
 	
 	private int x;
 	private int y;
-	private String type;
 	
 	public LocationItem(int x, int y, String type) {
+		super(2);
+		super.setDim(0, x);
+		super.setDim(1, y);
+		
 		this.x = x;
 		this.y = y;
 		this.type = type;
@@ -26,6 +29,7 @@ public class LocationItem {
 
 	public void setX(int x) {
 		this.x = x;
+		super.setDim(0, x);
 	}
 
 	public int getY() {
@@ -34,16 +38,11 @@ public class LocationItem {
 
 	public void setY(int y) {
 		this.y = y;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
+		super.setDim(1, y);
+		
 	}
 	
+	@Override
 	public JSONObject getJson() {
 		JSONObject obj = new JSONObject();
 		obj.put("x", x);
@@ -54,9 +53,7 @@ public class LocationItem {
 	
 	@Override
 	public String toString() {
-		
 		String str = "(" + x + ", " + y + ") " + type;
-		
 		return str;
 	}
 	

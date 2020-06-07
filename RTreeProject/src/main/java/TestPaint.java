@@ -52,6 +52,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	private Rectangle searchRectangle = null;
 	JButton searchButton = new JButton("Search");
 	JButton showTree = new JButton("Show Tree");
+	JButton showTreeStructure = new JButton("Show Tree Structure");
 	boolean showTreeOn = false;
 	JTextArea info = new JTextArea();
 	Map<Rectangle, List<LocationItem>> searchResults;
@@ -59,21 +60,38 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	int searchRange = 60;
 	private ILogger logger;
 	
+	private int paintInitialWidth = 800;
+	private int paintInitialHeight = 650;
+	private int listWidth = 150;
+	private int padding = 100;
+	
+	private int minX = 0;
+	private int minY = 0;
+	private int maxX = paintInitialWidth;
+	private int maxY = paintInitialHeight;
+	
 	public TestPaint(RTree tree, boolean showTreeOn, ILogger logger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
 //		points = tree.getPoints();
 		
-		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildrenVar() + " MAX ITEMS: " + tree.getMaxItems() + " - CSCD 467 Final Project, Spring 2019 - David Sergio");
-		setSize(1200, 800);
+		list = new JList();
+		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		list.setVisibleRowCount(-1);
+		list.setFixedCellWidth(listWidth);
+		
+		
+		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildrenVar() + " MAX ITEMS: " + tree.getMaxItems() + " - David Sergio");
+		setSize(paintInitialWidth + list.getWidth() + info.getWidth() + padding, paintInitialHeight + padding);
 		
 //		FlowLayout layout = new FlowLayout();
 		
 		setLayout(new BorderLayout());
 
 		paintPan = new PaintPanel();
-//		paintPan.setSize(300, 300);
+		paintPan.setSize(paintInitialWidth + padding, paintInitialHeight + padding);
 		
 		if (showTreeOn) {
 			showTree.setText("Hide Tree");
@@ -82,13 +100,10 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		}
 		add(showTree, BorderLayout.PAGE_START);
 		showTree.addActionListener(this);
+		
+		
 		add(paintPan, BorderLayout.CENTER);
 		
-		list = new JList();
-		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
-		list.setVisibleRowCount(-1);
-		list.setFixedCellWidth(200);
 		
 		JScrollPane listScroller = new JScrollPane(list);
 		listScroller.setPreferredSize(new Dimension(250, 80));
@@ -128,6 +143,43 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	public TestPaint(RTree tree, ILogger logger) {
 		this(tree, false, logger);
 	}
+	
+//	public int convertScaleX(int input) {
+//		if (maxX == minX) {
+//			return input;
+//		}
+//		return (int) (((double) (input - minX) / (double) ( maxX - minX)) * (double) paintPan.getWidth());
+//	}
+//	public int convertScaleXWidth(int width) {
+//		if (maxX == minX) {
+//			return width;
+//		}
+//		return (int) (((double) (width) / (double) ( maxX - minX)) * (double) paintPan.getWidth());
+//	}
+//	public int reverseConvertScaleX(int input) {
+//		if (maxX == minX) {
+//			return input;
+//		}
+//		return minX + (int) ((double) (maxX - minX) * ((double) input / (double) paintPan.getWidth()));
+//	}
+//	public int convertScaleY(int input) {
+//		if (maxY == minY) {
+//			return input;
+//		}
+//		return (int) (((double) (input - minY) / (double) ( maxY - minY)) * (double) paintPan.getHeight());
+//	}
+//	public int convertScaleYHeight(int height) {
+//		if (maxY == minY) {
+//			return height;
+//		}
+//		return (int) (((double) (height) / (double) ( maxY - minY)) * (double) paintPan.getHeight());
+//	}
+//	public int reverseConvertScaleY(int input) {
+//		if (maxY == minY) {
+//			return input;
+//		}
+//		return minY + (int) ((double) (maxY - minY) * ((double) input / (double) paintPan.getHeight()));
+//	}
 
 
 	public class MyComponent extends JComponent implements MouseListener {
@@ -212,6 +264,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		private int x, y;
 		private Color color = Color.RED;
 		
+		
 
 		public PaintPanel() {
 			setBackground(Color.LIGHT_GRAY);
@@ -224,6 +277,8 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		public void addPoint(LocationItem item) {
 			points.add(item);
 		}
+		
+		
 
 		@Override
 		public void paintComponent(Graphics g) {
@@ -263,6 +318,19 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				for (LocationItem item : tree.getPoints()) {
 					int x = item.getX();
 					int y = item.getY();
+					
+					if (x > maxX) {
+						maxX = x;
+					}
+					if (x < minX) {
+						minX = x;
+					}
+					if (y > maxY) {
+						maxY = y;
+					}
+					if (y < minY) {
+						minY = y;
+					}
 					drawImage = (Graphics2D) g;
 					if (color != null) {
 						drawImage.setColor(color);

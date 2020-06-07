@@ -35,11 +35,11 @@ class RTreeTests {
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		DataStorageBase dataStorage = new DataStorageInMemory(logger);
 		
 		// Act
 		try {
-			RTree tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
+			RTree tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -54,11 +54,11 @@ class RTreeTests {
 		// Arrange
 		RTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		DataStorageBase dataStorage = new DataStorageInMemory(logger);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTree(dataStorage, "TestTree1", numChildrenExpected, numItemsExpected, StorageType.INMEMORY, logger);
+			tree = new RTree(dataStorage, "TestTree1", numChildrenExpected, numItemsExpected, logger, new SplitQuadratic());
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -78,10 +78,10 @@ class RTreeTests {
 		// Arrange
 		RTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		DataStorageBase dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
+			tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -106,10 +106,10 @@ class RTreeTests {
 		// Arrange
 		RTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		DataStorageBase dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree(dataStorage, "TestTree1", 4, 4, StorageType.INMEMORY, logger);
+			tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

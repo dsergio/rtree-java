@@ -14,10 +14,10 @@ import java.sql.Statement;
  * @author David Sergio
  *
  */
-public class DataStorageMySQL implements IDataStorage {
+public class DataStorageMySQL extends DataStorageBase {
 	
 	private DataStorageMysqlConnection connection;
-	private String tableName = null;
+	private String treeName = null;
 	
 	private int numReads = 0;
 	private int numAdds = 0;
@@ -29,6 +29,7 @@ public class DataStorageMySQL implements IDataStorage {
 	private ILogger logger;
 	
 	public DataStorageMySQL(ILogger logger) throws Exception {
+		super(StorageType.MYSQL);
 		this.logger = logger;
 		init();
 	}
@@ -52,7 +53,7 @@ public class DataStorageMySQL implements IDataStorage {
 	public void initializeStorage(String tableName) throws Exception {
 		
 		connection.initializeDb(tableName);
-		this.tableName = tableName;
+		this.treeName = tableName;
 	}
 
 	@Override
@@ -64,7 +65,7 @@ public class DataStorageMySQL implements IDataStorage {
 		
 		
 		
-		boolean success = connection.insert(nodeId, children, parent, items, rectangle, tableName);
+		boolean success = connection.insert(nodeId, children, parent, items, rectangle, this.treeName);
 		
 		if (success) {
 			RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
@@ -87,7 +88,7 @@ public class DataStorageMySQL implements IDataStorage {
 			String rectangle) {
 		
 		long time = System.currentTimeMillis();
-		connection.update(tableName, nodeId, children, parent, items, rectangle);
+		connection.update(this.treeName, nodeId, children, parent, items, rectangle);
 		
 		numUpdates++;
 		updateTime += (System.currentTimeMillis() - time);
@@ -97,7 +98,7 @@ public class DataStorageMySQL implements IDataStorage {
 	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
-		RTreeNode node = connection.select(tableName, nodeId, cache);
+		RTreeNode node = connection.select(this.treeName, nodeId, cache);
 		
 		numReads++;
 		readTime += (System.currentTimeMillis() - time);
@@ -234,7 +235,44 @@ public class DataStorageMySQL implements IDataStorage {
 	}
 
 	public String getTableName() {
-		return tableName;
+		return treeName;
+	}
+
+	@Override
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+		String update = "UPDATE `rtree_metadata` ";
+		String set = " SET treeName = treeName"
+				+ ", minX = ? "
+				+ ", maxX = ? "
+				+ ", minY = ? "
+				+ ", maxY = ? "
+				+ "";
+		String where = " WHERE treeName = ? ";
+		
+		String updateQuery = update + set + where;
+
+		PreparedStatement stmt = null;
+		int c = 1;
+
+
+		try {
+			stmt = connection.getConn().prepareStatement(updateQuery, Statement.RETURN_GENERATED_KEYS);
+			
+			stmt.setInt(c++, minX);
+			stmt.setInt(c++, maxX);
+			stmt.setInt(c++, minY);
+			stmt.setInt(c++, maxY);
+			stmt.setString(c++, treeName);
+
+			stmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+		
 	}
 
 }

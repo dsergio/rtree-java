@@ -2,7 +2,7 @@ package cloudrtree;
 
 /**
  * 
- * Description TBD
+ * Split Behavior base class
  * 
  * @author David Sergio
  *
@@ -20,9 +20,16 @@ public abstract class SplitBehavior {
 		return branchSplit;
 	}
 	
-	
 	public abstract void splitLeafNode(RTreeNode node, LocationItem locationItem);
 	public abstract void splitBranchNode(RTreeNode node);
+	public abstract String getDescription();
 	
+	public void initialize(int maxChildren, String treeName, RTreeCache cacheContainer, RTreeNode root, ILogger logger) {
+		this.maxChildren = maxChildren;
+		this.treeName = treeName;
+		this.cache = cacheContainer;
+		this.root = root;
+		this.logger = logger;
+	}	
 
 }

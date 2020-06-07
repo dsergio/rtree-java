@@ -203,12 +203,21 @@ public class DataStorageMysqlConnection {
 		}
 		
 		// create metadata table if it doesn't exist
-		// metadata table contains the maxChildren and maxItems parameters
+		// metadata table contains the maxChildren and maxItems parameters, 
+		// and the min and max spatial boundaries
 
 		Statement stmt = null;
 
-		String sql = "CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT, "
-				+ " treeName VARCHAR(255) NOT NULL, " + " maxChildren INT NULL, " + " maxItems INT NULL) ";
+		String sql = " CREATE TABLE IF NOT EXISTS rtree_metadata"
+				+ " (id INT PRIMARY KEY AUTO_INCREMENT "
+				+ " , treeName VARCHAR(255) NOT NULL " 
+				+ " , maxChildren INT NULL " 
+				+ " , maxItems INT NULL "
+				+ " , minX INT NULL "
+				+ " , maxX INT NULL "
+				+ " , minY INT NULL "
+				+ " , maxY INT NULL "
+				+ ")";
 		logger.log("create table: \n" + sql);
 
 		stmt = conn.createStatement();

@@ -14,10 +14,14 @@ import org.json.simple.parser.ParseException;
  * @author David Sergio
  *
  */
-public class DataStorageInMemory implements IDataStorage {
+public class DataStorageInMemory extends DataStorageBase {
 	
 	private int maxItems;
 	private int maxChildren;
+	private int minX;
+	private int maxX;
+	private int minY;
+	private int maxY;
 	
 	private int numReads = 0;
 	private int numAdds = 0;
@@ -31,6 +35,7 @@ public class DataStorageInMemory implements IDataStorage {
 	private ILogger logger;
 	
 	public DataStorageInMemory(ILogger logger) {
+		super(StorageType.INMEMORY);
 		this.logger = logger;
 		localData = new HashMap<String, RTreeNode>();
 	}
@@ -185,6 +190,15 @@ public class DataStorageInMemory implements IDataStorage {
 	@Override
 	public int getMaxItems(String treeName) {
 		return maxItems;
+	}
+
+	@Override
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.maxY = maxY;
+		
 	}
 
 }

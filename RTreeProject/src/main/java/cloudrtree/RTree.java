@@ -34,49 +34,84 @@ public class RTree {
 	private int maxXInserted;
 	private int maxYInserted;
 	private StorageType storageType;
-	
 	private ILogger logger;
+	private int minX = 0;
+	private int maxX = 0;
+	private int minY = 0;
+	private int maxY = 0;
+	private boolean boundariesSet = false;
 	
 	
 	/**
-	 * Constructor
+	 * default LogLevel: LogLevel.DEV
+	 * default maxChildren: 4
+	 * default maxItems: 4
+	 * default SplitBehavior: SplitQuadratic
 	 * 
-	 * @param treeName String
+	 * @param dataStorage
+	 * @param treeName
 	 * @throws Exception
 	 */
-	public RTree(IDataStorage dataStorage, String treeName) throws Exception {
+	public RTree(DataStorageBase dataStorage, String treeName) throws Exception {
 		this(dataStorage, treeName, 4, 4);
 	}
 	
 	/**
-	 * Constructor
+	 * default maxChildren: 4
+	 * default maxItems: 4
+	 * default SplitBehavior: SplitQuadratic
 	 * 
+	 * @param dataStorage
+	 * @param treeName
+	 * @param storageType
+	 * @param logger
+	 * @throws Exception
+	 */
+	public RTree(DataStorageBase dataStorage, String treeName, ILogger logger) throws Exception {
+		this(dataStorage, treeName, 4, 4, logger, new SplitQuadratic());
+	}
+	
+	/**
+	 * default LogLevel: LogLevel.DEV
+	 * default SplitBehavior: SplitQuadratic
+	 * 
+	 * @param dataStorage
 	 * @param treeName
 	 * @param maxChildren
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTree(IDataStorage dataStorage, String treeName, int maxChildren, int maxItems) throws Exception {
-		this(dataStorage, treeName, maxChildren, maxItems, StorageType.MYSQL, new LoggerStdOut(LogLevel.DEV)); // default to MySQL, DEV
+	public RTree(DataStorageBase dataStorage, String treeName, int maxChildren, int maxItems) throws Exception {
+		this(dataStorage, treeName, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic()); // default to MySQL, DEV
 	}
 	
 	/**
-	 * Constructor
 	 * 
+	 * @param dataStorage
 	 * @param treeName
 	 * @param maxChildren
 	 * @param maxItems
 	 * @param storageType
+	 * @param logger
+	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTree(IDataStorage dataStorage, String treeName, int maxChildren, int maxItems, StorageType storageType, ILogger logger) throws Exception {
+	public RTree(DataStorageBase dataStorage, String treeName, int maxChildren, int maxItems, ILogger logger, SplitBehavior splitBehavior) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
-		this.storageType = storageType;
+		this.storageType = dataStorage.storageType;
 		this.logger = logger;
+		this.splitBehavior = splitBehavior;
 		
-		System.out.println("Cloud RTree initializing. Log level set to " + logger.getLogLevel() + ".");
+		System.out.println("Cloud R-Tree initializing...");
+		System.out.println(" > Storage Type set to " + storageType + ".");
+		System.out.println(" > Split Behavior set to " + splitBehavior.getDescription() + ".");
+		System.out.println(" > Log level set to " + logger.getLogLevel() + ".");
+		System.out.println(" > Tree Name set to " + treeName + ".");
+		System.out.println(" > Max Children set to " + maxChildren + ".");
+		System.out.println(" > Max Items set to " + maxItems + ".");
+		System.out.println();
 		init(dataStorage);
 	}
 
@@ -110,7 +145,8 @@ public class RTree {
 			addNode(treeName, null, null, null, null, null);
 			root = new RTreeNode(treeName, null, null, cacheContainer, logger);
 		}
-		splitBehavior = new SplitQuadratic(cacheContainer, maxChildren, root, treeName, logger);
+		splitBehavior.initialize(maxChildren, treeName, cacheContainer, root, logger);
+		
 	}
 	
 	/**
@@ -273,6 +309,29 @@ public class RTree {
 				
 				logger.log("~~INSERT: " + "Is leaf node and less than max, so let's add to " + node.nodeId);
 				node.addItem(locationItem, node);
+				
+				boolean updateBoundaries = false;
+				if (locationItem.getX() > maxX || !boundariesSet) {
+					maxX = locationItem.getX();
+					updateBoundaries = true;
+				}
+				if (locationItem.getX() < minX || !boundariesSet) {
+					minX = locationItem.getX();
+					updateBoundaries = true;
+				}
+				if (locationItem.getY() > maxY || !boundariesSet) {
+					maxY = locationItem.getY();
+					updateBoundaries = true;
+				}
+				if (locationItem.getY() < minY || !boundariesSet) {
+					minY = locationItem.getY();
+					updateBoundaries = true;
+				}
+				
+				if (updateBoundaries) {
+					cacheContainer.getDBAccess().updateMetaDataBoundaries(minX, maxX, minY, maxY);
+					boundariesSet = true;
+				}
 				
 			} else {
 				

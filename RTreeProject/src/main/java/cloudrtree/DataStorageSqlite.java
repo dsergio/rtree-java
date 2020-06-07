@@ -7,7 +7,11 @@ package cloudrtree;
  * @author David Sergio
  *
  */
-public class DataStorageSqlite implements IDataStorage {
+public class DataStorageSqlite extends DataStorageBase {
+
+	public DataStorageSqlite() {
+		super(StorageType.SQLITE);
+	}
 
 	@Override
 	public void init() throws Exception {
@@ -104,6 +108,12 @@ public class DataStorageSqlite implements IDataStorage {
 	public int getMaxItems(String treeName) {
 		// TODO Auto-generated method stub
 		return 0;
+	}
+
+	@Override
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
