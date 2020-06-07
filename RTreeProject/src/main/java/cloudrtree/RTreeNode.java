@@ -103,18 +103,20 @@ public class RTreeNode {
 	
 	public JSONArray getItemsJSON() {
 		
-		JSONArray arr = new JSONArray();
-		if (locationItems != null) {
-			for (LocationItem i : locationItems) {
-				
-				JSONObject obj = new JSONObject();
-				obj.put("x", i.getX());
-				obj.put("y", i.getY());
-				obj.put("type", i.getType());
-				arr.add(obj);
-			}
-		}
-		return arr;
+		return LocationItemBase.getItemsJSON(locationItems);
+		
+//		JSONArray arr = new JSONArray();
+//		if (locationItems != null) {
+//			for (LocationItem i : locationItems) {
+//				
+//				JSONObject obj = new JSONObject();
+//				obj.put("x", i.getX());
+//				obj.put("y", i.getY());
+//				obj.put("type", i.getType());
+//				arr.add(obj);
+//			}
+//		}
+//		return arr;
 	}
 
 	public List<LocationItem> items() {
