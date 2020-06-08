@@ -25,11 +25,23 @@ This application uses a `config.properties` configuration file in the `RTreeProj
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
 
 ### Metadata Table
-The metadata table contains the following
- * tree name
- * max items
- * max children 
- * min and max coordinates
+The metadata table contains the following attributes
+ * id
+ * treeName
+ * maxChildren
+ * maxItems 
+ * minX
+ * maxX
+ * minY
+ * maxY
+
+### Data Table
+The data table contains the following attributes
+ * nodeId
+ * parent
+ * rectangle 
+ * items
+ * children
 
 ## Usage
 
