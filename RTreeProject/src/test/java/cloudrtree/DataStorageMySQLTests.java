@@ -7,6 +7,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class DataStorageMySQLTests {
 
@@ -44,15 +46,16 @@ class DataStorageMySQLTests {
 		assertTrue(true);
 	}
 	
-	@Test
-	void CreateDBAccess_IllegalTreeName_ThrowsIllegalArgumentException() {
+	@ParameterizedTest
+	@ValueSource(strings = { "", "++", " " })
+	void CreateDBAccess_IllegalTreeName_ThrowsIllegalArgumentException(String treeName) {
 		// Arrange
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		
 		// Act Assert
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			DataStorageMySQL dbAccessMySQL = new DataStorageMySQL(logger);
-			dbAccessMySQL.initializeStorage("");
+			dbAccessMySQL.initializeStorage(treeName);
 		});
 		
 	}
