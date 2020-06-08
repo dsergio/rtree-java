@@ -21,14 +21,6 @@ This application uses a `config.properties` configuration file in the `RTreeProj
 `password=[password]`<br />
 `database=[database]`<br />
 
->host=[host]
->
->user=[user]
->
->password=[password]
->
->database=[database]
-
 ### AWS DynamoDB
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
 
