@@ -42,7 +42,7 @@ e.g. `java -cp .\target\rtree-1.0.jar Tester gui tree1`
 
 ## Insert CLI and GUI 
 
-The CLI feature will read a CSV file (e.g. `wa_cities`) with each line in the form `city name,state abbreviation;latitude,longitude` (e.g. `Prairie Ridge,WA;47.1443,-122.1408`) and insert the item into the R-Tree.
+The CLI feature will read a data file (see example [wa_cities](https://github.com/dsergio/rtree-java/blob/master/wa_cities)) with each line in the form `city name,state abbreviation;latitude,longitude` (e.g. `Prairie Ridge,WA;47.1443,-122.1408`) and insert the item into the R-Tree.
 
 `java -cp .\target\rtree-1.0.jar Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
 
