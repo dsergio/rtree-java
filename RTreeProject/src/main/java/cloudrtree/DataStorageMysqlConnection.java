@@ -200,7 +200,7 @@ public class DataStorageMysqlConnection {
 
 	public void initializeDb(String treeName) throws Exception {
 
-		if (!treeName.matches("^[a-zA-Z0-9_]*$")) {
+		if (!treeName.matches("^[a-zA-Z0-9_]+$")) {
 			logger.log("Illegal table name");
 			throw new IllegalArgumentException(treeName);
 		}
