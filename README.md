@@ -14,7 +14,7 @@ Properties of RTree:
 ## Storage Configuration
 
 ### MySQL
-This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory. I included `example.properties` to illustrate how it's stored, but in general, never put config files in github. 
+This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory. I included an [example.properties](https://github.com/dsergio/rtree-java/blob/master/RTreeProject/src/main/resources/example.properties) to illustrate how it's stored, but in general, never put config files in github. 
 
 `host=[host]`<br />
 `user=[user]`<br />
@@ -25,13 +25,17 @@ This application uses a `config.properties` configuration file in the `RTreeProj
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
 
 ### Metadata Table
-The metadata table contains the tree name, the max items and the max children 
+The metadata table contains the following
+ * tree name
+ * max items
+ * max children 
+ * min and max coordinates
 
 ## Usage
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
-To Compile: `mvn package`
+To compile: `mvn package`
 
 
 ## Run GUI 
@@ -42,8 +46,8 @@ e.g. `java -cp .\target\rtree-1.0.jar Tester gui tree1`
 
 ## Insert CLI and GUI 
 
-The CLI feature will read a data file (see example [wa_cities](https://github.com/dsergio/rtree-java/blob/master/wa_cities)) with each line in the form<br />
-`city name,state abbreviation;latitude,longitude`<br />
+The CLI feature will read a data file (see example [wa_cities](https://github.com/dsergio/rtree-java/blob/master/wa_cities)) with each line in the form<br /><br />
+`city name,state abbreviation;latitude,longitude`<br /><br />
 and insert the item into the R-Tree.
 
 `java -cp .\target\rtree-1.0.jar Tester cli [treeName] [inputFile] [number of inserts] [optional maxChildren] [optional maxItems]`
