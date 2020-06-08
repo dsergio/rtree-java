@@ -11,6 +11,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -241,44 +244,61 @@ public class DataStorageMysqlConnection {
 	private void getConnection(String creds) throws Exception {
 		String username = "";
 		String password = "";
-		String endpoint = "";
+		String host = "";
 		String database = "";
-
+		
+		Configurations configs = new Configurations();
 		try {
-			File myObj = new File(creds);
-			Scanner myReader = new Scanner(myObj);
-
-			while (myReader.hasNextLine()) {
-
-				String data = myReader.nextLine();
-				if (data.split("=").length < 2) {
-					throw new Exception("MySQL creds.txt Invalid Format");
-				}
-				if (data.split("=")[0].equals("host")) {
-					endpoint = data.split("=")[1];
-				} else if (data.split("=")[0].equals("user")) {
-					username = data.split("=")[1];
-				} else if (data.split("=")[0].equals("password")) {
-					password = data.split("=")[1];
-				} else if (data.split("=")[0].equals("database")) {
-					database = data.split("=")[1];
-				}
-//				logger.log(data);
-			}
-
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			logger.log("Credentials File is missing.");
-			throw e;
+			
+		    Configuration config = configs.properties(new File("resources/config.properties"));
+		    username = config.getString("MYSQL.user");
+		    password = config.getString("MYSQL.password");
+		    host = config.getString("MYSQL.host");
+		    database = config.getString("MYSQL.database");
+		    
+		}
+		catch (ConfigurationException cex)
+		{
+		    throw cex;
 		}
 
-		String url = "jdbc:mysql://" + endpoint + ":3306/" + database;
+		// use a configuration file, not a text file
+		
+//		try {
+//			File myObj = new File(creds);
+//			Scanner myReader = new Scanner(myObj);
+//
+//			while (myReader.hasNextLine()) {
+//
+//				String data = myReader.nextLine();
+//				if (data.split("=").length < 2) {
+//					throw new Exception("MySQL creds.txt Invalid Format");
+//				}
+//				if (data.split("=")[0].equals("host")) {
+//					endpoint = data.split("=")[1];
+//				} else if (data.split("=")[0].equals("user")) {
+//					username = data.split("=")[1];
+//				} else if (data.split("=")[0].equals("password")) {
+//					password = data.split("=")[1];
+//				} else if (data.split("=")[0].equals("database")) {
+//					database = data.split("=")[1];
+//				}
+////				logger.log(data);
+//			}
+//
+//			myReader.close();
+//		} catch (FileNotFoundException e) {
+//			logger.log("Credentials File is missing.");
+//			throw e;
+//		}
+
+		String url = "jdbc:mysql://" + host + ":3306/" + database;
 
 		Connection conn = null;
 		try {
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
-			logger.log("SQLException: " + e.getMessage());
+			logger.log("Failed to open MYSQL connection. " + e.getMessage());
 			throw e;
 		}
 
