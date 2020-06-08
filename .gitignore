@@ -43,3 +43,5 @@ todo
 RTreeProject/.classpath
 
 RTreeProject/src/main/resources/config.properties
+
+*.prefs
