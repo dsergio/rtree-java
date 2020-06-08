@@ -54,8 +54,7 @@ class DataStorageMySQLTests {
 		
 		// Act Assert
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			DataStorageMySQL dbAccessMySQL = new DataStorageMySQL(logger);
-			dbAccessMySQL.initializeStorage(treeName);
+			 (new DataStorageMySQL(logger)).initializeStorage(treeName);
 		});
 		
 	}
