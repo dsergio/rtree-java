@@ -16,6 +16,13 @@ Properties of RTree:
 ### MySQL
 This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory. I included `example.properties` to illustrate how it's stored, but in general, never put config files in github. 
 
+`
+host=[host]
+user=[user]
+password=[password]
+database=[database]
+`
+
 >host=[host]
 >
 >user=[user]
