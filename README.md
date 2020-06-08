@@ -14,7 +14,8 @@ Properties of RTree:
 ## Storage Configuration
 
 ### MySQL
-This application attempts to reads a `creds.txt` file 2 directories up from the `RTreeProject` directory:
+This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory. I included `example.properties` to illustrate how it's stored, but in general, never put config files in github. 
+
 >host=[host]
 >
 >user=[user]
