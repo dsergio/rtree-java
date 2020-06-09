@@ -12,7 +12,7 @@ public interface IDataStorage {
 	public void init() throws Exception;
 	public void close();
 	
-	public void initializeStorage(String treeName) throws Exception;
+	public void initializeStorage() throws Exception;
 	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, RTreeCache cache);
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
 	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache);

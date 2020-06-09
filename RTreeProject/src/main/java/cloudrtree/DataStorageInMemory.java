@@ -27,11 +27,8 @@ public class DataStorageInMemory extends DataStorageBase {
 	
 	private Map<String, RTreeNode> localData;
 	
-	private ILogger logger;
-	
-	public DataStorageInMemory(ILogger logger) {
-		super(StorageType.INMEMORY);
-		this.logger = logger;
+	public DataStorageInMemory(ILogger logger, String treeName) {
+		super(StorageType.INMEMORY, logger, treeName);
 		localData = new HashMap<String, RTreeNode>();
 	}
 
@@ -49,7 +46,7 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void initializeStorage(String tableName) {
+	public void initializeStorage() {
 		// TODO Auto-generated method stub
 	}
 

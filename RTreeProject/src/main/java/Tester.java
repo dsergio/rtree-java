@@ -16,6 +16,7 @@ import cloudrtree.DataStorageBase;
 import cloudrtree.DataStorageDynamoDB;
 import cloudrtree.DataStorageInMemory;
 import cloudrtree.DataStorageMySQL;
+import cloudrtree.DataStorageSqlite;
 import cloudrtree.ILogger;
 import cloudrtree.ILoggerPaint;
 
@@ -110,23 +111,24 @@ public class Tester {
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dataStorage = new DataStorageMySQL(logger);
+				dataStorage = new DataStorageMySQL(logger, inputTreeName);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dataStorage = new DataStorageInMemory(logger);
+			dataStorage = new DataStorageInMemory(logger, inputTreeName);
 			break;
 		case DYNAMODB:
-			dataStorage = new DataStorageDynamoDB("us-west-2", logger); // use a static value for now
+			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName); // use a static value for now
 			break;
 		case SQLITE:
+			dataStorage = new DataStorageSqlite(logger, inputTreeName);
 			break;
 		default:
 			try {
-				dataStorage = new DataStorageMySQL(logger);
+				dataStorage = new DataStorageMySQL(logger, inputTreeName);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -152,12 +154,12 @@ public class Tester {
 					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 				
-				tree = new RTree(dataStorage, inputTreeName, inputMaxChildrenInt, inputMaxItemsInt);
+				tree = new RTree(dataStorage, inputMaxChildrenInt, inputMaxItemsInt);
 				
 			} else {
 				
 				
-				tree = new RTree(dataStorage, inputTreeName);
+				tree = new RTree(dataStorage);
 				
 			}
 			

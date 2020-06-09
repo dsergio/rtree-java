@@ -29,7 +29,7 @@ class RTreeCacheTests {
 	void RTreeCache_UpdateNode_ReturnRectangle() {
 		// Arrange
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger);
+		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
 		RTree tree = null;
 		
 		
@@ -40,7 +40,7 @@ class RTreeCacheTests {
 		
 		// Act Assert
 		try {
-			tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
+			tree = new RTree(dataStorage, 4, 4, logger, new SplitQuadratic());
 			tree.insertType(item);
 			
 			assertEquals(xExpected, tree.cacheContainer.getNode("TestTree1").rectangle.getDim1(0));

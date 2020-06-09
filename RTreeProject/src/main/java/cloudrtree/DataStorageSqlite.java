@@ -9,8 +9,8 @@ package cloudrtree;
  */
 public class DataStorageSqlite extends DataStorageBase {
 
-	public DataStorageSqlite() {
-		super(StorageType.SQLITE);
+	public DataStorageSqlite(ILogger logger, String treeName) {
+		super(StorageType.SQLITE, logger, treeName);
 	}
 
 	@Override
@@ -26,7 +26,7 @@ public class DataStorageSqlite extends DataStorageBase {
 	}
 
 	@Override
-	public void initializeStorage(String tableName) {
+	public void initializeStorage() {
 		// TODO Auto-generated method stub
 	}
 

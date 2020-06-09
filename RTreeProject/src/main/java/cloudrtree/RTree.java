@@ -42,11 +42,10 @@ public class RTree {
 	 * default SplitBehavior: SplitQuadratic
 	 * 
 	 * @param dataStorage
-	 * @param treeName
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, String treeName) throws Exception {
-		this(dataStorage, treeName, 4, 4);
+	public RTree(DataStorageBase dataStorage) throws Exception {
+		this(dataStorage, 4, 4);
 	}
 	
 	/**
@@ -55,13 +54,12 @@ public class RTree {
 	 * default SplitBehavior: SplitQuadratic
 	 * 
 	 * @param dataStorage
-	 * @param treeName
 	 * @param storageType
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, String treeName, ILogger logger) throws Exception {
-		this(dataStorage, treeName, 4, 4, logger, new SplitQuadratic());
+	public RTree(DataStorageBase dataStorage, ILogger logger) throws Exception {
+		this(dataStorage, 4, 4, logger, new SplitQuadratic());
 	}
 	
 	/**
@@ -69,19 +67,17 @@ public class RTree {
 	 * default SplitBehavior: SplitQuadratic
 	 * 
 	 * @param dataStorage
-	 * @param treeName
 	 * @param maxChildren
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, String treeName, int maxChildren, int maxItems) throws Exception {
-		this(dataStorage, treeName, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic()); // default to MySQL, DEV
+	public RTree(DataStorageBase dataStorage, int maxChildren, int maxItems) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic()); // default to MySQL, DEV
 	}
 	
 	/**
 	 * 
 	 * @param dataStorage
-	 * @param treeName
 	 * @param maxChildren
 	 * @param maxItems
 	 * @param storageType
@@ -89,10 +85,10 @@ public class RTree {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, String treeName, int maxChildren, int maxItems, ILogger logger, SplitBehavior splitBehavior) throws Exception {
+	public RTree(DataStorageBase dataStorage, int maxChildren, int maxItems, ILogger logger, SplitBehavior splitBehavior) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
-		this.treeName = treeName;
+		this.treeName = dataStorage.treeName;
 		this.storageType = dataStorage.storageType;
 		this.logger = logger;
 		this.splitBehavior = splitBehavior;

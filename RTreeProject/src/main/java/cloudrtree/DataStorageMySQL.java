@@ -15,7 +15,6 @@ import java.sql.Statement;
 public class DataStorageMySQL extends DataStorageBase {
 	
 	private DataStorageMysqlConnection connection;
-	private String treeName = null;
 	
 	private int numReads = 0;
 	private int numAdds = 0;
@@ -24,11 +23,8 @@ public class DataStorageMySQL extends DataStorageBase {
 	private long addTime = 0;
 	private long updateTime = 0;
 	
-	private ILogger logger;
-	
-	public DataStorageMySQL(ILogger logger) throws Exception {
-		super(StorageType.MYSQL);
-		this.logger = logger;
+	public DataStorageMySQL(ILogger logger, String treeName) throws Exception {
+		super(StorageType.MYSQL, logger, treeName);
 		init();
 	}
 
@@ -48,10 +44,8 @@ public class DataStorageMySQL extends DataStorageBase {
 	}
 
 	@Override
-	public void initializeStorage(String tableName) throws Exception {
-		
-		connection.initializeDb(tableName);
-		this.treeName = tableName;
+	public void initializeStorage() throws Exception {
+		connection.initializeDb(treeName);
 	}
 
 	@Override

@@ -29,7 +29,7 @@ public class RTreeCache {
 		this.treeName = treeName;
 		this.logger = logger;
 		this.dbAccess = dataStorage;
-		dbAccess.initializeStorage(treeName);
+		dbAccess.initializeStorage();
 	}
 	
 	public void printCache() {

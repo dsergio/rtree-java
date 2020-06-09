@@ -72,12 +72,10 @@ public class DataStorageDynamoDB extends DataStorageBase {
 	private AmazonDynamoDB dynamoDB;
 	private boolean dynamoLog = true;
 	private String region;
-	private ILogger logger;
 
-	public DataStorageDynamoDB(String region, ILogger logger) {
-		super(StorageType.DYNAMODB);
+	public DataStorageDynamoDB(String region, ILogger logger, String treeName) {
+		super(StorageType.DYNAMODB, logger, treeName);
 		this.region = region;
-		this.logger = logger;
 		try {
 			init();
 		} catch (Exception e) {
@@ -118,12 +116,11 @@ public class DataStorageDynamoDB extends DataStorageBase {
 
 	}
 
-	public void initializeStorage(String name) throws Exception {
+	public void initializeStorage() throws Exception {
 		try {
-			String tableName = name;
 
 			// Create a table with a primary hash key named 'name', which holds a string
-			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(tableName)
+			CreateTableRequest createTableRequest = new CreateTableRequest().withTableName(treeName)
 					.withKeySchema(new KeySchemaElement().withAttributeName("nodeId").withKeyType(KeyType.HASH))
 					.withAttributeDefinitions(new AttributeDefinition().withAttributeName("nodeId")
 							.withAttributeType(ScalarAttributeType.S))
@@ -134,14 +131,14 @@ public class DataStorageDynamoDB extends DataStorageBase {
 			TableUtils.createTableIfNotExists(dynamoDB, createTableRequest);
 			// wait for the table to move into ACTIVE state
 			try {
-				TableUtils.waitUntilActive(dynamoDB, tableName);
+				TableUtils.waitUntilActive(dynamoDB, treeName);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 				throw new Exception("DynamoDB table creation failed");
 			}
 
 			// Describe our new table
-			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(tableName);
+			DescribeTableRequest describeTableRequest = new DescribeTableRequest().withTableName(treeName);
 			TableDescription tableDescription = dynamoDB.describeTable(describeTableRequest).getTable();
 			logger.log("Table Description: " + tableDescription);
 
