@@ -1,3 +1,5 @@
+[![Build Status](https://dev.azure.com/dsergio/rtree-java/_apis/build/status/dsergio.rtree-java?branchName=master)](https://dev.azure.com/dsergio/rtree-java/_build/latest?definitionId=7&branchName=master)
+
 # rtree-java
 
 
