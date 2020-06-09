@@ -4,5 +4,6 @@ public enum StorageType {
 	MYSQL,
 	INMEMORY,
 	DYNAMODB,
-	SQLITE
+	SQLITE,
+	PLACEHOLDER
 }
