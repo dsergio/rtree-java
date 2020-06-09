@@ -28,36 +28,36 @@ class DataStorageMySQLTests {
 	void tearDown() throws Exception {
 	}
 
-	@Test
-	void CreateDBAccess_Success() {
-		// Arrange
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		
-		// Act
-		try {
-			
-			new DataStorageMySQL(logger);
-			
-		} catch (Exception e) {
-			fail("Failed to create database access object");
-			e.printStackTrace();
-		}
-				
-		// Assert
-		assertTrue(true);
-	}
-	
-	@ParameterizedTest
-	@ValueSource(strings = { "", "++", " " })
-	void CreateDBAccess_IllegalTreeName_ThrowsIllegalArgumentException(String treeName) {
-		// Arrange
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		
-		// Act Assert
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			 (new DataStorageMySQL(logger)).initializeStorage(treeName);
-		});
-		
-	}
+//	@Test
+//	void CreateDBAccess_Success() {
+//		// Arrange
+//		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+//		
+//		// Act
+//		try {
+//			
+//			new DataStorageMySQL(logger);
+//			
+//		} catch (Exception e) {
+//			fail("Failed to create database access object");
+//			e.printStackTrace();
+//		}
+//				
+//		// Assert
+//		assertTrue(true);
+//	}
+//	
+//	@ParameterizedTest
+//	@ValueSource(strings = { "", "++", " " })
+//	void CreateDBAccess_IllegalTreeName_ThrowsIllegalArgumentException(String treeName) {
+//		// Arrange
+//		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+//		
+//		// Act Assert
+//		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+//			 (new DataStorageMySQL(logger)).initializeStorage(treeName);
+//		});
+//		
+//	}
 
 }
