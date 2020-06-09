@@ -1,7 +1,5 @@
 package cloudrtree;
 
-import java.sql.SQLException;
-
 /**
  * 
  * Storage Access Interface

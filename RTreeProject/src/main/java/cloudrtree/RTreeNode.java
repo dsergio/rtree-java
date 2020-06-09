@@ -91,6 +91,7 @@ public class RTreeNode {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public JSONArray getChildrenJSON() {
 		
 		JSONArray arr = new JSONArray();
@@ -124,6 +125,7 @@ public class RTreeNode {
 		return locationItems;
 	}
 
+	@SuppressWarnings("unchecked")
 	public void addItem(ILocationItem locationItem) throws IOException {
 		
 		logger.log("CloudRTreeNode.addItem");
@@ -163,10 +165,10 @@ public class RTreeNode {
 		int maxY = rectangle.getDim2(1);
 
 		if (locationItems.size() > 0) {
-//			minX = locationItems.get(0).getDim(0);
-//			maxX = minX;
-//			minY = locationItems.get(0).getDim(1);
-//			maxY = minY;
+			minX = locationItems.get(0).getDim(0);
+			maxX = minX;
+			minY = locationItems.get(0).getDim(1);
+			maxY = minY;
 			for (int i = 0; i < locationItems.size(); i++) {
 				if (locationItems.get(i).getDim(0) < minX) {
 					minX = locationItems.get(i).getDim(0);

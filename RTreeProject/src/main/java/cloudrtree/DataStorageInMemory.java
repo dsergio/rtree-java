@@ -1,8 +1,6 @@
 package cloudrtree;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -20,11 +18,6 @@ public class DataStorageInMemory extends DataStorageBase {
 	
 	private int maxItems;
 	private int maxChildren;
-	private int minX;
-	private int maxX;
-	private int minY;
-	private int maxY;
-	
 	private int numReads = 0;
 	private int numAdds = 0;
 	private int numUpdates = 0;
@@ -223,10 +216,6 @@ public class DataStorageInMemory extends DataStorageBase {
 
 	@Override
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
-		this.minX = minX;
-		this.maxX = maxX;
-		this.minY = minY;
-		this.maxY = maxY;
 		
 	}
 

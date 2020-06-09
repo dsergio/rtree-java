@@ -13,14 +13,14 @@ import java.util.List;
  * @author David Sergio
  *
  */
-public abstract class CuboidBase implements IHyperRectangle {
+public abstract class HyperRectangleBase implements IHyperRectangle {
 	
 	protected List<Integer> dimensionArray1;
 	protected List<Integer> dimensionArray2;
 	protected int numberDimensions;
 	protected int level;
 	
-	public CuboidBase(int numberDimensions) {
+	public HyperRectangleBase(int numberDimensions) {
 		this.numberDimensions = numberDimensions;
 		dimensionArray1 = new ArrayList<Integer>();
 		dimensionArray2 = new ArrayList<Integer>();

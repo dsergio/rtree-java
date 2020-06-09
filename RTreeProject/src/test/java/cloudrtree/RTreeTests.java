@@ -37,7 +37,7 @@ class RTreeTests {
 		
 		// Act
 		try {
-			RTree tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
+			new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -62,13 +62,20 @@ class RTreeTests {
 			e.printStackTrace();
 		}
 		
-		// Act
-		int numChildrenObserved = tree.getMaxChildren();
-		int numItemsObserved = tree.getMaxItems();
+		if (tree == null) {
+			fail("Failed to create tree");
+		} else {
+			
+			// Act
+			int numChildrenObserved = tree.getMaxChildren();
+			int numItemsObserved = tree.getMaxItems();
+			
+			// Assert
+			assertEquals(numChildrenExpected, numChildrenObserved);
+			assertEquals(numItemsExpected, numItemsObserved);
+		}
 		
-		// Assert
-		assertEquals(numChildrenExpected, numChildrenObserved);
-		assertEquals(numItemsExpected, numItemsObserved);
+		
 	}
 	
 	@Test
@@ -89,7 +96,11 @@ class RTreeTests {
 		
 		// Act
 		try {
-			tree.insert(item);
+			if (tree == null) {
+				fail("Failed to create tree");
+			} else {
+				tree.insert(item);
+			}
 		} catch (IOException e) {
 			fail("Insert Exception");
 			e.printStackTrace();
@@ -114,7 +125,11 @@ class RTreeTests {
 		}
 		ILocationItem item = new LocationItem(0, 0, null);
 		try {
-			tree.insert(item);
+			if (tree == null) {
+				fail("Failed to create tree");
+			} else {
+				tree.insert(item);
+			}
 		} catch (IOException e) {
 			fail("Insert Exception");
 			e.printStackTrace();
@@ -127,17 +142,22 @@ class RTreeTests {
 		r.setDim2(1, 1);
 		
 		// Act
-		Map<IHyperRectangle, List<ILocationItem>> searchResult = tree.search(r);
-		
-		// Assert
-		for (IHyperRectangle k : searchResult.keySet()) {
-			List<ILocationItem> i = searchResult.get(k);
-			for (ILocationItem j : i) {
-				assertEquals(j.getDim(0), item.getDim(0));
-				assertEquals(j.getDim(1), item.getDim(1));
-			}
+		if (tree == null) {
+			fail("Failed to create tree");
+		} else {
+			Map<IHyperRectangle, List<ILocationItem>> searchResult = tree.search(r);
 			
+			// Assert
+			for (IHyperRectangle k : searchResult.keySet()) {
+				List<ILocationItem> i = searchResult.get(k);
+				for (ILocationItem j : i) {
+					assertEquals(j.getDim(0), item.getDim(0));
+					assertEquals(j.getDim(1), item.getDim(1));
+				}
+				
+			}
 		}
+		
 	}
 
 }

@@ -8,7 +8,7 @@ import org.json.simple.JSONObject;
  * @author David Sergio
  *
  */
-public class RectangularCuboid extends CuboidBase {
+public class RectangularCuboid extends HyperRectangleBase {
 
 	public RectangularCuboid() {
 		super(3);

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import cloudrtree.RTree;
-import cloudrtree.SplitBehavior;
-import cloudrtree.SplitQuadratic;
 import cloudrtree.LocationItem;
 import cloudrtree.LogLevel;
 import cloudrtree.LoggerPaint;
@@ -18,7 +16,6 @@ import cloudrtree.DataStorageBase;
 import cloudrtree.DataStorageDynamoDB;
 import cloudrtree.DataStorageInMemory;
 import cloudrtree.DataStorageMySQL;
-import cloudrtree.IDataStorage;
 import cloudrtree.ILogger;
 import cloudrtree.ILoggerPaint;
 
@@ -172,11 +169,6 @@ public class Tester {
 			System.exit(0);
 		}
 		
-		if (tree.getMaxChildrenVar() == -1) {
-			logger.log("Tree meta data not set");
-			System.exit(0);
-		}
-		
 		
 		
 		
@@ -272,9 +264,10 @@ public class Tester {
 					double latitude = Double.parseDouble(latLong.split(",")[0]);
 					double longitude = Double.parseDouble(latLong.split(",")[1]);
 					
-					
-					tree.insertType(newCity(latitude, longitude, key, latZero, latMax, longZero, longMax, mapSize));
-					tree.updateRoot();
+					if (tree != null) {
+						tree.insertType(newCity(latitude, longitude, key, latZero, latMax, longZero, longMax, mapSize));
+						tree.updateRoot();
+					}
 					
 //					try {
 //						Thread.sleep(500);
@@ -285,15 +278,20 @@ public class Tester {
 					
 					
 					if (insertGui) {
-						testPaint.repaint();
+						if (testPaint != null) {
+							testPaint.repaint();
+						}
 					}
 					
 					long curTime = System.currentTimeMillis();
 					count++;
-					performanceOutput += 
-						count + "\t" + size + "\t" + key + "\t" + (curTime - time) + "\t" + (curTime - startTime) + "\t" + 
-						tree.numAdds() + "\t" + tree.numReads() + "\t" + tree.numUpdates() + "\t" + 
-						tree.getAddTime() + "\t" + tree.getReadTime() + "\t" + tree.getUpdateTime() + "\t" + "\n";
+					
+					if (tree != null) {
+						performanceOutput += 
+							count + "\t" + size + "\t" + key + "\t" + (curTime - time) + "\t" + (curTime - startTime) + "\t" + 
+							tree.numAdds() + "\t" + tree.numReads() + "\t" + tree.numUpdates() + "\t" + 
+							tree.getAddTime() + "\t" + tree.getReadTime() + "\t" + tree.getUpdateTime() + "\t" + "\n";
+					}
 								
 					
 //					logger.log(
@@ -306,7 +304,7 @@ public class Tester {
 				}
 					
 //				logger.log("COUNT\tSIZE\tKEY\tINSERT TIME (ms)\tTOTAL TIME (ms)\tADDS\tREADS\tUPDATES\tADD TOT (ms)\tREAD TOT (ms)\tUPDATE TOT (ms)\t\t");
-//				logger.log(performanceOutput);
+				logger.log(performanceOutput);
 //				
 //				logger.log("\nlatZero: " + latZero + " latMax: " + latMax + " longZero: " + longZero + " longMax: " + longMax);
 //				logger.log("Inserted the following: \n");

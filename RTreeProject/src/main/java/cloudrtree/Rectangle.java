@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
  * @author David Sergio
  *
  */
-public class Rectangle extends CuboidBase {
+public class Rectangle extends HyperRectangleBase {
 	
 	
 	public Rectangle(int x1, int x2, int y1, int y2) {
@@ -33,10 +33,6 @@ public class Rectangle extends CuboidBase {
 			if (retangleStr != null) {
 				obj = parser.parse(retangleStr);
 				JSONObject rectObj = (JSONObject) obj;
-//				this.x1 = Integer.parseInt(rectObj.get("x1").toString());
-//				this.x2 = Integer.parseInt(rectObj.get("x2").toString());
-//				this.y1 = Integer.parseInt(rectObj.get("y1").toString());
-//				this.y2 = Integer.parseInt(rectObj.get("y2").toString());
 				super.setDim1(0, Integer.parseInt(rectObj.get("x1").toString()));
 				super.setDim2(0, Integer.parseInt(rectObj.get("x2").toString()));
 				super.setDim1(1, Integer.parseInt(rectObj.get("y1").toString()));
@@ -54,50 +50,6 @@ public class Rectangle extends CuboidBase {
 		this(0, 0, 0, 0);
 	}
 	
-//	public int width() {
-//		return Math.abs(x2 - x1);
-//	}
-//	
-//	public int height() {
-//		return Math.abs(y2 - y1);
-//	}
-//
-//	public int getX1() {
-//		return x1;
-//	}
-//
-//	public void setX1(int x1) {
-//		this.x1 = x1;
-//		super.setDim1(0, x1);
-//	}
-//
-//	public int getX2() {
-//		return x2;
-//	}
-//
-//	public void setX2(int x2) {
-//		this.x2 = x2;
-//		super.setDim2(0, x2);
-//	}
-//
-//	public int getY1() {
-//		return y1;
-//	}
-//
-//	public void setY1(int y1) {
-//		this.y1 = y1;
-//		super.setDim1(1, y1);
-//	}
-//
-//	public int getY2() {
-//		return y2;
-//	}
-//
-//	public void setY2(int y2) {
-//		this.y2 = y2;
-//		super.setDim2(1, y2);
-//	}
-	
 	public int getArea() {
 		return Math.abs(getDim1(0) - getDim1(0)) * Math.abs(getDim1(1) - getDim1(1));
 	}
@@ -106,6 +58,7 @@ public class Rectangle extends CuboidBase {
 		return (x >= getDim1(0) && x <= getDim2(0) && y >= getDim1(1) && y <= getDim2(1));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public JSONObject getJson() {
 		JSONObject obj = new JSONObject();
 		obj.put("x1", getDim1(0));
@@ -117,7 +70,6 @@ public class Rectangle extends CuboidBase {
 	
 	@Override
 	public String toString() {
-//		return "[x1=" + x1 + ", x2=" + x2 + ", y1=" + y1 + ", y2=" + y2 + ", area=" + getArea() + "]";
 		return "[x1=" + getDim1(0) + ", x2=" + getDim2(0) + ", y1=" + getDim1(1) + ", y2=" + getDim2(1) + ", area=" + getArea() + "]";
 	}
 	

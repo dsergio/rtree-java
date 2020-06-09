@@ -1,11 +1,8 @@
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -16,17 +13,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -34,8 +28,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultCaret;
 
 import cloudrtree.RTree;
@@ -48,6 +40,10 @@ import cloudrtree.Rectangle;
 
 public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2136767310271470973L;
 	final PaintPanel paintPan;
 	RTree tree;
 	List<ILocationItem> points;
@@ -59,7 +55,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	boolean showTreeOn = false;
 	JTextArea info = new JTextArea();
 	Map<IHyperRectangle, List<ILocationItem>> searchResults;
-	JList list;
+	JList<String> list;
 	int searchRange = 60;
 	private ILogger logger;
 	private ILoggerPaint paintLogger;
@@ -81,14 +77,14 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		this.paintLogger = paintLogger;
 //		points = tree.getPoints();
 		
-		list = new JList();
+		list = new JList<String>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		list.setVisibleRowCount(-1);
 		list.setFixedCellWidth(listWidth);
 		
 		
-		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildrenVar() + " MAX ITEMS: " + tree.getMaxItems() + " - David Sergio");
+		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildren() + " MAX ITEMS: " + tree.getMaxItems() + " - David Sergio");
 		setSize(paintInitialWidth + list.getWidth() + info.getWidth() + padding, paintInitialHeight + padding);
 		
 //		FlowLayout layout = new FlowLayout();
@@ -189,6 +185,11 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	public class MyComponent extends JComponent implements MouseListener {
 
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 8891010953648855035L;
+
 		@Override
 		public void mouseClicked(MouseEvent e) {
 
@@ -265,11 +266,13 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	}
 
 	class PaintPanel extends JPanel {
-
-		private int x, y;
+		
+		
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 951524481198357817L;
 		private Color color = Color.RED;
-		
-		
 
 		public PaintPanel() {
 			setBackground(Color.LIGHT_GRAY);
@@ -465,7 +468,11 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 					String[] data = {"No Results"};
 					list.setListData(data);
 				} else {
-					list.setListData(allItems.toArray());
+					List<String> dataStrings = new ArrayList<String>();
+					for (ILocationItem i : allItems) {
+						dataStrings.add(i.toString());
+					}
+					list.setListData(dataStrings.toArray(new String[0]));
 				}
 				
 				Stroke existing = drawImage.getStroke();

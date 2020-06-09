@@ -42,6 +42,7 @@ public class LocationItem extends LocationItemBase{
 		
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getJson() {
 		JSONObject obj = new JSONObject();

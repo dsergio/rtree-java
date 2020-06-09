@@ -72,6 +72,7 @@ public abstract class LocationItemBase implements ILocationItem {
 		return spaceTotal;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static JSONArray getItemsJSON(List<ILocationItem> locationItems) {
 		
 		JSONArray arr = new JSONArray();

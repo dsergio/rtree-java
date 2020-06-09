@@ -167,9 +167,6 @@ public class RTreeCache {
 		} else {
 			cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
 		}
-//		if (cache.get(nodeId).rectangle == null) {
-//			cache.get(nodeId).rectangle = new Rectangle();
-//		}
 	}
 	
 	public void addNode(String nodeId, String children, String parent, String items, String rectangle) {

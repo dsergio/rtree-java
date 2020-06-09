@@ -189,6 +189,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	public void splitBranchNode(RTreeNode node) {
 		
 		LogLevel temp = logger.getLogLevel();

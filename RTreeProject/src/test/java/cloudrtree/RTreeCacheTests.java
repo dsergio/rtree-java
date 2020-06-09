@@ -1,10 +1,6 @@
 package cloudrtree;
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,18 +38,19 @@ class RTreeCacheTests {
 		
 		ILocationItem item = new LocationItem(xExpected, yExpected, "testtype");
 		
-		// Act
+		// Act Assert
 		try {
 			tree = new RTree(dataStorage, "TestTree1", 4, 4, logger, new SplitQuadratic());
 			tree.insertType(item);
+			
+			assertEquals(xExpected, tree.cacheContainer.getNode("TestTree1").rectangle.getDim1(0));
+			assertEquals(yExpected, tree.cacheContainer.getNode("TestTree1").rectangle.getDim1(1));
+			
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
 		}
-		
-		// Assert
-		assertEquals(xExpected, tree.cacheContainer.getNode("TestTree1").rectangle.getDim1(0));
-		assertEquals(yExpected, tree.cacheContainer.getNode("TestTree1").rectangle.getDim1(1));
+				
 	}
 	
 

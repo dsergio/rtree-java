@@ -36,7 +36,8 @@ class DataStorageMySQLTests {
 		// Act
 		try {
 			
-			DataStorageMySQL dbAccessMySQL = new DataStorageMySQL(logger);
+			new DataStorageMySQL(logger);
+			
 		} catch (Exception e) {
 			fail("Failed to create database access object");
 			e.printStackTrace();
