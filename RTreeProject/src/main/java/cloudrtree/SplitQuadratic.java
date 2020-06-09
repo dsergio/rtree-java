@@ -28,11 +28,11 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	@Override
-	public void splitLeafNode(RTreeNode node, LocationItem locationItem) {
+	public void splitLeafNode(RTreeNode node, ILocationItem locationItem) {
 		
 		// full leaf node, so split leaf node
 		logger.log("#SPLIT-LEAF: " + " We're full, splitting leaf node: " + node.nodeId + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
-		for (LocationItem item : node.getPoints()) {
+		for (ILocationItem item : node.getPoints()) {
 			System.out.print(item + " ***** ");
 		}
 		logger.log();
@@ -41,14 +41,14 @@ public class SplitQuadratic extends SplitBehavior {
 		int index1 = 0; // seed 1
 		int index2 = 0; // seed 2
 		
-		List<LocationItem> points = node.getPoints();
+		List<ILocationItem> points = node.getPoints();
 		points.add(locationItem);
 		
 		// find worst combination of two points, use these as the seeds for the rest of the points
 		for (int i = 0; i < points.size(); i++) {
 			for (int j = 0; j < points.size(); j++) {
 				
-				int a = LocationItem.area(points.get(i), points.get(j));
+				int a = LocationItemBase.space(points.get(i), points.get(j));
 				if (a > maxArea) {
 					maxArea = a;
 					index1 = i;
@@ -72,18 +72,23 @@ public class SplitQuadratic extends SplitBehavior {
 		if (node.getParent() == null) {
 			
 			logger.log("#SPLIT-LEAF: " + "we're at the root");
-			logger.log("#SPLIT-LEAF: " + "root.children: " + root.children);
+//			logger.log("#SPLIT-LEAF: " + "root.children: " + root.children);
+			logger.log("#SPLIT-LEAF: " + "root.children: " + getNode(treeName).children);
 			
-			String newRootId = treeName;
-			root = new RTreeNode(newRootId, null, null, cache, logger);
-			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
+//			String newRootId = treeName;
+//			root = new RTreeNode(newRootId, null, null, cache, logger);
+//			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
+//			root.setChildren(newChildren);
 			
-			root.setChildren(newChildren);
+			RTreeNode rootTemp = new RTreeNode(treeName, null, null, cache, logger);
+			rootTemp.setChildren(newChildren);
+			
 			node1.setParent(treeName);
 			node2.setParent(treeName);
 			
 			
-	        JSONArray childrenArr = root.getChildrenJSON();
+//	        JSONArray childrenArr = root.getChildrenJSON();
+			JSONArray childrenArr = rootTemp.getChildrenJSON();
 	        logger.log("trying to add " + childrenArr.toJSONString());
 			cache.updateNode(treeName, childrenArr.toJSONString(), null, "[]", Rectangle.sumRectangles(node.getRectangle(), locationItem).getJson().toJSONString());
 			
@@ -117,18 +122,25 @@ public class SplitQuadratic extends SplitBehavior {
 		node1.locationItems.add(points.get(index1));
 		node2.locationItems.add(points.get(index2));
 		
-		
+		node1.rectangle.setDim1(0, points.get(index1).getDim(0));
+		node1.rectangle.setDim1(1, points.get(index1).getDim(1));
+		node1.rectangle.setDim2(0, points.get(index1).getDim(0));
+		node1.rectangle.setDim2(1, points.get(index1).getDim(1));
+		node2.rectangle.setDim1(0, points.get(index2).getDim(0));
+		node2.rectangle.setDim1(1, points.get(index2).getDim(1));
+		node2.rectangle.setDim2(0, points.get(index2).getDim(0));
+		node2.rectangle.setDim2(1, points.get(index2).getDim(1));
 		
 		for (int i = 0; i < points.size(); i++) {
 			if (i != index1 && i != index2) {
 				
-				Rectangle r1 = Rectangle.twoPointsRectangles(points.get(index1), points.get(i));
-				Rectangle r2 = Rectangle.twoPointsRectangles(points.get(index2), points.get(i));
+				IHyperRectangle r1 = Rectangle.twoPointsRectangles(points.get(index1), points.get(i));
+				IHyperRectangle r2 = Rectangle.twoPointsRectangles(points.get(index2), points.get(i));
 				
-				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r1.getArea(): " + r1.getArea() + " node1 area:" + node1.rectangle.getArea());
-				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r2.getArea(): " + r2.getArea() + " node2 area:" + node2.rectangle.getArea());
+				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r1.getArea(): " + r1.getSpace() + " node1 area:" + node1.rectangle.getSpace());
+				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r2.getArea(): " + r2.getSpace() + " node2 area:" + node2.rectangle.getSpace());
 				
-				if (r1.getArea() < r2.getArea()) {
+				if (r1.getSpace() < r2.getSpace()) {
 					node1.locationItems.add(points.get(i));
 					
 				} else {
@@ -140,27 +152,29 @@ public class SplitQuadratic extends SplitBehavior {
 		
 		logger.log("#SPLIT-LEAF: " + " Splitting " + node.nodeId);
 		logger.log("#SPLIT-LEAF: " + "POINTS DISTRIBUTION \n node1: " + node1.nodeId + "\n...node1");
-		for (LocationItem i : node1.getPoints()) {
+		for (ILocationItem i : node1.getPoints()) {
 			logger.logExact(" | " + i);
 		}
 		logger.log();
 		
 		logger.log("#SPLIT-LEAF: " + " node2: " + node2.nodeId + "\n...node2");
-		for (LocationItem i : node2.getPoints()) {
+		for (ILocationItem i : node2.getPoints()) {
 			logger.logExact(" | " + i);
 			
 		}
 		logger.log();
 		
-		node1.updateRectangle();
-		node2.updateRectangle();
+		
 		
 		logger.log("#SPLIT-LEAF: " + "adding to the cache... node1.getItemsJSON().toJSONString(): " + node1.getItemsJSON().toJSONString());
 		logger.log("#SPLIT-LEAF: " + "adding to the cache... node2.getItemsJSON().toJSONString(): " + node2.getItemsJSON().toJSONString());
 		cache.addNode(node1.nodeId, null, node1.getParent(), node1.getItemsJSON().toJSONString(), node1.getRectangle().getJson().toJSONString(), node1);
 		cache.addNode(node2.nodeId, null, node1.getParent(), node2.getItemsJSON().toJSONString(), node2.getRectangle().getJson().toJSONString(), node2);
 		
-		cache.remove(node1.getParent()); // ?
+		node1.updateRectangle();
+		node2.updateRectangle();
+		
+//		cache.remove(node1.getParent()); // ?
 		
 //		logger.log("node1 num: " + node1.getNumberOfItems() + " node2 num: " + node2.getNumberOfItems());
 		
@@ -198,7 +212,7 @@ public class SplitQuadratic extends SplitBehavior {
 			int index1 = 0; // seed 1
 			int index2 = 0; // seed 2
 			
-			List<Rectangle> nodeChildrenRectangles = new ArrayList<Rectangle>();
+			List<IHyperRectangle> nodeChildrenRectangles = new ArrayList<IHyperRectangle>();
 			
 			for (int i = 0; i < nodesChildren.size(); i++) {
 				nodeChildrenRectangles.add(cache.getNode(nodesChildren.get(i)).getRectangle());
@@ -273,32 +287,34 @@ public class SplitQuadratic extends SplitBehavior {
 				rootsNewChildrenArr.add(nodesParentsNewChild2.nodeId);
 				
 				
-				root = new RTreeNode(treeName, null, null, cache, logger);
-				root.children = new ArrayList<String>();
-				root.children.add(nodesParentsNewChild1Id);
-				root.children.add(nodesParentsNewChild2Id);
+//				root = new RTreeNode(treeName, null, null, cache, logger);
+//				root.children = new ArrayList<String>();
+//				root.children.add(nodesParentsNewChild1Id);
+//				root.children.add(nodesParentsNewChild2Id);
 				
 				logger.log("@~SPLIT BRANCH: " + "*****rootsNewChildrenArr: " + rootsNewChildrenArr);
 				cache.updateNode(treeName, rootsNewChildrenArr.toJSONString(), null, null, cache.getNode(treeName).getRectangle().getJson().toJSONString());
-				root = cache.getNode(treeName);
-				nodesParentsNewChild1.setParent(root.nodeId);
-				nodesParentsNewChild2.setParent(root.nodeId);
+//				root = cache.getNode(treeName);
+//				nodesParentsNewChild1.setParent(root.nodeId);
+//				nodesParentsNewChild2.setParent(root.nodeId);
+				nodesParentsNewChild1.setParent(treeName);
+				nodesParentsNewChild2.setParent(treeName);
 				
 //				node1.updateRectangle();
 //				node2.updateRectangle();
-				List<Rectangle> listRect1 = new ArrayList<Rectangle>();
+				List<IHyperRectangle> listRect1 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild1.children) {
-					Rectangle r = cache.getNode(s).getRectangle();
+					IHyperRectangle r = cache.getNode(s).getRectangle();
 					listRect1.add(r);
 				}
-				Rectangle node1SumRect = Rectangle.sumRectangles(listRect1);
+				IHyperRectangle node1SumRect = Rectangle.sumRectangles(listRect1);
 				
-				List<Rectangle> listRect2 = new ArrayList<Rectangle>();
+				List<IHyperRectangle> listRect2 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild2.children) {
-					Rectangle r = cache.getNode(s).getRectangle();
+					IHyperRectangle r = cache.getNode(s).getRectangle();
 					listRect2.add(r);
 				}
-				Rectangle node2SumRect = Rectangle.sumRectangles(listRect2);
+				IHyperRectangle node2SumRect = Rectangle.sumRectangles(listRect2);
 				
 				nodesParentsNewChild1.setRectangle(node1SumRect);
 				nodesParentsNewChild2.setRectangle(node2SumRect);
@@ -316,7 +332,8 @@ public class SplitQuadratic extends SplitBehavior {
 					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.nodeId, cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
 				}
 				
-				splitBranchNode(root);
+//				splitBranchNode(root);
+				splitBranchNode(getNode(treeName));
 				
 			} else { // not at root
 				
@@ -349,19 +366,19 @@ public class SplitQuadratic extends SplitBehavior {
 				
 //				node1.updateRectangle();
 //				node2.updateRectangle();
-				List<Rectangle> listRect1 = new ArrayList<Rectangle>();
+				List<IHyperRectangle> listRect1 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild1.children) {
-					Rectangle r = cache.getNode(s).getRectangle();
+					IHyperRectangle r = cache.getNode(s).getRectangle();
 					listRect1.add(r);
 				}
-				Rectangle node1SumRect = Rectangle.sumRectangles(listRect1);
+				IHyperRectangle node1SumRect = Rectangle.sumRectangles(listRect1);
 				
-				List<Rectangle> listRect2 = new ArrayList<Rectangle>();
+				List<IHyperRectangle> listRect2 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild2.children) {
-					Rectangle r = cache.getNode(s).getRectangle();
+					IHyperRectangle r = cache.getNode(s).getRectangle();
 					listRect2.add(r);
 				}
-				Rectangle node2SumRect = Rectangle.sumRectangles(listRect2);
+				IHyperRectangle node2SumRect = Rectangle.sumRectangles(listRect2);
 				
 				nodesParentsNewChild1.setRectangle(node1SumRect);
 				nodesParentsNewChild2.setRectangle(node2SumRect);

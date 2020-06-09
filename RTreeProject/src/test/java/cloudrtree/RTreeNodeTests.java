@@ -52,5 +52,25 @@ class RTreeNodeTests {
 		assertEquals(2, node.getChildren().size());
 		
 	}
+	
+	@Test
+	void CreateNode_GetRectangle_CorrectDimensionValues() {
+		
+		// Arrange
+		String nodeId = UUID.randomUUID().toString();
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		RTreeNode node = new RTreeNode(nodeId, "", "", null, logger);
+		
+		// Act
+		IHyperRectangle r = node.getRectangle();
+		
+		
+		// Assert
+		assertEquals(0, r.getDim1(0));
+		assertEquals(0, r.getDim1(1));
+		assertEquals(0, r.getDim2(0));
+		assertEquals(0, r.getDim2(1));
+		
+	}
 
 }

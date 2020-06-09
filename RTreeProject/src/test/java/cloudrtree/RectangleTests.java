@@ -24,12 +24,65 @@ class RectangleTests {
 	@AfterEach
 	void tearDown() throws Exception {
 	}
+	
+	@Test
+	void Rectangle_SetGetDimensionValues_Success() {
+		
+		// Arrange
+		Integer x1 = 0;
+		Integer x2 = 10;
+		Integer y1 = 0;
+		Integer y2 = 10;
+		IHyperRectangle r = new Rectangle(x1, x2, y1, y2);
+		
+		
+		// Act
+		Integer x1Observed = r.getDim1(0);
+		Integer x2Observed = r.getDim2(0);
+		Integer y1Observed = r.getDim1(1);
+		Integer y2Observed = r.getDim2(1);
+				
+		// Assert
+		assertEquals(x1, x1Observed);
+		assertEquals(x2, x2Observed);
+		assertEquals(y1, y1Observed);
+		assertEquals(y2, y2Observed);
+	}
+	
+	@Test
+	void Rectangle_SetGetDefaultDimensionValues_Success() {
+		
+		// Arrange
+		Integer x1 = 0;
+		Integer x2 = 0;
+		Integer y1 = 0;
+		Integer y2 = 0;
+		IHyperRectangle r = new Rectangle();
+		
+		
+		// Act
+		Integer x1Observed = r.getDim1(0);
+		Integer x2Observed = r.getDim2(0);
+		Integer y1Observed = r.getDim1(1);
+		Integer y2Observed = r.getDim2(1);
+		
+		System.out.println("x1Observed: " + x1Observed);
+		System.out.println("x2Observed: " + x2Observed);
+		System.out.println("y1Observed: " + y1Observed);
+		System.out.println("y2Observed: " + y2Observed);
+				
+		// Assert
+		assertEquals(x1, x1Observed);
+		assertEquals(x2, x2Observed);
+		assertEquals(y1, y1Observed);
+		assertEquals(y2, y2Observed);
+	}
 
 	@Test
 	void Rectangle_Overlap_True() {
 		// Arrange
-		Rectangle r1 = new Rectangle(0, 10, 0, 10);
-		Rectangle r2 = new Rectangle(5, 15, 5, 15);
+		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle(5, 15, 5, 15);
 		
 		// Act
 		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
@@ -41,8 +94,8 @@ class RectangleTests {
 	@Test
 	void Rectangle_Overlap_False() {
 		// Arrange
-		Rectangle r1 = new Rectangle(0, 10, 0, 10);
-		Rectangle r2 = new Rectangle(20, 30, 20, 30);
+		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle(20, 30, 20, 30);
 		
 		// Act
 		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
@@ -54,14 +107,14 @@ class RectangleTests {
 	@Test
 	void Rectangle_Sum_CorrectValue() {
 		// Arrange
-		Rectangle r1 = new Rectangle(0, 10, 0, 10);
-		Rectangle r2 = new Rectangle(20, 30, 20, 30);
+		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle(20, 30, 20, 30);
 		
 		// Act
-		Rectangle sum = Rectangle.sumRectangles(r1, r2);
+		IHyperRectangle sum = Rectangle.sumRectangles(r1, r2);
 				
 		// Assert
-		assertEquals(900, sum.getArea());
+		assertEquals(900, sum.getSpace());
 	}
 
 }

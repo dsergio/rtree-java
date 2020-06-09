@@ -112,7 +112,7 @@ class RTreeTests {
 			fail("Failed to create tree");
 			e.printStackTrace();
 		}
-		LocationItem item = new LocationItem(0, 0, null);
+		ILocationItem item = new LocationItem(0, 0, null);
 		try {
 			tree.insert(item);
 		} catch (IOException e) {
@@ -120,21 +120,21 @@ class RTreeTests {
 			e.printStackTrace();
 		}
 		
-		Rectangle r = new Rectangle();
-		r.setX1(-1);
-		r.setX2(1);
-		r.setY1(-1);
-		r.setY2(1);
+		IHyperRectangle r = new Rectangle();
+		r.setDim1(0, -1);
+		r.setDim2(0, 1);
+		r.setDim1(1, -1);
+		r.setDim2(1, 1);
 		
 		// Act
-		Map<Rectangle, List<LocationItem>> searchResult = tree.search(r);
+		Map<IHyperRectangle, List<ILocationItem>> searchResult = tree.search(r);
 		
 		// Assert
-		for (Rectangle k : searchResult.keySet()) {
-			List<LocationItem> i = searchResult.get(k);
-			for (LocationItem j : i) {
-				assertEquals(j.getX(), item.getX());
-				assertEquals(j.getY(), item.getY());
+		for (IHyperRectangle k : searchResult.keySet()) {
+			List<ILocationItem> i = searchResult.get(k);
+			for (ILocationItem j : i) {
+				assertEquals(j.getDim(0), item.getDim(0));
+				assertEquals(j.getDim(1), item.getDim(1));
 			}
 			
 		}

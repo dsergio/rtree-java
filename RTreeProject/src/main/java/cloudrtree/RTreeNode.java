@@ -22,8 +22,10 @@ public class RTreeNode {
 
 	List<String> children;
 	String parent;
-	List<LocationItem> locationItems;
-	Rectangle rectangle;
+//	List<LocationItem> locationItems;
+	List<ILocationItem> locationItems;
+//	Rectangle rectangle;
+	IHyperRectangle rectangle;
 	String nodeId;
 	RTreeCache cache;
 	private ILogger logger;
@@ -58,12 +60,11 @@ public class RTreeNode {
 		
 		
 		this.parent = parent;
-		this.locationItems = new ArrayList<LocationItem>();
+//		this.locationItems = new ArrayList<LocationItem>();
+		this.locationItems = new ArrayList<ILocationItem>();
 		
 		
-		
-		
-		setRectangle(new Rectangle());
+		this.rectangle = new Rectangle();
 	}
 	
 	public void setChildren(String childrenStr) {
@@ -119,20 +120,21 @@ public class RTreeNode {
 //		return arr;
 	}
 
-	public List<LocationItem> items() {
+	public List<ILocationItem> items() {
 		return locationItems;
 	}
 
-	public void addItem(LocationItem locationItem) throws IOException {
+	public void addItem(ILocationItem locationItem) throws IOException {
 		
-		logger.log("CloudRTreeNode - addItem");
+		logger.log("CloudRTreeNode.addItem");
+		System.out.println("Rectangle: " + this.rectangle);
 		locationItems.add(locationItem);
 		updateRectangle();
 		
 		StringWriter out;
 		
 		JSONArray jsonArr = new JSONArray();
-		for (LocationItem item : this.items()) {
+		for (ILocationItem item : this.items()) {
 			jsonArr.add(item.getJson());
 		}
 		
@@ -154,38 +156,42 @@ public class RTreeNode {
 		updateRectangle(false);
 	}
 	public void updateRectangle(boolean goUp) {
-		int minX = rectangle.getX1();
-		int maxX = rectangle.getX2();
-		int minY = rectangle.getY1();
-		int maxY = rectangle.getY2();
+		System.out.println("RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		int minX = rectangle.getDim1(0);
+		int maxX = rectangle.getDim2(0);
+		int minY = rectangle.getDim1(1);
+		int maxY = rectangle.getDim2(1);
 
 		if (locationItems.size() > 0) {
-			minX = locationItems.get(0).getX();
-			maxX = minX;
-			minY = locationItems.get(0).getY();
-			maxY = minY;
+//			minX = locationItems.get(0).getDim(0);
+//			maxX = minX;
+//			minY = locationItems.get(0).getDim(1);
+//			maxY = minY;
 			for (int i = 0; i < locationItems.size(); i++) {
-				if (locationItems.get(i).getX() < minX) {
-					minX = locationItems.get(i).getX();
+				if (locationItems.get(i).getDim(0) < minX) {
+					minX = locationItems.get(i).getDim(0);
 				}
-				if (locationItems.get(i).getX() > maxX) {
-					maxX = locationItems.get(i).getX();
+				if (locationItems.get(i).getDim(0) > maxX) {
+					maxX = locationItems.get(i).getDim(0);
 				}
-				if (locationItems.get(i).getY() < minY) {
-					minY = locationItems.get(i).getY();
+				if (locationItems.get(i).getDim(1) < minY) {
+					minY = locationItems.get(i).getDim(1);
 				}
-				if (locationItems.get(i).getY() > maxY) {
-					maxY = locationItems.get(i).getY();
+				if (locationItems.get(i).getDim(1) > maxY) {
+					maxY = locationItems.get(i).getDim(1);
 				}
 			}
 
 		}
 
-		rectangle.setX1(minX);
-		rectangle.setX2(maxX);
-		rectangle.setY1(minY);
-		rectangle.setY2(maxY);
-
+		rectangle.setDim1(0, minX);
+		rectangle.setDim2(0, maxX);
+		rectangle.setDim1(1, minY);
+		rectangle.setDim2(1, maxY);
+		
+		cache.updateNode(nodeId, null, null, null, rectangle.getJson().toJSONString());
+		logger.log("updated rectangle for " + nodeId + " new rectangle: " + rectangle);
+		
 		// logger.log("This node has a bounding box of " + rectangle.toString()
 		// + " has parent? " + (parent != null) + "... child rect: " + childRectangle);
 
@@ -198,20 +204,20 @@ public class RTreeNode {
 		
 		logger.log("BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
 		
-		Rectangle childSum = node.rectangle;
+		IHyperRectangle childSum = node.rectangle;
 		
-		int minX = node.rectangle.getX1();
-		int maxX = node.rectangle.getX2();
-		int minY = node.rectangle.getY1();
-		int maxY = node.rectangle.getY2();
+		int minX = node.rectangle.getDim1(0);
+		int maxX = node.rectangle.getDim2(0);
+		int minY = node.rectangle.getDim1(1);
+		int maxY = node.rectangle.getDim2(1);
 		
 		if (node.children != null) {
 			RTreeNode firstChild = cache.getNode(node.getChildren().get(0));
 			if (firstChild != null && firstChild.rectangle != null) {
-				minX = firstChild.getRectangle().getX1();
-				minY = firstChild.getRectangle().getY1();
-				maxX = firstChild.getRectangle().getX2();
-				maxY = firstChild.getRectangle().getY2();
+				minX = firstChild.getRectangle().getDim1(0);
+				minY = firstChild.getRectangle().getDim1(1);
+				maxX = firstChild.getRectangle().getDim2(0);
+				maxY = firstChild.getRectangle().getDim2(1);
 			}
 			
 			
@@ -225,21 +231,21 @@ public class RTreeNode {
 				if (childNode != null && childNode.rectangle != null) {
 					
 					logger.log("childSum: " + childSum);
-					Rectangle childRectangle = cache.getNode(child).getRectangle();
+					IHyperRectangle childRectangle = cache.getNode(child).getRectangle();
 					
 					childSum = Rectangle.sumRectangles(childSum, childRectangle);
 					
-					if (minX > childRectangle.getX1()) {
-						minX = childRectangle.getX1();
+					if (minX > childRectangle.getDim1(0)) {
+						minX = childRectangle.getDim1(0);
 					}
-					if (minY > childRectangle.getY1()) {
-						minY = childRectangle.getY1();
+					if (minY > childRectangle.getDim1(1)) {
+						minY = childRectangle.getDim1(1);
 					}
-					if (maxX < childRectangle.getX2()) {
-						maxX = childRectangle.getX2();
+					if (maxX < childRectangle.getDim2(0)) {
+						maxX = childRectangle.getDim2(0);
 					}
-					if (maxY < childRectangle.getY2()) {
-						maxY = childRectangle.getY2();
+					if (maxY < childRectangle.getDim2(1)) {
+						maxY = childRectangle.getDim2(1);
 					}
 					
 				}
@@ -273,11 +279,11 @@ public class RTreeNode {
 		return children == null || children.size() == 0;
 	}
 
-	public Rectangle getRectangle() {
+	public IHyperRectangle getRectangle() {
 		return rectangle;
 	}
 
-	public void setRectangle(Rectangle rectangle) {
+	public void setRectangle(IHyperRectangle rectangle) {
 		this.rectangle = rectangle;
 	}
 
@@ -293,7 +299,7 @@ public class RTreeNode {
 		this.parent = node;
 	}
 
-	public List<LocationItem> getPoints() {
+	public List<ILocationItem> getPoints() {
 		return locationItems;
 	}
 
@@ -321,7 +327,7 @@ public class RTreeNode {
 		
 		JSONParser parser = new JSONParser();
 		Object obj;
-		this.locationItems = new ArrayList<LocationItem>();
+		this.locationItems = new ArrayList<ILocationItem>();
 		
 		try {
 			if (items != null && !items.equals("") && !items.equals("delete")) {
@@ -330,7 +336,7 @@ public class RTreeNode {
 				JSONArray arr = (JSONArray) obj;
 				for (int i = 0; i < arr.size(); i++) {
 					JSONObject row = (JSONObject) arr.get(i);
-					LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+					ILocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
 					this.locationItems.add(item);
 				}
 			}

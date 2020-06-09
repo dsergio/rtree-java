@@ -39,6 +39,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.text.DefaultCaret;
 
 import cloudrtree.RTree;
+import cloudrtree.IHyperRectangle;
+import cloudrtree.ILocationItem;
 import cloudrtree.ILogger;
 import cloudrtree.ILoggerPaint;
 import cloudrtree.LocationItem;
@@ -48,15 +50,15 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	final PaintPanel paintPan;
 	RTree tree;
-	List<LocationItem> points;
+	List<ILocationItem> points;
 	private JTextField output;
-	private Rectangle searchRectangle = null;
+	private IHyperRectangle searchRectangle = null;
 	JButton searchButton = new JButton("Search");
 	JButton showTree = new JButton("Show Tree");
 	JButton showTreeStructure = new JButton("Show Tree Structure");
 	boolean showTreeOn = false;
 	JTextArea info = new JTextArea();
-	Map<Rectangle, List<LocationItem>> searchResults;
+	Map<IHyperRectangle, List<ILocationItem>> searchResults;
 	JList list;
 	int searchRange = 60;
 	private ILogger logger;
@@ -210,9 +212,9 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						e.getY() - showTree.getHeight() + (int) (searchRange / 1.5));
 				
 				searchResults = tree.search(searchRectangle);
-				for (Rectangle r : searchResults.keySet()) {
+				for (IHyperRectangle r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (LocationItem i : searchResults.get(r)) {
+					for (ILocationItem i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					
@@ -273,7 +275,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 			setBackground(Color.LIGHT_GRAY);
 		}
 
-		public void setPoints(List<LocationItem> pointsToAdd) {
+		public void setPoints(List<ILocationItem> pointsToAdd) {
 			points = pointsToAdd;
 		}
 
@@ -318,9 +320,9 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 			}
 			
 			if (showTreeOn) {
-				for (LocationItem item : tree.getPoints()) {
-					int x = item.getX();
-					int y = item.getY();
+				for (ILocationItem item : tree.getPoints()) {
+					int x = item.getDim(0);
+					int y = item.getDim(1);
 					
 					if (x > maxX) {
 						maxX = x;
@@ -337,7 +339,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 					drawImage = (Graphics2D) g;
 					if (color != null) {
 						drawImage.setColor(color);
-						drawImage.fillOval(x, y, 5, 5);
+						drawImage.fillOval(x, y, 4, 4);
 						paintLogger.log("(" + x + ", " + y + ")", drawImage, x, y);
 						paintLogger.log(item.getType(), drawImage, x, y + 20);
 //						drawImage.drawString("(" + x + ", " + y + ")", x, y);
@@ -345,28 +347,32 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						
 					}
 				}
-				List<Rectangle> rectangles = new ArrayList<Rectangle>();
+				List<IHyperRectangle> rectangles = new ArrayList<IHyperRectangle>();
 				rectangles = tree.getRectangles();
-				for (Rectangle r : rectangles) {
-					int x = r.getX1();
-					int y = r.getY1();
-					int width = r.width();
-					int height = r.height();
+				for (IHyperRectangle r : rectangles) {
+					int x = r.getDim1(0);
+					int y = r.getDim1(1);
+					int width = Math.abs(r.getDim1(0) - r.getDim2(0)); // r.width();
+					int height = Math.abs(r.getDim1(1) - r.getDim2(1)); // r.height();
 					drawImage = (Graphics2D) g;
 					if (color != null) {
 
-						if (r.getLevel() == 0) {
+						
+								
+						if (r.getLevel() == 1) {
 							color = Color.RED;
-						} else if (r.getLevel() == 1) {
-							color = Color.ORANGE;
 						} else if (r.getLevel() == 2) {
-							color = Color.YELLOW;
+							color = Color.ORANGE;
 						} else if (r.getLevel() == 3) {
-							color = Color.GREEN;
+							color = Color.YELLOW;
 						} else if (r.getLevel() == 4) {
-							color = Color.CYAN;
+							color = Color.GREEN;
 						} else if (r.getLevel() == 5) {
 							color = Color.BLUE;
+						} else if (r.getLevel() == 6) {
+							color = Color.decode("#4B0082");
+						} else if (r.getLevel() == 7) {
+							color = Color.decode("#9400D3");
 						} else {
 							color = Color.BLACK;
 						}
@@ -377,11 +383,11 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						width -= extra;
 						height -= extra;
 
-						drawImage.setStroke(new BasicStroke(2f));
+						drawImage.setStroke(new BasicStroke(1.3f));
 
 						drawImage.setColor(color);
 						drawImage.drawRect(x, y, width, height);
-						paintLogger.log("area: " + r.getArea(), drawImage, x, y + height - 20);
+						paintLogger.log("area: " + r.getSpace(), drawImage, x, y + height - 20);
 //						drawImage.drawString("area: " + r.getArea(), x, y + height - 20);
 
 					}
@@ -394,13 +400,13 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				drawImage = (Graphics2D) g;
 				color = Color.BLACK;
 				
-				List<LocationItem> allItems = new ArrayList<LocationItem>();
-				for (Rectangle r : searchResults.keySet()) {
+				List<ILocationItem> allItems = new ArrayList<ILocationItem>();
+				for (IHyperRectangle r : searchResults.keySet()) {
 					
-					if (r.getX1() != searchRectangle.getX1() && 
-							r.getX2() != searchRectangle.getX2() && 
-							r.getY1() != searchRectangle.getY1() && 
-							r.getY2() != searchRectangle.getY2()
+					if (r.getDim1(0) != searchRectangle.getDim1(0) && 
+							r.getDim2(0) != searchRectangle.getDim2(0) && 
+							r.getDim1(1) != searchRectangle.getDim1(1) && 
+							r.getDim2(1) != searchRectangle.getDim2(1)
 							) {
 						Stroke existing = drawImage.getStroke();
 						Stroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
@@ -409,46 +415,48 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						logger.log("Rectangle traverse: " + r + ", level: " + r.getLevel());
 						
 						int offset = 0;
-						if (r.getLevel() == 0) {
+						if (r.getLevel() == 1) {
 							color = Color.RED;
-						} else if (r.getLevel() == 1) {
+						} else if (r.getLevel() == 2) {
 							color = Color.ORANGE;
 							offset = 3;
-						} else if (r.getLevel() == 2) {
+						} else if (r.getLevel() == 3) {
 							color = Color.YELLOW;
 							offset = 5;
-						} else if (r.getLevel() == 3) {
+						} else if (r.getLevel() == 4) {
 							color = Color.GREEN;
 							offset = 7;
-						} else if (r.getLevel() == 4) {
-							color = Color.CYAN;
-							offset = 9;
 						} else if (r.getLevel() == 5) {
 							color = Color.BLUE;
+							offset = 9;
+						} else if (r.getLevel() == 6) {
+							color = Color.decode("#4B0082");
 							offset = 11;
+						} else if (r.getLevel() == 7) {
+							color = Color.decode("#9400D3");
+							offset = 13;
 						} else {
 							color = Color.BLACK;
-							offset = 13;
+							offset = 15;
 						}
 						drawImage.setColor(color);
-						drawImage.drawRect(r.getX1() + offset, r.getY1(), r.width() - offset,
-								r.height());
+						drawImage.drawRect(r.getDim1(0) + offset, r.getDim1(1), Math.abs(r.getDim1(0) - r.getDim2(0)) - offset,
+								Math.abs(r.getDim1(1) - r.getDim2(1)));
 						drawImage.setStroke(existing);
 					}
 					
-					for (LocationItem i : searchResults.get(r)) {
+					for (ILocationItem i : searchResults.get(r)) {
 						
 						if (color != null) {
-							drawImage.setColor(Color.RED);
-							drawImage.fillOval(i.getX(), i.getY(), 5, 5);
-							drawImage.drawString("(" + i.getX() + ", " + i.getY() + ")", i.getX(), i.getY());
+							drawImage.setColor(Color.decode("#ff6680"));
+							drawImage.fillOval(i.getDim(0), i.getDim(1), 5, 5);
+							drawImage.drawString("(" + i.getDim(0) + ", " + i.getDim(1) + ")", i.getDim(0), i.getDim(1));
 							drawImage.setColor(Color.BLACK);
 							
 							drawImage.setFont(new Font("default", Font.BOLD, 16));
-							drawImage.drawString(i.getType(), i.getX(), i.getY() + 20);
+							drawImage.drawString(i.getType(), i.getDim(0), i.getDim(1) + 20);
 							drawImage.setFont(new Font("default", Font.PLAIN, 12));
 							
-							drawImage.setColor(Color.RED);
 						}
 						allItems.add(i);
 					}
@@ -463,19 +471,19 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				Stroke existing = drawImage.getStroke();
 				Stroke dashed = new BasicStroke(0.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 				drawImage.setStroke(dashed);
-				drawImage.setColor(Color.RED);
-				drawImage.drawRect(searchRectangle.getX1(), searchRectangle.getY1(), searchRectangle.width(),
-						searchRectangle.height());
+				drawImage.setColor(Color.decode("#ff6680"));
+				drawImage.drawRect(searchRectangle.getDim1(0), searchRectangle.getDim1(1), Math.abs(searchRectangle.getDim1(0) - searchRectangle.getDim2(0)),
+						Math.abs(searchRectangle.getDim1(1) - searchRectangle.getDim2(1)));
 				drawImage.setStroke(existing);
 				
 				
 			}
 //			searchRectangle = null;
-			color = Color.RED;
+			color = Color.BLACK;
 		}
 
 		public void updateGraphics(int x, int y) throws IOException {
-			color = Color.RED;
+			color = Color.BLACK;
 
 			LocationItem item = new LocationItem(x, y, "point");
 			// addPoint(item);
@@ -514,9 +522,9 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				list.setListData(data);
 				searchRectangle = new Rectangle(x, x + range, y, y + range);
 				searchResults = tree.search(searchRectangle);
-				for (Rectangle r : searchResults.keySet()) {
+				for (IHyperRectangle r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (LocationItem i : searchResults.get(r)) {
+					for (ILocationItem i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					

@@ -20,7 +20,7 @@ public class SplitLinear extends SplitBehavior {
 		return description;
 	}
 	@Override
-	public void splitLeafNode(RTreeNode node, LocationItem locationItem) {
+	public void splitLeafNode(RTreeNode node, ILocationItem locationItem) {
 		// TODO Auto-generated method stub
 		
 	}

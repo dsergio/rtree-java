@@ -28,11 +28,11 @@ class LocationItemTests {
 	@Test
 	void test() {
 		// Arrange
-		LocationItem item1 = new LocationItem(0, 0, "test");
-		LocationItem item2 = new LocationItem(10, 10, "test");
+		ILocationItem item1 = new LocationItem(0, 0, "test");
+		ILocationItem item2 = new LocationItem(10, 10, "test");
 		
 		// Act
-		int area = LocationItem.area(item1, item2);
+		int area = LocationItemBase.space(item1, item2);
 				
 		// Assert
 		assertEquals(100, area);

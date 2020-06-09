@@ -250,7 +250,7 @@ public class Tester {
 						if (longitude > longMax) {
 							longMax = longitude;
 						}
-						logger.log("longZero: " + longZero + ", longMax: " + longMax);
+//						logger.log("longZero: " + longZero + ", longMax: " + longMax);
 						cityNameLatLongToInsert.put(key, cityNameLatLong.get(key));
 						
 					}
@@ -296,23 +296,23 @@ public class Tester {
 						tree.getAddTime() + "\t" + tree.getReadTime() + "\t" + tree.getUpdateTime() + "\t" + "\n";
 								
 					
-					logger.log(
-							"Inserted " + count + " of " + size + " (" + numInserts + ") total items (" + latitude + ", " + longitude + ") " + 
-							key + " current insert: " + (curTime - time) + "ms total so far: " + (curTime - startTime) + "ms total" + 
-							" adds: " + tree.numAdds() + " reads: " + tree.numReads() + " updates: " + tree.numUpdates() +
-							" add time: " + tree.getAddTime() + " read time: " + tree.getReadTime() + " update time: " + tree.getUpdateTime()
-					);
+//					logger.log(
+//							"Inserted " + count + " of " + size + " (" + numInserts + ") total items (" + latitude + ", " + longitude + ") " + 
+//							key + " current insert: " + (curTime - time) + "ms total so far: " + (curTime - startTime) + "ms total" + 
+//							" adds: " + tree.numAdds() + " reads: " + tree.numReads() + " updates: " + tree.numUpdates() +
+//							" add time: " + tree.getAddTime() + " read time: " + tree.getReadTime() + " update time: " + tree.getUpdateTime()
+//					);
 					time = System.currentTimeMillis();
 				}
 					
-				logger.log("COUNT\tSIZE\tKEY\tINSERT TIME (ms)\tTOTAL TIME (ms)\tADDS\tREADS\tUPDATES\tADD TOT (ms)\tREAD TOT (ms)\tUPDATE TOT (ms)\t\t");
-				logger.log(performanceOutput);
-				
-				logger.log("\nlatZero: " + latZero + " latMax: " + latMax + " longZero: " + longZero + " longMax: " + longMax);
-				logger.log("Inserted the following: \n");
-				for (String key : cityNameLatLongToInsert.keySet()) {
-					logger.log(key + ": " + cityNameLatLongToInsert.get(key));
-				}
+//				logger.log("COUNT\tSIZE\tKEY\tINSERT TIME (ms)\tTOTAL TIME (ms)\tADDS\tREADS\tUPDATES\tADD TOT (ms)\tREAD TOT (ms)\tUPDATE TOT (ms)\t\t");
+//				logger.log(performanceOutput);
+//				
+//				logger.log("\nlatZero: " + latZero + " latMax: " + latMax + " longZero: " + longZero + " longMax: " + longMax);
+//				logger.log("Inserted the following: \n");
+//				for (String key : cityNameLatLongToInsert.keySet()) {
+//					logger.log(key + ": " + cityNameLatLongToInsert.get(key));
+//				}
 				
 				
 			} catch (IOException e) {

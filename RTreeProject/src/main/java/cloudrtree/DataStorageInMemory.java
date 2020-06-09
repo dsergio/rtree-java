@@ -1,6 +1,8 @@
 package cloudrtree;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.json.simple.JSONObject;
@@ -72,6 +74,27 @@ public class DataStorageInMemory extends DataStorageBase {
 		
 		// construct the node
 		RTreeNode node = new RTreeNode(nodeId, children, parent, cache, logger);
+		
+		Rectangle r = null;
+		JSONParser parser;
+		Object obj;
+		parser = new JSONParser();
+		try {
+			if (rectangle != null) {
+				obj = parser.parse(rectangle);
+				JSONObject rectObj = (JSONObject) obj;
+				r = new Rectangle(Integer.parseInt(rectObj.get("x1").toString()), 
+						Integer.parseInt(rectObj.get("x2").toString()), 
+						Integer.parseInt(rectObj.get("y1").toString()),
+						Integer.parseInt(rectObj.get("y2").toString()));
+			}
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		node.setRectangle(r);
+		node.setItemsJson(items);
+		
 		localData.put(nodeId, node);
 		
 		numAdds++;
@@ -95,14 +118,17 @@ public class DataStorageInMemory extends DataStorageBase {
 		
 		
 		RTreeNode node = localData.get(nodeId);
-		node.setChildren(children);
+		
+		if (children != null) {
+			node.setChildren(children);
+		}
+		
 		node.setParent(parent);
 		
 		Rectangle r = new Rectangle();
 		
 		JSONParser parser;
 		Object obj;
-		
 		parser = new JSONParser();
 		try {
 			if (rectangle != null) {
@@ -113,14 +139,17 @@ public class DataStorageInMemory extends DataStorageBase {
 						Integer.parseInt(rectObj.get("y1").toString()),
 						Integer.parseInt(rectObj.get("y2").toString()));
 			}
-			
-			
 		} catch (ParseException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
 		
-		node.setRectangle(r);
+		if (rectangle != null) {
+			node.setRectangle(r);
+		}
+		if (items != null) {
+			node.setItemsJson(items);
+		}
 		
 		numUpdates++;
 		updateTime += (System.currentTimeMillis() - time);

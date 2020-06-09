@@ -23,11 +23,14 @@ public abstract class LocationItemBase implements ILocationItem {
 		}
 	}
 	
-	/**
-	 * 
-	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
-	 * @param value
-	 */
+	public List<Integer> getDimensionArray() {
+		return dimensionArray;
+	}
+	
+	public int getNumberDimensions() {
+		return numberDimensions;
+	}
+	
 	public void setDim(int dim, int value) {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions);
@@ -35,11 +38,6 @@ public abstract class LocationItemBase implements ILocationItem {
 		dimensionArray.set(dim, value);
 	}
 	
-	/**
-	 * 
-	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
-	 * @return
-	 */
 	public Integer getDim(int dim) {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions);
@@ -57,15 +55,15 @@ public abstract class LocationItemBase implements ILocationItem {
 
 	public abstract JSONObject getJson();
 	
-	public static Integer space(LocationItemBase e1, LocationItemBase e2) {
+	public static Integer space(ILocationItem e1, ILocationItem e2) {
 		
-		if (e1.dimensionArray.size() != e2.dimensionArray.size()) {
+		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
 			throw new IllegalArgumentException("Dimensions of items must be the same.");
 		}
 		
 		int spaceTotal = 1; 
-		for (int i = 0; i < e1.dimensionArray.size(); i++) {
-			if (e1.dimensionArray.get(i) == null || e1.dimensionArray.get(i) == null) {
+		for (int i = 0; i < e1.getDimensionArray().size(); i++) {
+			if (e1.getDimensionArray().get(i) == null || e1.getDimensionArray().get(i) == null) {
 				throw new IllegalArgumentException("Dimension " + i + " is missing in one of the inputs.");
 			}
 			spaceTotal = spaceTotal * Math.abs((e1.getDim(i) - e2.getDim(i)));
@@ -74,15 +72,15 @@ public abstract class LocationItemBase implements ILocationItem {
 		return spaceTotal;
 	}
 	
-	public static JSONArray getItemsJSON(List<LocationItem> locationItems) {
+	public static JSONArray getItemsJSON(List<ILocationItem> locationItems) {
 		
 		JSONArray arr = new JSONArray();
 		if (locationItems != null) {
-			for (LocationItemBase item : locationItems) {
+			for (ILocationItem item : locationItems) {
 				
 				JSONObject obj = new JSONObject();
 				
-				for (int i = 0; i < item.numberDimensions; i++) {
+				for (int i = 0; i < item.getNumberDimensions(); i++) {
 					switch (i) {
 						case 0: 
 							obj.put("x", item.getDim(i));

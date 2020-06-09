@@ -12,7 +12,7 @@ import org.json.simple.parser.ParseException;
 
 /**
  * 
- * Description TBD
+ * R-Tree Cache
  * 
  * @author David Sergio
  *
@@ -22,18 +22,14 @@ public class RTreeCache {
 	private Map<String, RTreeNode> cache;
 	private IDataStorage dbAccess;
 	private String treeName;
-	private StorageType cloudType;
 	private ILogger logger;
 	
-	public RTreeCache(String treeName, StorageType cloudType, ILogger logger, IDataStorage dataStorage) throws Exception {
+	public RTreeCache(String treeName, ILogger logger, IDataStorage dataStorage) throws Exception {
 		cache = new HashMap<String, RTreeNode>();
 		this.treeName = treeName;
-		this.cloudType = cloudType;
 		this.logger = logger;
 		this.dbAccess = dataStorage;
-		
 		dbAccess.initializeStorage(treeName);
-		
 	}
 	
 	public void printCache() {
@@ -70,12 +66,12 @@ public class RTreeCache {
 	
 	public void updateNode(String nodeId, String children, String parent, String items, String rectangle) {
 		
-//		logger.log("calling CloudRTreeCache.updateNode with parameters: ");
+		logger.log("calling CloudRTreeCache.updateNode on " + nodeId + " cacheContains: " + cache.containsKey(nodeId) + ", with parameters: ");
 //		logger.log("nodeId: " + nodeId);
 //		logger.log("children: " +children);
 //		logger.log("parent: " + parent);
 //		logger.log("items: " + items);
-//		logger.log("rectangle: " + rectangle);
+		logger.log("rectangle: " + rectangle);
 		
 		
 		RTreeNode n = null;
@@ -123,7 +119,7 @@ public class RTreeCache {
 		}
 		
 		if (items != null) {
-			n.locationItems = new ArrayList<LocationItem>();
+			n.locationItems = new ArrayList<ILocationItem>();
 			parser = new JSONParser();
 			try {
 				if (items != null) {
@@ -131,7 +127,7 @@ public class RTreeCache {
 					JSONArray arr = (JSONArray) obj;
 					for (int i = 0; i < arr.size(); i++) {
 						JSONObject row = (JSONObject) arr.get(i);
-						LocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
+						ILocationItem item = new LocationItem(Integer.parseInt(row.get("x").toString()), Integer.parseInt(row.get("y").toString()), row.get("type").toString());
 						n.locationItems.add(item);
 						
 					}
@@ -171,7 +167,13 @@ public class RTreeCache {
 		} else {
 			cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
 		}
-		
+//		if (cache.get(nodeId).rectangle == null) {
+//			cache.get(nodeId).rectangle = new Rectangle();
+//		}
+	}
+	
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle) {
+		cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
 	}
 
 	public void remove(String node) {

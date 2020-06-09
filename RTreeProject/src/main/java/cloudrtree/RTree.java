@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class RTree {
 
-	private RTreeNode root;
+//	private RTreeNode root;
 	private int maxChildren;
 	private int maxItems;
 	private String treeName;
@@ -27,16 +27,12 @@ public class RTree {
 	private boolean branchSplit = false;
 	private SplitBehavior splitBehavior;
 	RTreeCache cacheContainer;
-	private int minXInserted;
-	private int minYInserted;
-	private int maxXInserted;
-	private int maxYInserted;
 	private StorageType storageType;
 	private ILogger logger;
-	private int minX = 0;
-	private int maxX = 0;
-	private int minY = 0;
-	private int maxY = 0;
+	private int minX;
+	private int maxX;
+	private int minY;
+	private int maxY;
 	private boolean boundariesSet = false;
 	
 	
@@ -124,7 +120,7 @@ public class RTree {
 		
 		try {
 			
-			cacheContainer = new RTreeCache(treeName, storageType, logger, dataStorage);
+			cacheContainer = new RTreeCache(treeName, logger, dataStorage);
 		} catch (Exception e) {
 			logger.log("Cache initialization failed.");
 			e.printStackTrace();
@@ -138,12 +134,14 @@ public class RTree {
 		maxChildren = getMaxChildren();
 		maxItems = getMaxItems();
 		
-		root = getNode(treeName);
+		RTreeNode root = getNode(treeName);
+		
 		if (root == null) {
-			addNode(treeName, null, null, null, null, null);
-			root = new RTreeNode(treeName, null, null, cacheContainer, logger);
+//			addNode(treeName, null, null, null, null, null);
+//			root = new RTreeNode(treeName, null, null, cacheContainer, logger);
 		}
-		splitBehavior.initialize(maxChildren, treeName, cacheContainer, root, logger);
+//		splitBehavior.initialize(maxChildren, treeName, cacheContainer, root, logger);
+		splitBehavior.initialize(maxChildren, treeName, cacheContainer, logger);
 		
 	}
 	
@@ -240,32 +238,31 @@ public class RTree {
 	}
 	
 	/**
+	 * Add node with parameters
+	 * 
+	 * @param nodeId
+	 * @param children
+	 * @param parent
+	 * @param items
+	 * @param rectangle
+	 */
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle) {
+		cacheContainer.addNode(nodeId, children, parent, items, rectangle);
+	}
+	
+	/**
 	 * 
 	 * @param locationItem
 	 * @throws IOException
 	 */
-	public void insertType(LocationItem locationItem) throws IOException {
+	public void insertType(ILocationItem locationItem) throws IOException {
 		
-		logger.log("GOING TO INSERT: " + locationItem);
-		if (locationItem.getX() < minXInserted) {
-			minXInserted = locationItem.getX();
-		}
-		if (locationItem.getX() > maxXInserted) {
-			maxXInserted = locationItem.getX();
-		}
-		if (locationItem.getY() < minYInserted) {
-			minYInserted = locationItem.getY();
-		}
-		if (locationItem.getY() > maxYInserted) {
-			maxYInserted = locationItem.getY();
-		}
+		logger.log("~~INSERT: " + "GOING TO INSERT: " + locationItem);
 		leafNodeSplit = false;
 		branchSplit = false;
-		insert(locationItem, root);
+		insert(locationItem, getNode(treeName));
 		
 //		printTree();
-		
-		logger.log("MIN X: " + minXInserted + " MIN Y: " + minYInserted + " MAX X: " + maxXInserted + " MAX Y: " + maxYInserted);
 	}
 	
 	/**
@@ -275,7 +272,7 @@ public class RTree {
 	 * @return void
 	 * 
 	 */
-	public void insert(LocationItem locationItem) throws IOException {
+	public void insert(ILocationItem locationItem) throws IOException {
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
 		
@@ -284,12 +281,19 @@ public class RTree {
 		leafNodeSplit = false;
 		branchSplit = false;
 		logger.log("~~INSERT: " + "START");
-		insert(locationItem, getNode(root.nodeId));
+//		insert(locationItem, getNode(root.nodeId));
+		insert(locationItem, getNode(treeName));
 		logger.log("**************************************************************************************************************************");
 //		printTree();
 	}
 	
-	private void insert(LocationItem locationItem, RTreeNode node) throws IOException {
+	private void insert(ILocationItem locationItem, RTreeNode node) throws IOException {
+		
+		if (node == null && getNode(treeName) == null) {
+			IHyperRectangle r = new Rectangle(locationItem.getDim(0), locationItem.getDim(0), locationItem.getDim(1), locationItem.getDim(1));
+			addNode(treeName, null, null, null, r.getJson().toJSONString());
+			node = getNode(treeName);
+		}
 		
 		if (node == null) {
 			return;
@@ -309,20 +313,20 @@ public class RTree {
 				node.addItem(locationItem);
 				
 				boolean updateBoundaries = false;
-				if (locationItem.getX() > maxX || !boundariesSet) {
-					maxX = locationItem.getX();
+				if (locationItem.getDim(0) > maxX || !boundariesSet) {
+					maxX = locationItem.getDim(0);
 					updateBoundaries = true;
 				}
-				if (locationItem.getX() < minX || !boundariesSet) {
-					minX = locationItem.getX();
+				if (locationItem.getDim(0) < minX || !boundariesSet) {
+					minX = locationItem.getDim(0);
 					updateBoundaries = true;
 				}
-				if (locationItem.getY() > maxY || !boundariesSet) {
-					maxY = locationItem.getY();
+				if (locationItem.getDim(1) > maxY || !boundariesSet) {
+					maxY = locationItem.getDim(1);
 					updateBoundaries = true;
 				}
-				if (locationItem.getY() < minY || !boundariesSet) {
-					minY = locationItem.getY();
+				if (locationItem.getDim(1) < minY || !boundariesSet) {
+					minY = locationItem.getDim(1);
 					updateBoundaries = true;
 				}
 				
@@ -348,7 +352,7 @@ public class RTree {
 			for (String s : childrenArr) {
 				RTreeNode child = getNode(s);
 				logger.log("~~INSERT: " + "child: " + child.toString());
-				if (child.getRectangle().containsPoint(locationItem.getX(), locationItem.getY())) {
+				if (child.getRectangle().containsPoint(locationItem)) {
 					insert(locationItem, child);
 					
 					return;
@@ -356,8 +360,8 @@ public class RTree {
 				}
 			}
 			
-			int x = locationItem.getX();
-			int y = locationItem.getY();
+			int x = locationItem.getDim(0);
+			int y = locationItem.getDim(1);
 			int minEnlargementArea = getEnlargementArea(getNode(childrenArr.get(0)), x, y);
 			int minEnlargementAreaIndex = 0;
 			
@@ -372,7 +376,7 @@ public class RTree {
 			}
 //			logger.log("min enlargement area for " + locationItem + " is " + minEnlargementArea + ", index=" + minEnlargementAreaIndex);
 			
-			Rectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, locationItem);
+			IHyperRectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, locationItem);
 			node.setRectangle(sumRectangle);
 			updateNode(node.nodeId, null, null, null, node.getRectangle().getJson().toJSONString());
 			
@@ -384,11 +388,11 @@ public class RTree {
 	}
 	
 	
-	private void addToRectangle(RTreeNode node, Rectangle r) {
+	private void addToRectangle(RTreeNode node, IHyperRectangle r) {
 		if (node == null) {
 			return;
 		}
-		Rectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, r);
+		IHyperRectangle sumRectangle = Rectangle.sumRectangles(node.rectangle, r);
 		node.setRectangle(sumRectangle);
 		updateNode(node.nodeId, null, null, null, node.getRectangle().getJson().toJSONString());
 		addToRectangle(getNode(node.parent), sumRectangle);
@@ -401,27 +405,27 @@ public class RTree {
 			return 0;
 		}
 		
-		Rectangle r = node.getRectangle();
-		int minX = Math.min(Math.min(x,  r.getX1()), r.getX2());
-		int maxX = Math.max(Math.max(x,  r.getX1()), r.getX2());
+		IHyperRectangle r = node.getRectangle();
+		int minX = Math.min(Math.min(x,  r.getDim1(0)), r.getDim2(0));
+		int maxX = Math.max(Math.max(x,  r.getDim1(0)), r.getDim2(0));
 		
-		int minY = Math.min(Math.min(y,  r.getY1()), r.getY2());
-		int maxY = Math.max(Math.max(y,  r.getY1()), r.getY2());
+		int minY = Math.min(Math.min(y,  r.getDim1(1)), r.getDim2(1));
+		int maxY = Math.max(Math.max(y,  r.getDim1(1)), r.getDim2(1));
 		
-		Rectangle newRect = new Rectangle(minX, maxX, minY, maxY);
+		IHyperRectangle newRect = new Rectangle(minX, maxX, minY, maxY);
 		
-		return newRect.getArea() - r.getArea();
+		return newRect.getSpace() - r.getSpace();
 	}
 	
 
 	
-	public List<Rectangle> getRectangles() {
-		List<Rectangle> allRectangles = new ArrayList<Rectangle>();
+	public List<IHyperRectangle> getRectangles() {
+		List<IHyperRectangle> allRectangles = new ArrayList<IHyperRectangle>();
 		getRectangles(getNode(treeName), allRectangles, 0);
 		return allRectangles;
 	}
 	
-	private void getRectangles(RTreeNode node, List<Rectangle> rectangles, int depth) {
+	private void getRectangles(RTreeNode node, List<IHyperRectangle> rectangles, int depth) {
 		depth++;
 		if (node != null && node.getRectangle() != null) {
 			node.getRectangle().setLevel(depth);
@@ -443,15 +447,16 @@ public class RTree {
 	 * @return all items in this tree
 	 * 
 	 */
-	public List<LocationItem> getPoints() {
-		List<LocationItem> points = new ArrayList<LocationItem>();
-		getPoints(root, points, 0);
+	public List<ILocationItem> getPoints() {
+		List<ILocationItem> points = new ArrayList<ILocationItem>();
+//		getPoints(root, points, 0);
+		getPoints(getNode(treeName), points, 0);
 		logger.log("RTree.getPoints() points: " + points);
 		logger.log("RTree.getPoints() returned a list of size " + points.size());
 		return points;
 	}
 	
-	private void getPoints(RTreeNode node, List<LocationItem> points, int depth) {
+	private void getPoints(RTreeNode node, List<ILocationItem> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
@@ -468,20 +473,21 @@ public class RTree {
 	}
 	
 	
-	public Map<LocationItem, Integer> getPointsWithDepth() {
-		Map<LocationItem, Integer> points = new HashMap<LocationItem, Integer>();
+	public Map<ILocationItem, Integer> getPointsWithDepth() {
+		Map<ILocationItem, Integer> points = new HashMap<ILocationItem, Integer>();
 		
-		getPointsWithDepth(root, points, 0);
+//		getPointsWithDepth(root, points, 0);
+		getPointsWithDepth(getNode(treeName), points, 0);
 		return points;
 	}
 	
-	private void getPointsWithDepth(RTreeNode node, Map<LocationItem, Integer> points, int depth) {
+	private void getPointsWithDepth(RTreeNode node, Map<ILocationItem, Integer> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
 		}
 		if (node.isLeafNode()) {
-			for (LocationItem i : node.getPoints()) {
+			for (ILocationItem i : node.getPoints()) {
 				points.put(i, depth);
 			}
 		} else {
@@ -506,7 +512,8 @@ public class RTree {
 			logger.logExact("\tchild");
 		}
 		logger.log();
-		printTree(root, 0);
+//		printTree(root, 0);
+		printTree(getNode(treeName), 0);
 		logger.log();
 		logger.setLogLevel(temp);
 	}
@@ -524,7 +531,7 @@ public class RTree {
 				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth);
 		
 		
-		List<LocationItem> tempPoints = node.getPoints();
+		List<ILocationItem> tempPoints = node.getPoints();
 		logger.logExact("\t");
 		for (int i = 0; i < tempPoints.size(); i++) {
 			logger.logExact(tempPoints.get(i) + ";");
@@ -553,13 +560,13 @@ public class RTree {
 	 * @return a map of rectangles containing search results
 	 * 
 	 */
-	public Map<Rectangle, List<LocationItem>> search(Rectangle searchRectangle) {
+	public Map<IHyperRectangle, List<ILocationItem>> search(IHyperRectangle searchRectangle) {
 		int curAdds = numAdds();
 		int curUpdates = numUpdates();
 		int curReads = numReads();
 		
 		long time = System.currentTimeMillis();
-		Map<Rectangle, List<LocationItem>> result = new HashMap<Rectangle, List<LocationItem>>();
+		Map<IHyperRectangle, List<ILocationItem>> result = new HashMap<IHyperRectangle, List<ILocationItem>>();
 		search(searchRectangle, getNode(treeName), result, 0);
 		
 		
@@ -568,13 +575,18 @@ public class RTree {
 		return result;
 	}
 	
-	private void search(Rectangle searchRectangle, RTreeNode node, Map<Rectangle, List<LocationItem>> result, int depth) {
+	private void search(IHyperRectangle searchRectangle, RTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
+		
+		if (node == null) {
+			return;
+		}
+		
 		node.rectangle.setLevel(depth);
 		if (node.isLeafNode()) {
 			
-			for (LocationItem item : node.items()) {
+			for (ILocationItem item : node.items()) {
 				
-				if (item.getX() > searchRectangle.getX1() && item.getX() < searchRectangle.getX2() && item.getY() > searchRectangle.getY1() && item.getY() < searchRectangle.getY2()) {
+				if (item.getDim(0) > searchRectangle.getDim1(0) && item.getDim(0) < searchRectangle.getDim2(0) && item.getDim(1) > searchRectangle.getDim1(1) && item.getDim(1) < searchRectangle.getDim2(1)) {
 					logger.log("Merry Christmas " + item + " nodeId: " + node.nodeId);
 					
 					if (result.containsKey(searchRectangle)) {
@@ -582,7 +594,7 @@ public class RTree {
 							result.get(searchRectangle).add(item);
 						}
 					} else {
-						result.put(searchRectangle, new ArrayList<LocationItem>());
+						result.put(searchRectangle, new ArrayList<ILocationItem>());
 						result.get(searchRectangle).add(item);
 					}
 				}
@@ -593,11 +605,11 @@ public class RTree {
 				
 				for (String child : node.getChildren()) {
 					
-					Rectangle r = getNode(child).getRectangle();
+					IHyperRectangle r = getNode(child).getRectangle();
 					
 					if (Rectangle.rectanglesOverlap(r, searchRectangle)) {
 						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
-						result.put(r, new ArrayList<LocationItem>());
+						result.put(r, new ArrayList<ILocationItem>());
 						search(searchRectangle, getNode(child), result, depth + 1);
 					} else {
 						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
@@ -613,16 +625,17 @@ public class RTree {
 	 * @param toDelete Item to be deleted
 	 * 
 	 */
-	public void delete(LocationItem toDelete) {
-		delete(toDelete, root);
+	public void delete(ILocationItem toDelete) {
+//		delete(toDelete, root);
+		delete(toDelete, getNode(treeName));
 	}
 	
-	private void delete(LocationItem toDelete, RTreeNode node) {
+	private void delete(ILocationItem toDelete, RTreeNode node) {
 		
 		if (node.isLeafNode()) {
 			for (int i = 0; i < node.getNumberOfItems(); i++) {
 				logger.log("comparing node " + node.items().get(i) + " and " + toDelete);
-				if (node.items().get(i).getX() == toDelete.getX() && node.items().get(i).getY() == toDelete.getY() && node.items().get(i).getType().equals(toDelete.getType())) {
+				if (node.items().get(i).getDim(0) == toDelete.getDim(0) && node.items().get(i).getDim(1) == toDelete.getDim(1) && node.items().get(i).getType().equals(toDelete.getType())) {
 					node.items().remove(i);
 					node.updateRectangle(true);
 					
@@ -640,8 +653,8 @@ public class RTree {
 				
 				for (String s : node.getChildren()) {
 					RTreeNode child = getNode(s);
-					Rectangle r = child.getRectangle();
-					if (r.containsPoint(toDelete.getX(), toDelete.getY())) {
+					IHyperRectangle r = child.getRectangle();
+					if (r.containsPoint(toDelete)) {
 						delete(toDelete, child);
 					}
 				}
@@ -707,6 +720,7 @@ public class RTree {
 
 	
 	public void updateRoot() {
-		root = getNode(treeName);
+//		root = getNode(treeName);
+		getNode(treeName);
 	}
 }
