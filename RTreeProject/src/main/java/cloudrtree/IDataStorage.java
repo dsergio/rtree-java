@@ -9,10 +9,10 @@ package cloudrtree;
  */
 public interface IDataStorage {
 	
-	public void init() throws Exception;
+	public void init();
 	public void close();
 	
-	public void initializeStorage() throws Exception;
+	public void initializeStorage();
 	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, RTreeCache cache);
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
 	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache);
@@ -26,7 +26,7 @@ public interface IDataStorage {
 	public long getUpdateTime();
 	
 	
-	public void addToMetaData(String treeName, int maxChildren, int maxItems) throws Exception; // store the maxChildren and maxItems values
+	public void addToMetaData(String treeName, int maxChildren, int maxItems); // store the maxChildren and maxItems values
 	public boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
 	public int getMaxChildren(String treeName); // get the persistent maxChildren value
 	public int getMaxItems(String treeName);  // get the persistent maxItems value

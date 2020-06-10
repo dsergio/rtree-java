@@ -17,5 +17,10 @@ public abstract class LoggerBase implements ILogger {
 	public void setLogLevel(LogLevel logLevel) {
 		this.logLevel = logLevel;
 	}
+	
+	@Override
+	public void log(Exception e) {
+		System.out.print(e.getClass().getName() + ": " + e.getMessage());
+	}
 
 }

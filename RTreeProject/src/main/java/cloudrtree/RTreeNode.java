@@ -22,9 +22,7 @@ public class RTreeNode {
 
 	List<String> children;
 	String parent;
-//	List<LocationItem> locationItems;
 	List<ILocationItem> locationItems;
-//	Rectangle rectangle;
 	IHyperRectangle rectangle;
 	String nodeId;
 	RTreeCache cache;

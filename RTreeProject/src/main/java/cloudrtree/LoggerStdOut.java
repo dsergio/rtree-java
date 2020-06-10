@@ -30,7 +30,5 @@ public class LoggerStdOut extends LoggerBase {
 		}
 		
 	}
-
 	
-
 }

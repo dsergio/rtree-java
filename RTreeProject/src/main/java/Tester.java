@@ -105,7 +105,7 @@ public class Tester {
 //		CloudRTree tree = new CloudRTree("cloudtree22", 10, 10);
 		
 		
-		cloudrtree.StorageType cloudType = cloudrtree.StorageType.MYSQL;
+		cloudrtree.StorageType cloudType = cloudrtree.StorageType.SQLITE;
 		DataStorageBase dataStorage = null;
 		
 		switch (cloudType) {

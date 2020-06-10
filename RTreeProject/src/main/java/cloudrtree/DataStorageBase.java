@@ -5,6 +5,12 @@ public abstract class DataStorageBase implements IDataStorage {
 	public final StorageType storageType;
 	protected ILogger logger;
 	protected final String treeName;
+	protected int numReads = 0;
+	protected int numAdds = 0;
+	protected int numUpdates = 0;
+	protected long readTime = 0;
+	protected long addTime = 0;
+	protected long updateTime = 0;
 	
 	public DataStorageBase(StorageType storageType, ILogger logger, String treeName) {
 		this.storageType = storageType;

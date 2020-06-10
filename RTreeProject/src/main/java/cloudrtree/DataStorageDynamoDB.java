@@ -97,7 +97,7 @@ public class DataStorageDynamoDB extends DataStorageBase {
 	 * @see com.amazonaws.ClientConfiguration
 	 */
 	@Override
-	public void init() throws Exception {
+	public void init() {
 		/*
 		 * The ProfileCredentialsProvider will return your [default] credential profile
 		 * by reading from the credentials file located at (~/.aws/credentials) for
@@ -116,7 +116,7 @@ public class DataStorageDynamoDB extends DataStorageBase {
 
 	}
 
-	public void initializeStorage() throws Exception {
+	public void initializeStorage() {
 		try {
 
 			// Create a table with a primary hash key named 'name', which holds a string
@@ -133,8 +133,8 @@ public class DataStorageDynamoDB extends DataStorageBase {
 			try {
 				TableUtils.waitUntilActive(dynamoDB, treeName);
 			} catch (InterruptedException e) {
+				logger.log(e);
 				e.printStackTrace();
-				throw new Exception("DynamoDB table creation failed");
 			}
 
 			// Describe our new table
@@ -150,15 +150,17 @@ public class DataStorageDynamoDB extends DataStorageBase {
 			logger.log("AWS Error Code:   " + ase.getErrorCode());
 			logger.log("Error Type:       " + ase.getErrorType());
 			logger.log("Request ID:       " + ase.getRequestId());
-
-			throw new Exception("DynamoDB table creation failed");
+			
+			logger.log(ase);
+			ase.printStackTrace();
 		} catch (AmazonClientException ace) {
 			logger.log("Caught an AmazonClientException, which means the client encountered "
 					+ "a serious internal problem while trying to communicate with AWS, "
 					+ "such as not being able to access the network.");
 			logger.log("Error Message: " + ace.getMessage());
 
-			throw new Exception("DynamoDB table creation failed");
+			logger.log(ace);
+			ace.printStackTrace();
 		}
 
 	}

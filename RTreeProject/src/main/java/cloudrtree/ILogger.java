@@ -7,4 +7,5 @@ public interface ILogger {
 	public void logExact(String message); // no newline
 	public LogLevel getLogLevel();
 	public void setLogLevel(LogLevel logLevel);
+	public void log(Exception e);
 }

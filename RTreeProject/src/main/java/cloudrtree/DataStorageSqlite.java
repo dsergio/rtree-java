@@ -1,119 +1,74 @@
 package cloudrtree;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 /**
  * 
- * Example of another RTree storage implementation
+ * Sqlite RTree storage implementation
  * 
  * @author David Sergio
  *
  */
-public class DataStorageSqlite extends DataStorageBase {
+public class DataStorageSqlite extends DataStorageSQLBase {
 
 	public DataStorageSqlite(ILogger logger, String treeName) {
 		super(StorageType.SQLITE, logger, treeName);
+		init();
 	}
 
 	@Override
-	public void init() throws Exception {
-		// TODO Auto-generated method stub
+	public void init() {
+
+		try {
+			Class.forName("org.sqlite.JDBC");
+			String connectionString = "jdbc:sqlite:" + System.getProperty("user.dir") + java.io.File.separator + treeName + ".db";
+			System.out.println("CONNECTION STRING: " + connectionString);
+			conn = DriverManager.getConnection(connectionString);
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.log(e);
+			System.exit(0);
+		}
+		logger.log("Opened sqlite database successfully");
 
 	}
-
-	@Override
-	public void close() {
-		// TODO Auto-generated method stub
-
-	}
-
+	
 	@Override
 	public void initializeStorage() {
-		// TODO Auto-generated method stub
-	}
+		// create metadata table if it doesn't exist
+		// metadata table contains the maxChildren and maxItems parameters,
+		// and the min and max spatial boundaries
 
-	@Override
-	public RTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, RTreeCache cache) {
-		return null;
+		Statement stmt = null;
 
-	}
+		String sql = " CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
+				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
+				+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL " + ")";
+		logger.log("create table: \n" + sql);
 
-	@Override
-	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
-			String rectangle) {
-		// TODO Auto-generated method stub
+		try {
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
 
-	}
+			// create data table if it doesn't exist
+			// all trees in one table 'rtree_data'
 
-	@Override
-	public RTreeNode getCloudRTreeNode(String tableName, String nodeId, RTreeCache cache) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+			stmt = conn.createStatement();
 
-	@Override
-	public int getNumAdds() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+			sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
+					+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
+					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
+			logger.log("create table: \n" + sql);
 
-	@Override
-	public int getNumReads() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+			stmt.executeUpdate(sql);
 
-	@Override
-	public int getNumUpdates() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
 
-	@Override
-	public long getAddTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long getReadTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public long getUpdateTime() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void addToMetaData(String tableName, int maxChildren, int maxItems) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public boolean metaDataExists(String treeName) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getMaxChildren(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int getMaxItems(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

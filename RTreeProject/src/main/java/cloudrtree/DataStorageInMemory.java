@@ -33,7 +33,7 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void init() throws Exception {
+	public void init() {
 		maxItems = 0;
 		maxChildren = 0;
 
