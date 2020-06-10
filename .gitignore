@@ -45,3 +45,6 @@ RTreeProject/.classpath
 RTreeProject/src/main/resources/config.properties
 
 *.prefs
+
+# DB files
+*.db
