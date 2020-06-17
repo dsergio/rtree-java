@@ -2,7 +2,7 @@ package cloudrtree;
 
 import java.awt.Graphics2D;
 
-public class LoggerPaint extends LoggerBase implements ILoggerPaint {
+public class LoggerPaint extends LoggerBase implements ILoggerPaint {	
 	
 	public LoggerPaint(LogLevel logLevel) {
 		super(logLevel);

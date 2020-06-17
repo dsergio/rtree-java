@@ -23,8 +23,8 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			String connectionString = "jdbc:sqlite:" + System.getProperty("user.dir") + java.io.File.separator + treeName + ".db";
-			System.out.println("CONNECTION STRING: " + connectionString);
+			String connectionString = "jdbc:sqlite:" + System.getProperty("user.dir") + java.io.File.separator + "rtree" + ".db";
+//			System.out.println("SQLITE CONNECTION STRING: " + connectionString);
 			conn = DriverManager.getConnection(connectionString);
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -16,12 +16,7 @@ Properties of RTree:
 ## Storage Configuration
 
 ### MySQL
-This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory. I included an [example.properties](https://github.com/dsergio/rtree-java/blob/master/RTreeProject/src/main/resources/example.properties) to illustrate how it's stored, but in general, never put config files in github. 
-
-`host=[host]`<br />
-`user=[user]`<br />
-`password=[password]`<br />
-`database=[database]`<br />
+This application uses a `config.properties` configuration file in the `RTreeProject/src/main/resources` directory.
 
 ### AWS DynamoDB
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.

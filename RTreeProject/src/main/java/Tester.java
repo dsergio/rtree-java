@@ -35,8 +35,11 @@ public class Tester {
 		
 		Map<String, String> cityNameLatLong = new HashMap<String, String>();
 		Map<String, String> cityNameLatLongToInsert = new HashMap<String, String>();
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		
+		// configurations
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
 		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.PROD);
+		cloudrtree.StorageType cloudType = cloudrtree.StorageType.MYSQL;
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
@@ -105,7 +108,7 @@ public class Tester {
 //		CloudRTree tree = new CloudRTree("cloudtree22", 10, 10);
 		
 		
-		cloudrtree.StorageType cloudType = cloudrtree.StorageType.SQLITE;
+		
 		DataStorageBase dataStorage = null;
 		
 		switch (cloudType) {

@@ -417,7 +417,7 @@ public class RTree {
 	public List<ILocationItem> getPoints() {
 		List<ILocationItem> points = new ArrayList<ILocationItem>();
 		getPoints(getNode(treeName), points, 0);
-		logger.log("RTree.getPoints() points: " + points);
+//		logger.log("RTree.getPoints() points: " + points);
 		logger.log("RTree.getPoints() returned a list of size " + points.size());
 		return points;
 	}

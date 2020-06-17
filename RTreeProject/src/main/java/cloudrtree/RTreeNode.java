@@ -104,19 +104,6 @@ public class RTreeNode {
 	public JSONArray getItemsJSON() {
 		
 		return LocationItemBase.getItemsJSON(locationItems);
-		
-//		JSONArray arr = new JSONArray();
-//		if (locationItems != null) {
-//			for (LocationItem i : locationItems) {
-//				
-//				JSONObject obj = new JSONObject();
-//				obj.put("x", i.getX());
-//				obj.put("y", i.getY());
-//				obj.put("type", i.getType());
-//				arr.add(obj);
-//			}
-//		}
-//		return arr;
 	}
 
 	public List<ILocationItem> items() {
@@ -157,6 +144,7 @@ public class RTreeNode {
 	}
 	public void updateRectangle(boolean goUp) {
 		System.out.println("RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		
 		int minX = rectangle.getDim1(0);
 		int maxX = rectangle.getDim2(0);
 		int minY = rectangle.getDim1(1);
@@ -198,6 +186,119 @@ public class RTreeNode {
 		if (parent != null && cache.getNode(parent) != null && goUp) {
 			updateRectangle(cache.getNode(parent));
 		}
+	}
+	
+	public void updateRectangleNDimensional(boolean goUp) {
+		System.out.println(rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		
+		List<Integer> minimums = new ArrayList<Integer>();
+		List<Integer> maximums = new ArrayList<Integer>();
+		for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+			minimums.add(null);
+			maximums.add(null);
+		}
+		for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+			minimums.set(i, rectangle.getDim1(i));
+			maximums.set(i, rectangle.getDim2(i));
+		}
+		
+		if (locationItems.size() > 0) {
+			for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+				minimums.set(i, locationItems.get(0).getDim(i));
+				maximums.set(i, minimums.get(i));
+			}
+			
+			for (int i = 0; i < locationItems.size(); i++) {
+				for (int i2 = 0; i2 < rectangle.getNumberDimensions(); i2++) {
+					if (locationItems.get(i).getDim(i2) < minimums.get(i2)) {
+						minimums.set(i2, locationItems.get(i).getDim(i2));
+					}
+					if (locationItems.get(i).getDim(i2) > maximums.get(i2)) {
+						maximums.set(i2, locationItems.get(i).getDim(i2));
+					}
+				}
+			}
+		}
+		
+		for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+			rectangle.setDim1(i, minimums.get(i));
+			rectangle.setDim2(i, maximums.get(i));
+		}
+		
+		cache.updateNode(nodeId, null, null, null, rectangle.getJson().toJSONString());
+		logger.log("updated rectangle for " + nodeId + " new rectangle: " + rectangle);
+		
+		// logger.log("This node has a bounding box of " + rectangle.toString()
+		// + " has parent? " + (parent != null) + "... child rect: " + childRectangle);
+
+		if (parent != null && cache.getNode(parent) != null && goUp) {
+			updateRectangleNDimensional(cache.getNode(parent));
+		}
+	}
+	
+	public void updateRectangleNDimensional(RTreeNode node) {
+		logger.log(rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
+		
+		IHyperRectangle childSum = node.rectangle;
+		
+		List<Integer> minimums = new ArrayList<Integer>();
+		List<Integer> maximums = new ArrayList<Integer>();
+		for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+			minimums.add(null);
+			maximums.add(null);
+		}
+		for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+			minimums.set(i, node.rectangle.getDim1(i));
+			maximums.set(i, node.rectangle.getDim2(i));
+		}
+		
+		
+		if (node.children != null) {
+			RTreeNode firstChild = cache.getNode(node.getChildren().get(0));
+			if (firstChild != null && firstChild.rectangle != null) {
+				for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+					minimums.set(i, firstChild.getRectangle().getDim1(i));
+					maximums.set(i, firstChild.getRectangle().getDim2(i));
+
+				}
+			}
+			
+			
+			if (firstChild != null) {
+				childSum = firstChild.getRectangle();
+			}
+			
+			for (String child : node.children) {
+				
+				RTreeNode childNode = cache.getNode(child);
+				if (childNode != null && childNode.rectangle != null) {
+					
+					logger.log("childSum: " + childSum);
+					IHyperRectangle childRectangle = cache.getNode(child).getRectangle();
+					
+					childSum = Rectangle.sumRectangles(childSum, childRectangle);
+					
+					for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
+						if (minimums.get(i) > childRectangle.getDim1(i)) {
+							minimums.set(i, childRectangle.getDim1(i));
+						}
+						if (maximums.get(i) < childRectangle.getDim2(i)) {
+							maximums.set(i, childRectangle.getDim2(i));
+						}
+					}
+				}
+			}
+			
+			
+			
+			node.rectangle = childSum;
+			cache.updateNode(node.nodeId, null, null, null, node.rectangle.getJson().toJSONString());
+		}
+		
+		if (node.parent != null && cache.getNode(node.parent) != null) {
+			updateRectangle(cache.getNode(node.parent));
+		}
+	
 	}
 	
 	public void updateRectangle(RTreeNode node) {
@@ -348,5 +449,50 @@ public class RTreeNode {
 		
 	}
 	
+	public void setItemsJsonNDimensional(String items) {
+		
+		JSONParser parser = new JSONParser();
+		Object obj;
+		this.locationItems = new ArrayList<ILocationItem>();
+		
+		try {
+			if (items != null && !items.equals("") && !items.equals("delete")) {
+				
+				obj = parser.parse(items);
+				JSONArray arr = (JSONArray) obj;
+				for (int i = 0; i < arr.size(); i++) {
+					JSONObject row = (JSONObject) arr.get(i);
+					
+					ILocationItem item = new LocationItemND(rectangle.getNumberDimensions());
+					
+					for (int i2 = 0; i2 < rectangle.getNumberDimensions(); i2++) {
+						
+						switch (i2) {
+						case 0: 
+							item.setDim(i2, Integer.parseInt(row.get("x").toString()));
+							break;
+						case 1:
+							item.setDim(i2, Integer.parseInt(row.get("y").toString()));
+							break;
+						case 2:
+							item.setDim(i2, Integer.parseInt(row.get("z").toString()));
+							break;
+						default:
+							item.setDim(i2, Integer.parseInt(row.get("" + i2).toString()));
+							break;
+						}
+						
+						item.setType(row.get("type").toString());
+					}
+					
+					this.locationItems.add(item);
+				}
+			}
+		} catch (ParseException e) {
+			logger.log("items: |" + items + "|");
+			e.printStackTrace();
+		}
+		
+	}
 	
 }
