@@ -1,4 +1,4 @@
-package cloudrtree;
+package rtree.log;
 
 import java.awt.Graphics2D;
 

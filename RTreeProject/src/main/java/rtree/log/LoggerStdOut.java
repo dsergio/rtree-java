@@ -1,4 +1,4 @@
-package cloudrtree;
+package rtree.log;
 
 public class LoggerStdOut extends LoggerBase {
 	

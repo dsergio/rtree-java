@@ -1,4 +1,4 @@
-package cloudrtree;
+package rtree.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.AfterAll;
@@ -6,6 +6,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import rtree.rectangle.IHyperRectangle;
+import rtree.rectangle.Rectangle2D;
 
 class RectangleTests {
 
@@ -33,7 +36,7 @@ class RectangleTests {
 		Integer x2 = 10;
 		Integer y1 = 0;
 		Integer y2 = 10;
-		IHyperRectangle r = new Rectangle(x1, x2, y1, y2);
+		IHyperRectangle r = new Rectangle2D(x1, x2, y1, y2);
 		
 		
 		// Act
@@ -57,7 +60,7 @@ class RectangleTests {
 		Integer x2 = 0;
 		Integer y1 = 0;
 		Integer y2 = 0;
-		IHyperRectangle r = new Rectangle();
+		IHyperRectangle r = new Rectangle2D();
 		
 		
 		// Act
@@ -81,11 +84,11 @@ class RectangleTests {
 	@Test
 	void Rectangle_Overlap_True() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle(5, 15, 5, 15);
+		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle2D(5, 15, 5, 15);
 		
 		// Act
-		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
+		boolean overlap = Rectangle2D.rectanglesOverlap2D(r1, r2);
 				
 		// Assert
 		assertEquals(true, overlap);
@@ -94,11 +97,11 @@ class RectangleTests {
 	@Test
 	void Rectangle_Overlap_False() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle(20, 30, 20, 30);
+		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle2D(20, 30, 20, 30);
 		
 		// Act
-		boolean overlap = Rectangle.rectanglesOverlap(r1, r2);
+		boolean overlap = Rectangle2D.rectanglesOverlap2D(r1, r2);
 				
 		// Assert
 		assertEquals(false, overlap);
@@ -107,11 +110,11 @@ class RectangleTests {
 	@Test
 	void Rectangle_Sum_CorrectValue() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle(20, 30, 20, 30);
+		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
+		IHyperRectangle r2 = new Rectangle2D(20, 30, 20, 30);
 		
 		// Act
-		IHyperRectangle sum = Rectangle.sumRectangles(r1, r2);
+		IHyperRectangle sum = Rectangle2D.sumRectangles2D(r1, r2);
 				
 		// Assert
 		assertEquals(900, sum.getSpace());
