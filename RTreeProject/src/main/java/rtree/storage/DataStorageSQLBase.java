@@ -12,8 +12,6 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.sun.javafx.scene.paint.GradientUtils.Parser;
-
 import rtree.log.ILogger;
 import rtree.rectangle.HyperCuboid;
 import rtree.rectangle.IHyperRectangle;
