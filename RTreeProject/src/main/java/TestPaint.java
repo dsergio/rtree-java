@@ -30,13 +30,13 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.DefaultCaret;
 
-import cloudrtree.RTree;
-import cloudrtree.IHyperRectangle;
-import cloudrtree.ILocationItem;
-import cloudrtree.ILogger;
-import cloudrtree.ILoggerPaint;
-import cloudrtree.LocationItem;
-import cloudrtree.Rectangle;
+import rtree.item.ILocationItem;
+import rtree.item.LocationItem2D;
+import rtree.log.ILogger;
+import rtree.log.ILoggerPaint;
+import rtree.rectangle.IHyperRectangle;
+import rtree.rectangle.Rectangle2D;
+import rtree.tree.RTree;
 
 public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
@@ -206,7 +206,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				list.repaint();
 				paintPan.repaint();
 				repaint();
-				searchRectangle = new Rectangle(
+				searchRectangle = new Rectangle2D(
 						e.getX() - list.getWidth() - searchRange, 
 						e.getX() - list.getWidth() + searchRange, 
 						e.getY() - showTree.getHeight() - (int) (searchRange * 1.5), 
@@ -282,7 +282,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 			points = pointsToAdd;
 		}
 
-		public void addPoint(LocationItem item) {
+		public void addPoint(LocationItem2D item) {
 			points.add(item);
 		}
 		
@@ -492,7 +492,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		public void updateGraphics(int x, int y) throws IOException {
 			color = Color.BLACK;
 
-			LocationItem item = new LocationItem(x, y, "point");
+			LocationItem2D item = new LocationItem2D(x, y, "point");
 			// addPoint(item);
 			tree.insert(item);
 			tree.updateRoot();
@@ -527,7 +527,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range);
 				String[] data = {"Searching..."};
 				list.setListData(data);
-				searchRectangle = new Rectangle(x, x + range, y, y + range);
+				searchRectangle = new Rectangle2D(x, x + range, y, y + range);
 				searchResults = tree.search(searchRectangle);
 				for (IHyperRectangle r : searchResults.keySet()) {
 					logger.log("search results: " + r);
@@ -548,7 +548,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
 
-				LocationItem toDelete = new LocationItem(x, y, type);
+				LocationItem2D toDelete = new LocationItem2D(x, y, type);
 				tree.delete(toDelete);
 
 				repaint();

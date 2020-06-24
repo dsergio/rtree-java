@@ -7,18 +7,19 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import cloudrtree.RTree;
-import cloudrtree.LocationItem;
-import cloudrtree.LogLevel;
-import cloudrtree.LoggerPaint;
-import cloudrtree.LoggerStdOut;
-import cloudrtree.DataStorageBase;
-import cloudrtree.DataStorageDynamoDB;
-import cloudrtree.DataStorageInMemory;
-import cloudrtree.DataStorageMySQL;
-import cloudrtree.DataStorageSqlite;
-import cloudrtree.ILogger;
-import cloudrtree.ILoggerPaint;
+import rtree.item.LocationItem2D;
+import rtree.log.ILogger;
+import rtree.log.ILoggerPaint;
+import rtree.log.LogLevel;
+import rtree.log.LoggerPaint;
+import rtree.log.LoggerStdOut;
+import rtree.storage.DataStorageBase;
+import rtree.storage.DataStorageDynamoDB;
+import rtree.storage.DataStorageInMemory;
+import rtree.storage.DataStorageMySQL;
+import rtree.storage.DataStorageSqlite;
+import rtree.tree.RTree;
+import rtree.tree.SplitQuadratic;
 
 public class Tester {
 
@@ -39,7 +40,7 @@ public class Tester {
 		// configurations
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
 		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.PROD);
-		cloudrtree.StorageType cloudType = cloudrtree.StorageType.MYSQL;
+		rtree.storage.StorageType cloudType = rtree.storage.StorageType.MYSQL;
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");
@@ -163,6 +164,7 @@ public class Tester {
 				
 				
 				tree = new RTree(dataStorage);
+//				tree = new RTree(dataStorage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), 3); // testing 3D
 				
 			}
 			
@@ -325,14 +327,14 @@ public class Tester {
 		}
 	}
 	
-	static LocationItem newCity(double latitude, double longitude, String name, double latZero, double latMax, double longZero, double longMax, int mapSize) {
+	static LocationItem2D newCity(double latitude, double longitude, String name, double latZero, double latMax, double longZero, double longMax, int mapSize) {
 		
 		
 		int xPos = (int) ( (          (longitude - longZero)   /  (longMax - longZero)   ) * mapSize);
 		
 		int yPos = (int) ( (      1 - ((latitude - latZero)    /  (latMax - latZero))     ) * mapSize);
 		
-		LocationItem item = new LocationItem(xPos, yPos, name);
+		LocationItem2D item = new LocationItem2D(xPos, yPos, name);
 		return item;
 	}
 	
