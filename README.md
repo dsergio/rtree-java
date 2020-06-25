@@ -3,8 +3,17 @@
 # rtree-java
 
 
-Cloud-based R-Tree structure which can store spatial data (2D in this project) in a R-Tree structure in persistent storage, using Java. This project was created to demonstrate a simple cloud-based tree structure in AWS DynamoDB, however I am currently working on extending it to use any persistent storage (such as MySQL) via the strategy design pattern. This is in progress and far beyond the scope of the original assignment.
+Cloud-based R-Tree structure which can store N-Dimensional spatial data in a R-Tree structure in persistent storage, using Java. This project was created to demonstrate a simple cloud-based tree structure in AWS DynamoDB, however I am currently working on extending it in several aspects.
 
+pom.xml:
+
+```
+	<dependency>
+	  <groupId>dsergio</groupId>
+	  <artifactId>rtree</artifactId>
+	  <version>1.0</version>
+	</dependency>`
+```
 
 Properties of RTree:
 * Depth-balanced
