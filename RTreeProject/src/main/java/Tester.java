@@ -17,13 +17,7 @@ import rtree.storage.DataStorageDynamoDB;
 import rtree.storage.DataStorageInMemory;
 import rtree.storage.DataStorageMySQL;
 import rtree.storage.DataStorageSqlite;
-import rtree.storage.DepDataStorageBase;
-import rtree.storage.DepDataStorageDynamoDB;
-import rtree.storage.DepDataStorageInMemory;
-import rtree.storage.DepDataStorageMySQL;
-import rtree.storage.DepDataStorageSqlite;
 import rtree.storage.IDataStorage;
-import rtree.tree.DepRTree;
 import rtree.tree.IRTree;
 import rtree.tree.RTree2D;
 

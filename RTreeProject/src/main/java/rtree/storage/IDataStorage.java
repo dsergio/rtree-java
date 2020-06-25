@@ -2,11 +2,8 @@ package rtree.storage;
 
 import java.util.List;
 
-import rtree.tree.DepIRTreeCache;
 import rtree.tree.IRTreeCache;
 import rtree.tree.IRTreeNode;
-import rtree.tree.DepRTreeCache;
-import rtree.tree.DepRTreeNode;
 
 /**
  * 

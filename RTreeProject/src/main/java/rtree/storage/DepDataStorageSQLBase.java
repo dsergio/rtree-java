@@ -17,7 +17,6 @@ import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 import rtree.tree.DepIRTreeCache;
-import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
 
 /**

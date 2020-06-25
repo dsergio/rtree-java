@@ -19,14 +19,9 @@ import rtree.log.LoggerStdOut;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 import rtree.storage.DataStorageInMemory;
-import rtree.storage.DepDataStorageBase;
-import rtree.storage.DepDataStorageInMemory;
 import rtree.storage.IDataStorage;
-import rtree.tree.DepRTree;
-import rtree.tree.DepSplitQuadratic;
 import rtree.tree.IRTree;
 import rtree.tree.RTree2D;
-import rtree.tree.SplitQuadratic2D;
 
 class RTree2DTests {
 

@@ -12,27 +12,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.ILocationItem;
-import rtree.item.LocationItem2D;
 import rtree.item.LocationItemND;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
 import rtree.rectangle.RectangleND;
 import rtree.storage.DataStorageInMemory;
-import rtree.storage.DepDataStorageBase;
-import rtree.storage.DepDataStorageInMemory;
 import rtree.storage.IDataStorage;
-import rtree.tree.DepRTree;
-import rtree.tree.DepSplitQuadratic;
 import rtree.tree.IRTree;
-import rtree.tree.IRTreeCache;
-import rtree.tree.RTree2D;
-import rtree.tree.RTreeCache2D;
-import rtree.tree.RTreeCacheND;
 import rtree.tree.RTreeND;
-import rtree.tree.SplitQuadratic2D;
 
 class RTree3DTests {
 

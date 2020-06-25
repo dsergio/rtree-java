@@ -11,7 +11,6 @@ import org.json.simple.parser.ParseException;
 import rtree.log.ILogger;
 import rtree.rectangle.Rectangle2D;
 import rtree.tree.DepIRTreeCache;
-import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
 
 /**

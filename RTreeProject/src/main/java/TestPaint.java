@@ -36,7 +36,6 @@ import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
-import rtree.tree.DepRTree;
 import rtree.tree.IRTree;
 
 public class TestPaint extends JFrame implements KeyListener, ActionListener {
