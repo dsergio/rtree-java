@@ -22,6 +22,11 @@ import rtree.storage.DepDataStorageSqlite;
 import rtree.tree.DepRTree;
 import rtree.tree.DepSplitQuadratic;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 class DepDataStorageSqliteTests {
 	
 	DepDataStorageSQLBase storage = null;

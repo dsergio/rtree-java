@@ -16,6 +16,11 @@ import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
 import rtree.tree.DepRTreeNode;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 class DepRTreeNodeTests {
 
 	@BeforeAll

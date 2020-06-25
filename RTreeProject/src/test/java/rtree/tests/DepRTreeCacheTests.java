@@ -17,6 +17,11 @@ import rtree.storage.DepDataStorageInMemory;
 import rtree.tree.DepRTree;
 import rtree.tree.DepSplitQuadratic;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 class DepRTreeCacheTests {
 
 	@BeforeAll
