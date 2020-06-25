@@ -2,6 +2,13 @@ package rtree.tree;
 
 import rtree.storage.DepIDataStorage;
 
+/**
+ * 
+ * TODO deprecate
+ * 
+ * @author David Sergio
+ *
+ */
 public interface DepIRTreeCache {
 	
 	public int getNumDimensions();

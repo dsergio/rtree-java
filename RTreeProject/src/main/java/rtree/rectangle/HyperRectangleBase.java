@@ -6,7 +6,7 @@ import java.util.List;
 import rtree.item.ILocationItem;
 
 /**
- * An abstract cuboid class. 
+ * 
  * An abstract cuboid is defined by the space contained by two n-dimensional points.
  * For example, a line with two endpoints defines the space contained by two 1-dimensional points.
  * A Rectangle defines the space contained by two 2-dimensional points. 

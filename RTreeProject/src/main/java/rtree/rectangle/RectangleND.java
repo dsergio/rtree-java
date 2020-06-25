@@ -2,6 +2,11 @@ package rtree.rectangle;
 
 import org.json.simple.JSONObject;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RectangleND extends HyperRectangleBase {
 
 	public RectangleND(int numberDimensions) {

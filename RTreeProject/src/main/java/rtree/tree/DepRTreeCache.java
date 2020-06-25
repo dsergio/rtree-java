@@ -21,7 +21,7 @@ import rtree.storage.DepIDataStorage;
 
 /**
  * 
- * R-Tree Cache
+ * TODO deprecate
  * 
  * @author David Sergio
  *

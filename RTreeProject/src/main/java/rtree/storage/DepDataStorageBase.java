@@ -2,6 +2,13 @@ package rtree.storage;
 
 import rtree.log.ILogger;
 
+/**
+ * 
+ * TODO deprecate
+ * 
+ * @author David Sergio
+ *
+ */
 public abstract class DepDataStorageBase implements DepIDataStorage {
 	
 	public final StorageType storageType;

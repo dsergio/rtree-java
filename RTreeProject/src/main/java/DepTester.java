@@ -20,6 +20,13 @@ import rtree.storage.DepDataStorageMySQL;
 import rtree.storage.DepDataStorageSqlite;
 import rtree.tree.DepRTree;
 
+/**
+ * 
+ * Deprecated
+ * 
+ * @author David Sergio
+ *
+ */
 public class DepTester {
 
 	public static void main(String[] args) {
