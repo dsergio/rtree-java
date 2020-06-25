@@ -31,6 +31,11 @@ public abstract class DataStorageBase implements IDataStorage {
 		return storageType;
 	}
 	
+	@Override
+	public int getNumDimensions() {
+		return numDimensions;
+	}
+	
 	public void validateTreeName() throws IllegalArgumentException {
 		if (!treeName.matches("^[a-zA-Z0-9_]+$")) {
 			logger.log("Illegal table name");

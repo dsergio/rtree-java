@@ -538,10 +538,4 @@ public class DataStorageDynamoDB extends DataStorageBase {
 		
 	}
 
-	@Override
-	public int getN(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 }

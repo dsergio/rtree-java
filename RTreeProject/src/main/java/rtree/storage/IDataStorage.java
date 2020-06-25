@@ -38,7 +38,7 @@ public interface IDataStorage {
 	public boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
 	public int getMaxChildren(String treeName); // get the persistent maxChildren value
 	public int getMaxItems(String treeName);  // get the persistent maxItems value
-	public int getN(String treeName);  // get N - the number of dimensions
+	public int getNumDimensions();  // get number of dimensions
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY);
 	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums);
 	public StorageType getStorageType();

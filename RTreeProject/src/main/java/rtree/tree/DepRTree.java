@@ -790,6 +790,28 @@ public class DepRTree {
 		}
 	}
 	
+	/**
+	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
+	 * 
+	 * @param Rectangle searchRectangle
+	 * @return a map of rectangles containing search results
+	 * 
+	 */
+	public Map<IHyperRectangle, List<ILocationItem>> searchNDimensional(IHyperRectangle searchRectangle) {
+		int curAdds = numAdds();
+		int curUpdates = numUpdates();
+		int curReads = numReads();
+		
+		long time = System.currentTimeMillis();
+		Map<IHyperRectangle, List<ILocationItem>> result = new HashMap<IHyperRectangle, List<ILocationItem>>();
+		searchNDimensional(searchRectangle, getNode(treeName), result, 0);
+		
+		
+		logger.log("SEARCH consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
+				(numReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
+		return result;
+	}
+	
 	private void searchNDimensional(IHyperRectangle searchRectangle, DepRTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
 		
 		if (node == null) {
@@ -884,6 +906,16 @@ public class DepRTree {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Delete item from tree
+	 * 
+	 * @param toDelete Item to be deleted
+	 * 
+	 */
+	public void deleteNDimensional(ILocationItem toDelete) {
+		deleteNDimensional(toDelete, getNode(treeName));
 	}
 	
 	private void deleteNDimensional(ILocationItem toDelete, DepRTreeNode node) {

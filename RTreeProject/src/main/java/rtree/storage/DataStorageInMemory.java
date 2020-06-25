@@ -28,14 +28,6 @@ public class DataStorageInMemory extends DataStorageBase {
 	
 	private int maxItems;
 	private int maxChildren;
-	private int numReads = 0;
-	private int numAdds = 0;
-	private int numUpdates = 0;
-	private long readTime = 0;
-	private long addTime = 0;
-	private long updateTime = 0;
-	private int N;
-	
 	private Map<String, IRTreeNode> localData;
 	
 	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
@@ -279,17 +271,11 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
+	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int numDimensions) {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
-		this.N = N;
+		this.numDimensions = numDimensions;
 		
-	}
-
-	@Override
-	public int getN(String treeName) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 }

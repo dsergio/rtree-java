@@ -479,7 +479,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 	
 	@Override
-	public int getN(String treeName) {
+	public int getNumDimensions() {
 		
 		int N = 2; // default to 2
 		
