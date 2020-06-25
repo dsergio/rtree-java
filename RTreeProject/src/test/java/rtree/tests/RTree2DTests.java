@@ -18,12 +18,17 @@ import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
-import rtree.storage.DataStorageBase;
 import rtree.storage.DataStorageInMemory;
-import rtree.tree.RTree;
-import rtree.tree.SplitQuadratic;
+import rtree.storage.DepDataStorageBase;
+import rtree.storage.DepDataStorageInMemory;
+import rtree.storage.IDataStorage;
+import rtree.tree.DepRTree;
+import rtree.tree.DepSplitQuadratic;
+import rtree.tree.IRTree;
+import rtree.tree.RTree2D;
+import rtree.tree.SplitQuadratic2D;
 
-class RTreeTests {
+class RTree2DTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -44,12 +49,13 @@ class RTreeTests {
 	@Test
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
+		int N = 2;
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
 		
 		// Act
 		try {
-			new RTree(dataStorage, 4, 4, logger, new SplitQuadratic());
+			new RTree2D(dataStorage, 4, 4, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -62,13 +68,14 @@ class RTreeTests {
 	@Test
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
-		RTree tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
+		int N = 2;
+		IRTree tree = null;
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTree(dataStorage, numChildrenExpected, numItemsExpected, logger, new SplitQuadratic());
+			tree = new RTree2D(dataStorage, numChildrenExpected, numItemsExpected, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -93,12 +100,13 @@ class RTreeTests {
 	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
-		RTree tree = null;
+		int N = 2;
+		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
+		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
 		
 		try {
-			tree = new RTree(dataStorage, 4, 4, logger, new SplitQuadratic());
+			tree = new RTree2D(dataStorage, 4, 4, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -125,12 +133,13 @@ class RTreeTests {
 	@Test
 	void InMemoryTree_Query_Success() {
 		// Arrange
-		RTree tree = null;
+		int N = 2;
+		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
+		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
 		
 		try {
-			tree = new RTree(dataStorage, 4, 4, logger, new SplitQuadratic());
+			tree = new RTree2D(dataStorage, 4, 4, logger);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

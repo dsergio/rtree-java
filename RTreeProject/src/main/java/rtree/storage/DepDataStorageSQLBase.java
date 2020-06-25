@@ -19,10 +19,6 @@ import rtree.rectangle.Rectangle2D;
 import rtree.tree.DepIRTreeCache;
 import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
-import rtree.tree.IRTreeCache;
-import rtree.tree.IRTreeNode;
-import rtree.tree.RTreeNode2D;
-import rtree.tree.RTreeNodeND;
 
 /**
  * 
@@ -31,12 +27,12 @@ import rtree.tree.RTreeNodeND;
  * @author David Sergio
  *
  */
-public abstract class DataStorageSQLBase extends DataStorageBase {
+public abstract class DepDataStorageSQLBase extends DepDataStorageBase {
 
 	protected Connection conn;
 	
-	protected DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
-		super(storageType, logger, treeName, numDimensions);
+	protected DepDataStorageSQLBase(StorageType storageType, ILogger logger, String treeName) {
+		super(storageType, logger, treeName);
 		init();
 	}
 
@@ -59,8 +55,8 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	public abstract void initializeStorage();
 
 	@Override
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, IRTreeCache cache) {
+	public DepRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, DepIRTreeCache cache) {
 
 		long time = System.currentTimeMillis();
 		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
@@ -90,18 +86,16 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			e.printStackTrace();
 		}
 		
-		IRTreeNode node = null;
-		if (numDimensions == 2) {
-			node = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			node = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
+		DepRTreeNode node = new DepRTreeNode(nodeId, children, parent, cache, logger);
+		
+		
+		int N = cache.getNumDimensions();
 		
 		IHyperRectangle r;
-		if (numDimensions == 2) {
+		if (N == 2) {
 			r = new Rectangle2D();
 		} else {
-			r = new RectangleND(numDimensions);
+			r = new RectangleND(N);
 		}
 		
 		if (rectangle != null) {
@@ -109,7 +103,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			JSONObject rObj;
 			try {
 				rObj = (JSONObject) parser.parse(rectangle);
-				for (int i = 0; i < numDimensions; i++) {
+				for (int i = 0; i < N; i++) {
 					switch (i) {
 					case 0: 
 						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
@@ -139,7 +133,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		
 		
 		node.setRectangle(r);
-		node.setItemsJson(items);
+		node.setItemsJsonNDimensional(items);
 
 		numAdds++;
 		addTime += (System.currentTimeMillis() - time);
@@ -209,7 +203,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache) {
+	public DepRTreeNode getCloudRTreeNode(String tableName, String nodeId, DepIRTreeCache cache) {
 
 		long time = System.currentTimeMillis();
 		
@@ -219,7 +213,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 		String query = select + where;
 
-		IRTreeNode returnNode = null;
+		DepRTreeNode returnNode = null;
 
 		PreparedStatement stmt;
 		try {
@@ -285,15 +279,10 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 					}
 				}
 				
-				
-				if (cache.getNumDimensions() == 2) {
-					returnNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
-				} else {
-					returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
-				}
 
+				returnNode = new DepRTreeNode(nodeId, children, parent, cache, logger);
 				returnNode.setRectangle(r);
-				returnNode.setItemsJson(items);
+				returnNode.setItemsJsonNDimensional(items);
 
 				logger.log("select: nodeId: " + nodeId);
 				logger.log("select: node children: " + returnNode.getChildren());

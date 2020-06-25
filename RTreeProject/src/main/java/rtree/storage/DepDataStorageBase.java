@@ -2,7 +2,7 @@ package rtree.storage;
 
 import rtree.log.ILogger;
 
-public abstract class DataStorageBase implements IDataStorage {
+public abstract class DepDataStorageBase implements DepIDataStorage {
 	
 	public final StorageType storageType;
 	protected ILogger logger;
@@ -13,13 +13,11 @@ public abstract class DataStorageBase implements IDataStorage {
 	protected long readTime = 0;
 	protected long addTime = 0;
 	protected long updateTime = 0;
-	protected int numDimensions;
 	
-	public DataStorageBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
+	public DepDataStorageBase(StorageType storageType, ILogger logger, String treeName) {
 		this.storageType = storageType;
 		this.logger = logger;
 		this.treeName = treeName;
-		this.numDimensions = numDimensions;
 		validateTreeName();
 	}
 	

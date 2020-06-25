@@ -128,7 +128,7 @@ public abstract class HyperRectangleBase implements IHyperRectangle {
 			max.add(Math.max(item.getDim(i), rectangle.getDim2(i)));
 		}
 		
-		IHyperRectangle newRect = new HyperCuboid(item.getNumberDimensions());
+		IHyperRectangle newRect = new RectangleND(item.getNumberDimensions());
 		for (int i = 0; i < item.getNumberDimensions(); i++) {
 			newRect.setDim1(i, min.get(i));
 			newRect.setDim2(i, max.get(i));
@@ -170,7 +170,7 @@ public abstract class HyperRectangleBase implements IHyperRectangle {
 			max.add(Math.max(item1.getDim(i), item2.getDim(i)));
 		}
 		
-		IHyperRectangle newRect = new HyperCuboid(item1.getNumberDimensions());
+		IHyperRectangle newRect = new RectangleND(item1.getNumberDimensions());
 		for (int i = 0; i < item1.getNumberDimensions(); i++) {
 			newRect.setDim1(i, min.get(i));
 			newRect.setDim2(i, max.get(i));
@@ -219,7 +219,7 @@ public abstract class HyperRectangleBase implements IHyperRectangle {
 				}
 			}
 			
-			IHyperRectangle newRect = new HyperCuboid(rect.getNumberDimensions());
+			IHyperRectangle newRect = new RectangleND(rect.getNumberDimensions());
 			for (int i = 0; i < rect.getNumberDimensions(); i++) {
 				newRect.setDim1(i, min.get(i));
 				newRect.setDim2(i, max.get(i));

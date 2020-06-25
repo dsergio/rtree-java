@@ -12,12 +12,12 @@ import rtree.item.LocationItem2D;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageBase;
-import rtree.storage.DataStorageInMemory;
-import rtree.tree.RTree;
-import rtree.tree.SplitQuadratic;
+import rtree.storage.DepDataStorageBase;
+import rtree.storage.DepDataStorageInMemory;
+import rtree.tree.DepRTree;
+import rtree.tree.DepSplitQuadratic;
 
-class RTreeCacheTests {
+class DepRTreeCacheTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -39,8 +39,8 @@ class RTreeCacheTests {
 	void RTreeCache_UpdateNode_ReturnRectangle() {
 		// Arrange
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		DataStorageBase dataStorage = new DataStorageInMemory(logger, "TestTree1");
-		RTree tree = null;
+		DepDataStorageBase dataStorage = new DepDataStorageInMemory(logger, "TestTree1");
+		DepRTree tree = null;
 		
 		
 		int xExpected = 10;
@@ -50,7 +50,7 @@ class RTreeCacheTests {
 		
 		// Act Assert
 		try {
-			tree = new RTree(dataStorage, 4, 4, logger, new SplitQuadratic());
+			tree = new DepRTree(dataStorage, 4, 4, logger, new DepSplitQuadratic());
 			tree.insertType(item);
 			
 			assertEquals(xExpected, tree.getCache().getNode("TestTree1").getRectangle().getDim1(0));

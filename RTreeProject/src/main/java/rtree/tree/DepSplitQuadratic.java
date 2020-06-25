@@ -21,11 +21,11 @@ import rtree.rectangle.Rectangle2D;
  * @author David Sergio
  *
  */
-public class SplitQuadratic extends SplitBehavior {
+public class DepSplitQuadratic extends DepSplitBehaviorBase {
 	
 	final String description;
 	
-	public SplitQuadratic() {
+	public DepSplitQuadratic() {
 		description = "Quadratic Split";
 	}
 	
@@ -35,7 +35,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	@Override
-	public void splitLeafNode2D(RTreeNode node, ILocationItem locationItem) {
+	public void splitLeafNode2D(DepRTreeNode node, ILocationItem locationItem) {
 		
 		// full leaf node, so split leaf node
 		logger.log("#SPLIT-LEAF: " + " We're full, splitting leaf node: " + node.nodeId + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
@@ -69,8 +69,8 @@ public class SplitQuadratic extends SplitBehavior {
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		
-		RTreeNode node1 = new RTreeNode(node1Id, null, null, cache, logger);
-		RTreeNode node2 = new RTreeNode(node2Id, null, null, cache, logger);
+		DepRTreeNode node1 = new DepRTreeNode(node1Id, null, null, cache, logger);
+		DepRTreeNode node2 = new DepRTreeNode(node2Id, null, null, cache, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.nodeId);
 		newChildren.add(node2.nodeId);
@@ -87,7 +87,7 @@ public class SplitQuadratic extends SplitBehavior {
 //			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
 //			root.setChildren(newChildren);
 			
-			RTreeNode rootTemp = new RTreeNode(treeName, null, null, cache, logger);
+			DepRTreeNode rootTemp = new DepRTreeNode(treeName, null, null, cache, logger);
 			rootTemp.setChildren(newChildren);
 			
 			node1.setParent(treeName);
@@ -104,7 +104,7 @@ public class SplitQuadratic extends SplitBehavior {
 			
 			logger.log("#SPLIT-LEAF: " + "parent is not null");
 			
-			RTreeNode nodesParent = cache.getNode(node.getParent());
+			DepRTreeNode nodesParent = cache.getNode(node.getParent());
 			logger.log("#SPLIT-LEAF: " + "nodesParent.children: " + nodesParent.children);
 			
 			List<String> nodesParentsChildrenList = new ArrayList<String>();
@@ -196,7 +196,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void splitBranchNode2D(RTreeNode node) {
+	public void splitBranchNode2D(DepRTreeNode node) {
 		
 		LogLevel temp = logger.getLogLevel();
 		logger.setLogLevel(LogLevel.DEV2);
@@ -267,10 +267,10 @@ public class SplitQuadratic extends SplitBehavior {
 			String nodesParentsNewChild1Id = UUID.randomUUID().toString();
 			String nodesParentsNewChild2Id = UUID.randomUUID().toString();
 			
-			RTreeNode nodesParentsNewChild1 = new RTreeNode(nodesParentsNewChild1Id, null, null, cache, logger);
-			RTreeNode nodesParentsNewChild2 = new RTreeNode(nodesParentsNewChild2Id, null, null, cache, logger);
+			DepRTreeNode nodesParentsNewChild1 = new DepRTreeNode(nodesParentsNewChild1Id, null, null, cache, logger);
+			DepRTreeNode nodesParentsNewChild2 = new DepRTreeNode(nodesParentsNewChild2Id, null, null, cache, logger);
 			
-			List<RTreeNode> nodesParentsNewChildren = new ArrayList<RTreeNode>();
+			List<DepRTreeNode> nodesParentsNewChildren = new ArrayList<DepRTreeNode>();
 			nodesParentsNewChildren.add(nodesParentsNewChild1);
 			nodesParentsNewChildren.add(nodesParentsNewChild2);
 			nodesParentsNewChild1.setChildren(nodesParentsNewChild1Children);
@@ -346,7 +346,7 @@ public class SplitQuadratic extends SplitBehavior {
 				
 				logger.log("@~SPLIT BRANCH: " + " not at root");
 				node = cache.getNode(node.nodeId);
-				RTreeNode nodesParent = cache.getNode(node.getParent());
+				DepRTreeNode nodesParent = cache.getNode(node.getParent());
 				logger.log("@~SPLIT BRANCH: " + "nodesParent.children: " + nodesParent.children);
 				nodesParent.children.add(nodesParentsNewChild1.nodeId);
 				nodesParent.children.add(nodesParentsNewChild2.nodeId);
@@ -410,7 +410,7 @@ public class SplitQuadratic extends SplitBehavior {
 	}
 
 	@Override
-	public void splitLeafNodeNDimensional(RTreeNode node, ILocationItem locationItem) {
+	public void splitLeafNodeNDimensional(DepRTreeNode node, ILocationItem locationItem) {
 		
 		// full leaf node, so split leaf node
 		logger.log("#SPLIT-LEAF: " + " We're full, splitting leaf node: " + node.nodeId + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
@@ -444,8 +444,8 @@ public class SplitQuadratic extends SplitBehavior {
 		String node1Id = UUID.randomUUID().toString();
 		String node2Id = UUID.randomUUID().toString();
 		
-		RTreeNode node1 = new RTreeNode(node1Id, null, null, cache, logger);
-		RTreeNode node2 = new RTreeNode(node2Id, null, null, cache, logger);
+		DepRTreeNode node1 = new DepRTreeNode(node1Id, null, null, cache, logger);
+		DepRTreeNode node2 = new DepRTreeNode(node2Id, null, null, cache, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.nodeId);
 		newChildren.add(node2.nodeId);
@@ -462,7 +462,7 @@ public class SplitQuadratic extends SplitBehavior {
 //			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
 //			root.setChildren(newChildren);
 			
-			RTreeNode rootTemp = new RTreeNode(treeName, null, null, cache, logger);
+			DepRTreeNode rootTemp = new DepRTreeNode(treeName, null, null, cache, logger);
 			rootTemp.setChildren(newChildren);
 			
 			node1.setParent(treeName);
@@ -479,7 +479,7 @@ public class SplitQuadratic extends SplitBehavior {
 			
 			logger.log("#SPLIT-LEAF: " + "parent is not null");
 			
-			RTreeNode nodesParent = cache.getNode(node.getParent());
+			DepRTreeNode nodesParent = cache.getNode(node.getParent());
 			logger.log("#SPLIT-LEAF: " + "nodesParent.children: " + nodesParent.children);
 			
 			List<String> nodesParentsChildrenList = new ArrayList<String>();
@@ -572,7 +572,7 @@ public class SplitQuadratic extends SplitBehavior {
 
 
 	@SuppressWarnings("unchecked")
-	public void splitBranchNodeNDimensional(RTreeNode node) {
+	public void splitBranchNodeNDimensional(DepRTreeNode node) {
 		
 		LogLevel temp = logger.getLogLevel();
 		logger.setLogLevel(LogLevel.DEV2);
@@ -643,10 +643,10 @@ public class SplitQuadratic extends SplitBehavior {
 			String nodesParentsNewChild1Id = UUID.randomUUID().toString();
 			String nodesParentsNewChild2Id = UUID.randomUUID().toString();
 			
-			RTreeNode nodesParentsNewChild1 = new RTreeNode(nodesParentsNewChild1Id, null, null, cache, logger);
-			RTreeNode nodesParentsNewChild2 = new RTreeNode(nodesParentsNewChild2Id, null, null, cache, logger);
+			DepRTreeNode nodesParentsNewChild1 = new DepRTreeNode(nodesParentsNewChild1Id, null, null, cache, logger);
+			DepRTreeNode nodesParentsNewChild2 = new DepRTreeNode(nodesParentsNewChild2Id, null, null, cache, logger);
 			
-			List<RTreeNode> nodesParentsNewChildren = new ArrayList<RTreeNode>();
+			List<DepRTreeNode> nodesParentsNewChildren = new ArrayList<DepRTreeNode>();
 			nodesParentsNewChildren.add(nodesParentsNewChild1);
 			nodesParentsNewChildren.add(nodesParentsNewChild2);
 			nodesParentsNewChild1.setChildren(nodesParentsNewChild1Children);
@@ -722,7 +722,7 @@ public class SplitQuadratic extends SplitBehavior {
 				
 				logger.log("@~SPLIT BRANCH: " + " not at root");
 				node = cache.getNode(node.nodeId);
-				RTreeNode nodesParent = cache.getNode(node.getParent());
+				DepRTreeNode nodesParent = cache.getNode(node.getParent());
 				logger.log("@~SPLIT BRANCH: " + "nodesParent.children: " + nodesParent.children);
 				nodesParent.children.add(nodesParentsNewChild1.nodeId);
 				nodesParent.children.add(nodesParentsNewChild2.nodeId);

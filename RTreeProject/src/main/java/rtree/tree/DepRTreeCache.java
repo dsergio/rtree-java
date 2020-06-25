@@ -13,10 +13,10 @@ import rtree.item.ILocationItem;
 import rtree.item.LocationItem2D;
 import rtree.item.LocationItemND;
 import rtree.log.ILogger;
-import rtree.rectangle.HyperCuboid;
+import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
-import rtree.storage.IDataStorage;
+import rtree.storage.DepIDataStorage;
 
 
 /**
@@ -26,16 +26,16 @@ import rtree.storage.IDataStorage;
  * @author David Sergio
  *
  */
-public class RTreeCache {
+public class DepRTreeCache implements DepIRTreeCache {
 	
-	private Map<String, RTreeNode> cache;
-	private IDataStorage dbAccess;
+	private Map<String, DepRTreeNode> cache;
+	private DepIDataStorage dbAccess;
 	private String treeName;
 	private ILogger logger;
 	private int numDimensions;
 	
-	public RTreeCache(String treeName, ILogger logger, IDataStorage dataStorage, int numDimensions) throws Exception {
-		cache = new HashMap<String, RTreeNode>();
+	public DepRTreeCache(String treeName, ILogger logger, DepIDataStorage dataStorage, int numDimensions) throws Exception {
+		cache = new HashMap<String, DepRTreeNode>();
 		this.treeName = treeName;
 		this.logger = logger;
 		this.dbAccess = dataStorage;
@@ -51,17 +51,17 @@ public class RTreeCache {
 		logger.log();
 		logger.log("__CACHE: " + "Printing cache:");
 		for (String key : cache.keySet()) {
-			RTreeNode cloudNode = cache.get(key);
+			DepRTreeNode cloudNode = cache.get(key);
 			logger.log(key + ": " + cloudNode);
 		}
 		logger.log();
 	}
 	
-	public IDataStorage getDBAccess() {
+	public DepIDataStorage getDBAccess() {
 		return dbAccess;
 	}
 	
-	public RTreeNode getNode(String nodeId) {
+	public DepRTreeNode getNode(String nodeId) {
 		
 		if (nodeId == null) {
 			return null;
@@ -71,7 +71,7 @@ public class RTreeCache {
 //			logger.log("__CACHE: " + "returning " + nodeId + " from cache");
 			return cache.get(nodeId);
 		} else {		
-			RTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
+			DepRTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
 			cache.put(nodeId, node);
 			
 			return node;
@@ -89,7 +89,7 @@ public class RTreeCache {
 		logger.log("rectangle: " + rectangle);
 		
 		
-		RTreeNode n = null;
+		DepRTreeNode n = null;
 		if (cache.containsKey(nodeId)) {
 			
 //			logger.log("__CACHE: " + "cache contains " + nodeId);
@@ -97,7 +97,7 @@ public class RTreeCache {
 			
 		} else {
 //			logger.log("__CACHE: " + "cache DOES NOT contain " + nodeId);
-			n = new RTreeNode(nodeId, children, parent, this, logger);
+			n = new DepRTreeNode(nodeId, children, parent, this, logger);
 		}
 			
 		JSONParser parser;
@@ -173,7 +173,7 @@ public class RTreeCache {
 		logger.log("rectangle: " + rectangle);
 		
 		
-		RTreeNode n = null;
+		DepRTreeNode n = null;
 		if (cache.containsKey(nodeId)) {
 			
 //			logger.log("__CACHE: " + "cache contains " + nodeId);
@@ -181,13 +181,13 @@ public class RTreeCache {
 			
 		} else {
 //			logger.log("__CACHE: " + "cache DOES NOT contain " + nodeId);
-			n = new RTreeNode(nodeId, children, parent, this, logger);
+			n = new DepRTreeNode(nodeId, children, parent, this, logger);
 		}
 			
 		JSONParser parser;
 		Object obj;
 		
-		IHyperRectangle r = new HyperCuboid(numDimensions);
+		IHyperRectangle r = new RectangleND(numDimensions);
 		parser = new JSONParser();
 		try {
 			if (rectangle != null) {
@@ -312,7 +312,7 @@ public class RTreeCache {
 	 * @param rectangle
 	 * @param node
 	 */
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, RTreeNode node) {
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle, DepRTreeNode node) {
 		
 //		logger.log("__CACHE: " + "adding node to cache " + nodeId + " node != null: " + (node != null));
 		if (node != null) {

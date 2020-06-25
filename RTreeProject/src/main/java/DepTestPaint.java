@@ -37,16 +37,15 @@ import rtree.log.ILoggerPaint;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 import rtree.tree.DepRTree;
-import rtree.tree.IRTree;
 
-public class TestPaint extends JFrame implements KeyListener, ActionListener {
+public class DepTestPaint extends JFrame implements KeyListener, ActionListener {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 2136767310271470973L;
 	final PaintPanel paintPan;
-	IRTree tree;
+	DepRTree tree;
 	List<ILocationItem> points;
 	private JTextField output;
 	private IHyperRectangle searchRectangle = null;
@@ -71,7 +70,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 	private int maxX = paintInitialWidth;
 	private int maxY = paintInitialHeight;
 	
-	public TestPaint(IRTree tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
+	public DepTestPaint(DepRTree tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
@@ -85,7 +84,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 		list.setFixedCellWidth(listWidth);
 		
 		
-		setTitle("RTREE: " + tree.getTreeName() +  " - MAX CHILREN: " + tree.getMaxChildren() + " MAX ITEMS: " + tree.getMaxItems() + " - David Sergio");
+		setTitle("RTREE: " + tree.getName() +  " - MAX CHILREN: " + tree.getMaxChildren() + " MAX ITEMS: " + tree.getMaxItems() + " - David Sergio");
 		setSize(paintInitialWidth + list.getWidth() + info.getWidth() + padding, paintInitialHeight + padding);
 		
 //		FlowLayout layout = new FlowLayout();
@@ -142,7 +141,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 
 	}
 	
-	public TestPaint(IRTree tree, ILogger logger, ILoggerPaint paintLogger) {
+	public DepTestPaint(DepRTree tree, ILogger logger, ILoggerPaint paintLogger) {
 		this(tree, false, logger, paintLogger);
 	}
 	
@@ -213,7 +212,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 						e.getY() - showTree.getHeight() - (int) (searchRange * 1.5), 
 						e.getY() - showTree.getHeight() + (int) (searchRange / 1.5));
 				
-				searchResults = tree.search(searchRectangle);
+				searchResults = tree.search2D(searchRectangle);
 				for (IHyperRectangle r : searchResults.keySet()) {
 					logger.log("search results: " + r);
 					for (ILocationItem i : searchResults.get(r)) {
@@ -529,7 +528,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				String[] data = {"Searching..."};
 				list.setListData(data);
 				searchRectangle = new Rectangle2D(x, x + range, y, y + range);
-				searchResults = tree.search(searchRectangle);
+				searchResults = tree.search2D(searchRectangle);
 				for (IHyperRectangle r : searchResults.keySet()) {
 					logger.log("search results: " + r);
 					for (ILocationItem i : searchResults.get(r)) {
@@ -550,7 +549,7 @@ public class TestPaint extends JFrame implements KeyListener, ActionListener {
 				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
 
 				LocationItem2D toDelete = new LocationItem2D(x, y, type);
-				tree.delete(toDelete);
+				tree.delete2D(toDelete);
 
 				repaint();
 			} else if (output.getText().trim().equals("print")) {

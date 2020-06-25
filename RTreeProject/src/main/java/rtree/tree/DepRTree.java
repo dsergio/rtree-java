@@ -11,12 +11,12 @@ import rtree.item.ILocationItem;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.rectangle.HyperCuboid;
+import rtree.rectangle.RectangleND;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
-import rtree.storage.DataStorageBase;
-import rtree.storage.IDataStorage;
+import rtree.storage.DepDataStorageBase;
+import rtree.storage.DepIDataStorage;
 import rtree.storage.StorageType;
 
 /**
@@ -27,7 +27,7 @@ import rtree.storage.StorageType;
  * 
  *
  */
-public class RTree {
+public class DepRTree {
 	
 	private int maxChildren;
 	private int maxItems;
@@ -36,8 +36,8 @@ public class RTree {
 	Random r = new Random();
 //	private boolean leafNodeSplit = false;
 //	private boolean branchSplit = false;
-	private SplitBehavior splitBehavior;
-	RTreeCache cacheContainer;
+	private DepSplitBehaviorBase splitBehavior;
+	DepRTreeCache cacheContainer;
 	private StorageType storageType;
 	private ILogger logger;
 	private int minX;
@@ -61,7 +61,7 @@ public class RTree {
 	 * @param dataStorage
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage) throws Exception {
+	public DepRTree(DepDataStorageBase dataStorage) throws Exception {
 		this(dataStorage, 4, 4);
 	}
 	
@@ -75,8 +75,8 @@ public class RTree {
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, ILogger logger) throws Exception {
-		this(dataStorage, 4, 4, logger, new SplitQuadratic()); // default to Quadratic
+	public DepRTree(DepDataStorageBase dataStorage, ILogger logger) throws Exception {
+		this(dataStorage, 4, 4, logger, new DepSplitQuadratic()); // default to Quadratic
 	}
 	
 	/**
@@ -88,8 +88,8 @@ public class RTree {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, int maxChildren, int maxItems) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic()); // default to DEV, Quadratic
+	public DepRTree(DepDataStorageBase dataStorage, int maxChildren, int maxItems) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic()); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -102,8 +102,8 @@ public class RTree {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, int maxChildren, int maxItems, ILogger logger, SplitBehavior splitBehavior) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), 2); // default to DEV, Quadratic, 2-D
+	public DepRTree(DepDataStorageBase dataStorage, int maxChildren, int maxItems, ILogger logger, DepSplitBehaviorBase splitBehavior) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), 2); // default to DEV, Quadratic, 2-D
 	}
 	
 	/**
@@ -117,7 +117,7 @@ public class RTree {
 	 * @param numDimensions
 	 * @throws Exception
 	 */
-	public RTree(DataStorageBase dataStorage, int maxChildren, int maxItems, ILogger logger, SplitBehavior splitBehavior, int numDimensions) throws Exception {
+	public DepRTree(DepDataStorageBase dataStorage, int maxChildren, int maxItems, ILogger logger, DepSplitBehaviorBase splitBehavior, int numDimensions) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = dataStorage.getTreeName();
@@ -151,10 +151,10 @@ public class RTree {
 	 * 
 	 * @throws Exception 
 	 */
-	private void init(IDataStorage dataStorage) throws Exception {
+	private void init(DepIDataStorage dataStorage) throws Exception {
 		
 		try {
-			cacheContainer = new RTreeCache(treeName, logger, dataStorage, numDimensions);
+			cacheContainer = new DepRTreeCache(treeName, logger, dataStorage, numDimensions);
 		} catch (Exception e) {
 			logger.log("Cache initialization failed.");
 			e.printStackTrace();
@@ -172,7 +172,7 @@ public class RTree {
 		splitBehavior.initialize(maxChildren, treeName, cacheContainer, logger);
 	}
 	
-	public RTreeCache getCache() {
+	public DepRTreeCache getCache() {
 		return cacheContainer;
 	}
 	
@@ -229,7 +229,7 @@ public class RTree {
 	 * @param nodeId
 	 * @return CloudRTreeNode object defined by nodeId
 	 */
-	public RTreeNode getNode(String nodeId) {
+	public DepRTreeNode getNode(String nodeId) {
 		return cacheContainer.getNode(nodeId);
 	}
 	
@@ -256,7 +256,7 @@ public class RTree {
 	 * @param rectangle
 	 * @param node
 	 */
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, RTreeNode node) {
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle, DepRTreeNode node) {
 		cacheContainer.addNode(nodeId, children, parent, items, rectangle, node);
 	}
 	
@@ -334,7 +334,7 @@ public class RTree {
 //		printTree();
 	}
 	
-	private void insert(ILocationItem locationItem, RTreeNode node) throws IOException {
+	private void insert(ILocationItem locationItem, DepRTreeNode node) throws IOException {
 		
 		if (node == null && getNode(treeName) == null) {
 			IHyperRectangle r = new Rectangle2D(locationItem.getDim(0), locationItem.getDim(0), locationItem.getDim(1), locationItem.getDim(1));
@@ -393,7 +393,7 @@ public class RTree {
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				logger.log("~~INSERT: " + "child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem)) {
 					insert(locationItem, child);
@@ -409,7 +409,7 @@ public class RTree {
 			int minEnlargementAreaIndex = 0;
 			
 			for (int i = 0; i < childrenArr.size(); i++) {
-				RTreeNode child = getNode(childrenArr.get(i));
+				DepRTreeNode child = getNode(childrenArr.get(i));
 				if (child.isLeafNode()) {
 					if (getEnlargementArea(getNode(childrenArr.get(i)), x, y) < minEnlargementArea) {
 						minEnlargementArea = getEnlargementArea(getNode(childrenArr.get(i)), x, y);
@@ -428,7 +428,7 @@ public class RTree {
 		}
 	}
 	
-	private void insertNDimensional(ILocationItem locationItem, RTreeNode node) throws IOException {
+	private void insertNDimensional(ILocationItem locationItem, DepRTreeNode node) throws IOException {
 		
 		int itemNumDimensions = locationItem.getNumberDimensions();
 		if (itemNumDimensions != numDimensions) {
@@ -437,7 +437,7 @@ public class RTree {
 		
 		if (node == null && getNode(treeName) == null) { // empty tree
 			
-			IHyperRectangle rND = new HyperCuboid(itemNumDimensions);
+			IHyperRectangle rND = new RectangleND(itemNumDimensions);
 			
 			for (int i = 0; i < itemNumDimensions; i++) {
 				rND.setDim1(i, locationItem.getDim(i));
@@ -496,7 +496,7 @@ public class RTree {
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				logger.log("~~INSERT: " + "child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem)) {
 					insertNDimensional(locationItem, child);
@@ -512,7 +512,7 @@ public class RTree {
 			int minEnlargementAreaIndex = 0;
 			
 			for (int i = 0; i < childrenArr.size(); i++) {
-				RTreeNode child = getNode(childrenArr.get(i));
+				DepRTreeNode child = getNode(childrenArr.get(i));
 				if (child.isLeafNode()) {
 					if (getEnlargementAreaNDimensional(getNode(childrenArr.get(i)), locationItem) < minEnlargementArea) {
 						minEnlargementArea = getEnlargementAreaNDimensional(getNode(childrenArr.get(i)), locationItem);
@@ -533,7 +533,7 @@ public class RTree {
 	}
 
 	
-	private void addToRectangle(RTreeNode node, IHyperRectangle r) {
+	private void addToRectangle(DepRTreeNode node, IHyperRectangle r) {
 		if (node == null) {
 			return;
 		}
@@ -546,7 +546,7 @@ public class RTree {
 		addToRectangle(getNode(node.parent), sumRectangle);
 	}
 	
-	private int getEnlargementArea(RTreeNode node, int x, int y) {
+	private int getEnlargementArea(DepRTreeNode node, int x, int y) {
 		
 		if (node.getNumberOfItems() == 0) {
 			logger.log("empty, so enlargement is 0 for " + x + ", " + y);
@@ -565,7 +565,7 @@ public class RTree {
 		return newRect.getSpace() - r.getSpace();
 	}
 	
-	private int getEnlargementAreaNDimensional(RTreeNode node, ILocationItem item) {
+	private int getEnlargementAreaNDimensional(DepRTreeNode node, ILocationItem item) {
 		
 		if (node.getNumberOfItems() == 0) {
 			logger.log("empty, so enlargement is 0 for " + item);
@@ -582,7 +582,7 @@ public class RTree {
 			max.add(Math.max(Math.max(item.getDim(i),  r.getDim1(i)), r.getDim2(i)));
 		}
 		
-		IHyperRectangle newRect = new HyperCuboid(numDimensions);
+		IHyperRectangle newRect = new RectangleND(numDimensions);
 		for (int i = 0; i < numDimensions; i++) {
 			newRect.setDim1(i, min.get(i));
 			newRect.setDim2(i, max.get(i));
@@ -599,7 +599,7 @@ public class RTree {
 		return allRectangles;
 	}
 	
-	private void getRectangles(RTreeNode node, List<IHyperRectangle> rectangles, int depth) {
+	private void getRectangles(DepRTreeNode node, List<IHyperRectangle> rectangles, int depth) {
 		depth++;
 		if (node != null && node.getRectangle() != null) {
 			node.getRectangle().setLevel(depth);
@@ -607,7 +607,7 @@ public class RTree {
 		}
 		if (node != null && !node.isLeafNode()) {
 			for (String s : node.getChildren()) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				getRectangles(child, rectangles, depth);
 			}
 		}
@@ -629,7 +629,7 @@ public class RTree {
 		return points;
 	}
 	
-	private void getPoints(RTreeNode node, List<ILocationItem> points, int depth) {
+	private void getPoints(DepRTreeNode node, List<ILocationItem> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
@@ -638,7 +638,7 @@ public class RTree {
 			points.addAll(node.getPoints());
 		} else {
 			for (String s : node.getChildren()) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				getPoints(child, points, depth);
 			}
 		}
@@ -653,7 +653,7 @@ public class RTree {
 		return points;
 	}
 	
-	private void getPointsWithDepth(RTreeNode node, Map<ILocationItem, Integer> points, int depth) {
+	private void getPointsWithDepth(DepRTreeNode node, Map<ILocationItem, Integer> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
@@ -664,7 +664,7 @@ public class RTree {
 			}
 		} else {
 			for (String s : node.getChildren()) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				getPointsWithDepth(child, points, depth);
 			}
 		}
@@ -689,7 +689,7 @@ public class RTree {
 		logger.setLogLevel(temp);
 	}
 
-	private void printTree(RTreeNode node, int depth) {
+	private void printTree(DepRTreeNode node, int depth) {
 		if (node == null) {
 			return;
 		}
@@ -718,7 +718,7 @@ public class RTree {
 		depth++;
 		if (node.getChildren() != null) {
 			for (String s : node.getChildren()) {
-				RTreeNode child = getNode(s);
+				DepRTreeNode child = getNode(s);
 				printTree(child, depth);
 			}
 		}
@@ -731,14 +731,14 @@ public class RTree {
 	 * @return a map of rectangles containing search results
 	 * 
 	 */
-	public Map<IHyperRectangle, List<ILocationItem>> search(IHyperRectangle searchRectangle) {
+	public Map<IHyperRectangle, List<ILocationItem>> search2D(IHyperRectangle searchRectangle) {
 		int curAdds = numAdds();
 		int curUpdates = numUpdates();
 		int curReads = numReads();
 		
 		long time = System.currentTimeMillis();
 		Map<IHyperRectangle, List<ILocationItem>> result = new HashMap<IHyperRectangle, List<ILocationItem>>();
-		search(searchRectangle, getNode(treeName), result, 0);
+		search2D(searchRectangle, getNode(treeName), result, 0);
 		
 		
 		logger.log("SEARCH consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
@@ -746,7 +746,7 @@ public class RTree {
 		return result;
 	}
 	
-	private void search(IHyperRectangle searchRectangle, RTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
+	private void search2D(IHyperRectangle searchRectangle, DepRTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
 		
 		if (node == null) {
 			return;
@@ -781,7 +781,7 @@ public class RTree {
 					if (Rectangle2D.rectanglesOverlap2D(r, searchRectangle)) {
 						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
 						result.put(r, new ArrayList<ILocationItem>());
-						search(searchRectangle, getNode(child), result, depth + 1);
+						search2D(searchRectangle, getNode(child), result, depth + 1);
 					} else {
 						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
 					}
@@ -790,7 +790,7 @@ public class RTree {
 		}
 	}
 	
-	private void searchNDimensional(IHyperRectangle searchRectangle, RTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
+	private void searchNDimensional(IHyperRectangle searchRectangle, DepRTreeNode node, Map<IHyperRectangle, List<ILocationItem>> result, int depth) {
 		
 		if (node == null) {
 			return;
@@ -834,7 +834,7 @@ public class RTree {
 					if (HyperRectangleBase.rectanglesOverlapNDimensional(r, searchRectangle)) {
 						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
 						result.put(r, new ArrayList<ILocationItem>());
-						search(searchRectangle, getNode(child), result, depth + 1);
+						search2D(searchRectangle, getNode(child), result, depth + 1);
 					} else {
 						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
 					}
@@ -851,11 +851,11 @@ public class RTree {
 	 * @param toDelete Item to be deleted
 	 * 
 	 */
-	public void delete(ILocationItem toDelete) {
-		delete(toDelete, getNode(treeName));
+	public void delete2D(ILocationItem toDelete) {
+		delete2D(toDelete, getNode(treeName));
 	}
 	
-	private void delete(ILocationItem toDelete, RTreeNode node) {
+	private void delete2D(ILocationItem toDelete, DepRTreeNode node) {
 		
 		if (node.isLeafNode()) {
 			for (int i = 0; i < node.getNumberOfItems(); i++) {
@@ -876,17 +876,17 @@ public class RTree {
 			if (node != null && node.getChildren() != null) {
 				
 				for (String s : node.getChildren()) {
-					RTreeNode child = getNode(s);
+					DepRTreeNode child = getNode(s);
 					IHyperRectangle r = child.getRectangle();
 					if (r.containsPoint(toDelete)) {
-						delete(toDelete, child);
+						delete2D(toDelete, child);
 					}
 				}
 			}
 		}
 	}
 	
-	private void deleteNDimensional(ILocationItem toDelete, RTreeNode node) {
+	private void deleteNDimensional(ILocationItem toDelete, DepRTreeNode node) {
 		
 		if (node.isLeafNode()) {
 			for (int i = 0; i < node.getNumberOfItems(); i++) {
@@ -904,7 +904,7 @@ public class RTree {
 				if (itemEqualsToDelete) {
 					node.getLocationItems().remove(i);
 					
-					updateNode(node.nodeId, null, null, node.getItemsJSON().toJSONString(), null);
+					cacheContainer.updateNodeNDimensional(node.nodeId, null, null, node.getItemsJSON().toJSONString(), null);
 					
 					node.updateRectangleNDimensional(true);
 					
@@ -917,10 +917,10 @@ public class RTree {
 			if (node != null && node.getChildren() != null) {
 				
 				for (String s : node.getChildren()) {
-					RTreeNode child = getNode(s);
+					DepRTreeNode child = getNode(s);
 					IHyperRectangle r = child.getRectangle();
 					if (r.containsPoint(toDelete)) {
-						delete(toDelete, child);
+						delete2D(toDelete, child);
 					}
 				}
 			}

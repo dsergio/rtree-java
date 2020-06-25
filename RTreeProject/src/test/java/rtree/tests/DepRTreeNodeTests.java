@@ -14,9 +14,9 @@ import org.junit.jupiter.api.Test;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.tree.RTreeNode;
+import rtree.tree.DepRTreeNode;
 
-class RTreeNodeTests {
+class DepRTreeNodeTests {
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -42,14 +42,14 @@ class RTreeNodeTests {
 		String nodeId = UUID.randomUUID().toString();
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		
-		RTreeNode node1 = new RTreeNode(node1Id, null, null, null, logger);
-		RTreeNode node2 = new RTreeNode(node2Id, null, null, null, logger);
+		DepRTreeNode node1 = new DepRTreeNode(node1Id, null, null, null, logger);
+		DepRTreeNode node2 = new DepRTreeNode(node2Id, null, null, null, logger);
 		ArrayList<String> newChildren = new ArrayList<String>();
 		newChildren.add(node1.getNodeId());
 		newChildren.add(node2.getNodeId());
 		
 		// Act
-		RTreeNode node = new RTreeNode(nodeId, null, null, null, logger);
+		DepRTreeNode node = new DepRTreeNode(nodeId, null, null, null, logger);
 		node.setChildren(newChildren);
 		
 		

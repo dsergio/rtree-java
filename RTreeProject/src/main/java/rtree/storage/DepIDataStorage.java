@@ -3,8 +3,6 @@ package rtree.storage;
 import java.util.List;
 
 import rtree.tree.DepIRTreeCache;
-import rtree.tree.IRTreeCache;
-import rtree.tree.IRTreeNode;
 import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
 
@@ -15,7 +13,7 @@ import rtree.tree.DepRTreeNode;
  * @author David Sergio
  *
  */
-public interface IDataStorage {
+public interface DepIDataStorage {
 	
 	public void init();
 	public void close();
@@ -23,9 +21,9 @@ public interface IDataStorage {
 	public String getTreeName();
 	
 	public void initializeStorage();
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache cache);
+	public DepRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, DepIRTreeCache cache);
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items, String rectangle);
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache);
+	public DepRTreeNode getCloudRTreeNode(String tableName, String nodeId, DepIRTreeCache cache);
 	
 	// use these for performance analysis
 	public int getNumAdds();

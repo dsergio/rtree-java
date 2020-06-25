@@ -9,16 +9,10 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import rtree.log.ILogger;
-import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
-import rtree.rectangle.RectangleND;
 import rtree.tree.DepIRTreeCache;
 import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
-import rtree.tree.IRTreeCache;
-import rtree.tree.IRTreeNode;
-import rtree.tree.RTreeNode2D;
-import rtree.tree.RTreeNodeND;
 
 /**
  * 
@@ -27,7 +21,7 @@ import rtree.tree.RTreeNodeND;
  * @author David Sergio
  *
  */
-public class DataStorageInMemory extends DataStorageBase {
+public class DepDataStorageInMemory extends DepDataStorageBase {
 	
 	private int maxItems;
 	private int maxChildren;
@@ -39,11 +33,11 @@ public class DataStorageInMemory extends DataStorageBase {
 	private long updateTime = 0;
 	private int N;
 	
-	private Map<String, IRTreeNode> localData;
+	private Map<String, DepRTreeNode> localData;
 	
-	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.INMEMORY, logger, treeName, numDimensions);
-		localData = new HashMap<String, IRTreeNode>();
+	public DepDataStorageInMemory(ILogger logger, String treeName) {
+		super(StorageType.INMEMORY, logger, treeName);
+		localData = new HashMap<String, DepRTreeNode>();
 	}
 	
 
@@ -66,8 +60,8 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, IRTreeCache cache) {
+	public DepRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, DepIRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
@@ -78,53 +72,27 @@ public class DataStorageInMemory extends DataStorageBase {
 		logger.log("rectangle: " + rectangle);
 		
 		// construct the node
+		DepRTreeNode node = new DepRTreeNode(nodeId, children, parent, cache, logger);
 		
-		IRTreeNode node = null;
-		if (numDimensions == 2) {
-			node = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			node = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
-		
-		IHyperRectangle r;
-		if (numDimensions == 2) {
-			r = new Rectangle2D();
-		} else {
-			r = new RectangleND(numDimensions);
-		}
-		
-		if (rectangle != null) {
-			JSONParser parser = new JSONParser();
-			JSONObject rObj;
-			try {
-				rObj = (JSONObject) parser.parse(rectangle);
-				for (int i = 0; i < numDimensions; i++) {
-					switch (i) {
-					case 0: 
-						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
-						break;
-					case 1:
-						r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
-						break;
-					case 2:
-						r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
-						break;
-					default:
-						r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
-						break;
-					}
-				}
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		Rectangle2D r = null;
+		JSONParser parser;
+		Object obj;
+		parser = new JSONParser();
+		try {
+			if (rectangle != null) {
+				obj = parser.parse(rectangle);
+				JSONObject rectObj = (JSONObject) obj;
+				r = new Rectangle2D(Integer.parseInt(rectObj.get("x1").toString()), 
+						Integer.parseInt(rectObj.get("x2").toString()), 
+						Integer.parseInt(rectObj.get("y1").toString()),
+						Integer.parseInt(rectObj.get("y2").toString()));
 			}
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		node.setRectangle(r);
-		node.setItemsJson(items);
+		node.setItemsJson2D(items);
 		
 		localData.put(nodeId, node);
 		
@@ -148,7 +116,7 @@ public class DataStorageInMemory extends DataStorageBase {
 		logger.log("rectangle: " + rectangle);
 		
 		
-		IRTreeNode node = localData.get(nodeId);
+		DepRTreeNode node = localData.get(nodeId);
 		
 		if (children != null) {
 			node.setChildren(children);
@@ -156,48 +124,30 @@ public class DataStorageInMemory extends DataStorageBase {
 		
 		node.setParent(parent);
 		
-		IHyperRectangle r;
-		if (numDimensions == 2) {
-			r = new Rectangle2D();
-		} else {
-			r = new RectangleND(numDimensions);
+		Rectangle2D r = new Rectangle2D();
+		
+		JSONParser parser;
+		Object obj;
+		parser = new JSONParser();
+		try {
+			if (rectangle != null) {
+				obj = parser.parse(rectangle);
+				JSONObject rectObj = (JSONObject) obj;
+				r = new Rectangle2D(Integer.parseInt(rectObj.get("x1").toString()), 
+						Integer.parseInt(rectObj.get("x2").toString()), 
+						Integer.parseInt(rectObj.get("y1").toString()),
+						Integer.parseInt(rectObj.get("y2").toString()));
+			}
+		} catch (ParseException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
 		}
 		
-		if (rectangle != null) {
-			JSONParser parser = new JSONParser();
-			JSONObject rObj;
-			try {
-				rObj = (JSONObject) parser.parse(rectangle);
-				for (int i = 0; i < numDimensions; i++) {
-					switch (i) {
-					case 0: 
-						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
-						break;
-					case 1:
-						r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
-						break;
-					case 2:
-						r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
-						break;
-					default:
-						r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
-						break;
-					}
-				}
-			} catch (ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
 		if (rectangle != null) {
 			node.setRectangle(r);
 		}
 		if (items != null) {
-			node.setItemsJson(items);
+			node.setItemsJson2D(items);
 		}
 		
 		numUpdates++;
@@ -205,7 +155,7 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache) {
+	public DepRTreeNode getCloudRTreeNode(String tableName, String nodeId, DepIRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");

@@ -13,10 +13,10 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import rtree.log.ILogger;
 
-public class DataStorageMySQL extends DataStorageSQLBase {
+public class DepDataStorageMySQL extends DepDataStorageSQLBase {
 
-	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.MYSQL, logger, treeName, numDimensions);
+	public DepDataStorageMySQL(ILogger logger, String treeName) {
+		super(StorageType.MYSQL, logger, treeName);
 		
 	}
 	

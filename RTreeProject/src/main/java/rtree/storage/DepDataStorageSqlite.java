@@ -14,10 +14,10 @@ import rtree.log.ILogger;
  * @author David Sergio
  *
  */
-public class DataStorageSqlite extends DataStorageSQLBase {
+public class DepDataStorageSqlite extends DepDataStorageSQLBase {
 
-	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.SQLITE, logger, treeName, numDimensions);
+	public DepDataStorageSqlite(ILogger logger, String treeName) {
+		super(StorageType.SQLITE, logger, treeName);
 		init();
 	}
 

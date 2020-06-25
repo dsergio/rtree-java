@@ -17,14 +17,14 @@ import rtree.item.LocationItemND;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageSQLBase;
-import rtree.storage.DataStorageSqlite;
-import rtree.tree.RTree;
-import rtree.tree.SplitQuadratic;
+import rtree.storage.DepDataStorageSQLBase;
+import rtree.storage.DepDataStorageSqlite;
+import rtree.tree.DepRTree;
+import rtree.tree.DepSplitQuadratic;
 
-class DataStorageSqliteTests {
+class DepDataStorageSqliteTests {
 	
-	DataStorageSQLBase storage = null;
+	DepDataStorageSQLBase storage = null;
 
 	@BeforeAll
 	static void setUpBeforeClass() throws Exception {
@@ -54,7 +54,7 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "TestTree1");
+			storage = new DepDataStorageSqlite(logger, "TestTree1");
 			
 		} catch (Exception e) {
 			
@@ -76,8 +76,8 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "TestTree_ND");
-			RTree tree = new RTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), N);
+			storage = new DepDataStorageSqlite(logger, "TestTree_ND");
+			DepRTree tree = new DepRTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), N);
 			
 			ILocationItem item = new LocationItemND(N);
 			item.setDim(0, 5);
@@ -106,8 +106,8 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "3D_TestTree_1");
-			RTree tree = new RTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), N);
+			storage = new DepDataStorageSqlite(logger, "3D_TestTree_1");
+			DepRTree tree = new DepRTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), N);
 			
 			for (int i = 0; i < 10; i++) {
 				ILocationItem item = new LocationItemND(N);
@@ -143,8 +143,8 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "4D_TestTree_1");
-			RTree tree = new RTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), N);
+			storage = new DepDataStorageSqlite(logger, "4D_TestTree_1");
+			DepRTree tree = new DepRTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), N);
 			
 			for (int i = 0; i < 10; i++) {
 				ILocationItem item = new LocationItemND(N);
@@ -184,8 +184,8 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "8D_TestTree_1");
-			RTree tree = new RTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), N);
+			storage = new DepDataStorageSqlite(logger, "8D_TestTree_1");
+			DepRTree tree = new DepRTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), N);
 			
 			for (int i = 0; i < 10; i++) {
 				ILocationItem item = new LocationItemND(N);
@@ -231,8 +231,8 @@ class DataStorageSqliteTests {
 		// Act
 		try {
 			
-			storage = new DataStorageSqlite(logger, "1D_TestTree_1");
-			RTree tree = new RTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), N);
+			storage = new DepDataStorageSqlite(logger, "1D_TestTree_1");
+			DepRTree tree = new DepRTree(storage, 4, 4, new LoggerStdOut(LogLevel.DEV), new DepSplitQuadratic(), N);
 			
 			for (int i = 0; i < 10; i++) {
 				ILocationItem item = new LocationItemND(N);
@@ -261,7 +261,7 @@ class DataStorageSqliteTests {
 		
 		// Act Assert
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			 new DataStorageSqlite(logger, treeName);
+			 new DepDataStorageSqlite(logger, treeName);
 		});
 		
 	}

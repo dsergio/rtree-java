@@ -12,11 +12,11 @@ import rtree.item.ILocationItem;
  * @author David Sergio
  *
  */
-public class SplitLinear extends SplitBehavior {
+public class DepSplitLinear extends DepSplitBehaviorBase {
 
 	final String description;
 	
-	public SplitLinear() {
+	public DepSplitLinear() {
 		description = "Linear Split";
 	}
 	
@@ -29,7 +29,7 @@ public class SplitLinear extends SplitBehavior {
 	 * 
 	 */
 	@Override
-	public void splitLeafNode2D(RTreeNode node, ILocationItem locationItem) {
+	public void splitLeafNode2D(DepRTreeNode node, ILocationItem locationItem) {
 		
 		// linear split
 		throw new NotImplementedException("Linear splitLeafNode is not yet implemented.");
@@ -93,18 +93,18 @@ public class SplitLinear extends SplitBehavior {
 	/**
 	 * 
 	 */
-	public void splitBranchNode2D(RTreeNode node) {
+	public void splitBranchNode2D(DepRTreeNode node) {
 		throw new NotImplementedException("Linear splitBranchNode is not yet implemented.");
 	}
 
 	@Override
-	public void splitLeafNodeNDimensional(RTreeNode node, ILocationItem locationItem) {
+	public void splitLeafNodeNDimensional(DepRTreeNode node, ILocationItem locationItem) {
 		throw new NotImplementedException("Linear splitLeafNodeNDimensional is not yet implemented.");
 		
 	}
 
 	@Override
-	public void splitBranchNodeNDimensional(RTreeNode node) {
+	public void splitBranchNodeNDimensional(DepRTreeNode node) {
 		throw new NotImplementedException("Linear splitBranchNodeNDimensional is not yet implemented.");
 		
 	}

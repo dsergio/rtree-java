@@ -2,9 +2,9 @@ package rtree.rectangle;
 
 import org.json.simple.JSONObject;
 
-public class HyperCuboid extends HyperRectangleBase {
+public class RectangleND extends HyperRectangleBase {
 
-	public HyperCuboid(int numberDimensions) {
+	public RectangleND(int numberDimensions) {
 		super(numberDimensions);
 		if (numberDimensions < 1) {
 			throw new IllegalArgumentException("HyperCuboid minimum dimension is 1.");

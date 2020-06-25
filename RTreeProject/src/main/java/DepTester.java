@@ -13,21 +13,14 @@ import rtree.log.ILoggerPaint;
 import rtree.log.LogLevel;
 import rtree.log.LoggerPaint;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageDynamoDB;
-import rtree.storage.DataStorageInMemory;
-import rtree.storage.DataStorageMySQL;
-import rtree.storage.DataStorageSqlite;
 import rtree.storage.DepDataStorageBase;
 import rtree.storage.DepDataStorageDynamoDB;
 import rtree.storage.DepDataStorageInMemory;
 import rtree.storage.DepDataStorageMySQL;
 import rtree.storage.DepDataStorageSqlite;
-import rtree.storage.IDataStorage;
 import rtree.tree.DepRTree;
-import rtree.tree.IRTree;
-import rtree.tree.RTree2D;
 
-public class Tester {
+public class DepTester {
 
 	public static void main(String[] args) {
 		
@@ -116,36 +109,36 @@ public class Tester {
 		
 		
 		
-		IDataStorage dataStorage = null;
+		DepDataStorageBase dataStorage = null;
 		
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dataStorage = new DataStorageMySQL(logger, inputTreeName, 2);
+				dataStorage = new DepDataStorageMySQL(logger, inputTreeName);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dataStorage = new DataStorageInMemory(logger, inputTreeName, 2);
+			dataStorage = new DepDataStorageInMemory(logger, inputTreeName);
 			break;
 		case DYNAMODB:
-			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName, 2); // use a static value for now
+			dataStorage = new DepDataStorageDynamoDB("us-west-2", logger, inputTreeName); // use a static value for now
 			break;
 		case SQLITE:
-			dataStorage = new DataStorageSqlite(logger, inputTreeName, 2);
+			dataStorage = new DepDataStorageSqlite(logger, inputTreeName);
 			break;
 		default:
 			try {
-				dataStorage = new DataStorageMySQL(logger, inputTreeName, 2);
+				dataStorage = new DepDataStorageMySQL(logger, inputTreeName);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
-		IRTree tree = null;
+		DepRTree tree = null;
 		
 		int inputMaxChildrenInt = 0;
 		int inputMaxItemsInt = 0;
@@ -164,12 +157,12 @@ public class Tester {
 					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 				
-				tree = new RTree2D(dataStorage, inputMaxChildrenInt, inputMaxItemsInt);
+				tree = new DepRTree(dataStorage, inputMaxChildrenInt, inputMaxItemsInt);
 				
 			} else {
 				
 				
-				tree = new RTree2D(dataStorage);
+				tree = new DepRTree(dataStorage);
 //				tree = new RTree(dataStorage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), 3); // testing 3D
 				
 			}
@@ -188,11 +181,11 @@ public class Tester {
 //		insertGui = false;
 		
 		
-		TestPaint testPaint = null;
+		DepTestPaint testPaint = null;
 		
 		if (insertGui) {
 			
-			testPaint = new TestPaint(tree, true, logger, paintLogger);
+			testPaint = new DepTestPaint(tree, true, logger, paintLogger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);
@@ -207,7 +200,7 @@ public class Tester {
 		
 		if (gui) {
 			
-			testPaint = new TestPaint(tree, logger, paintLogger);
+			testPaint = new DepTestPaint(tree, logger, paintLogger);
 			testPaint.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent e) {
 					System.exit(0);

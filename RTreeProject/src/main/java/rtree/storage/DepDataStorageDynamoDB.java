@@ -40,10 +40,6 @@ import rtree.rectangle.Rectangle2D;
 import rtree.tree.DepIRTreeCache;
 import rtree.tree.DepRTreeCache;
 import rtree.tree.DepRTreeNode;
-import rtree.tree.IRTreeCache;
-import rtree.tree.IRTreeNode;
-import rtree.tree.RTreeNode2D;
-import rtree.tree.RTreeNodeND;
 
 /**
  * 
@@ -53,7 +49,7 @@ import rtree.tree.RTreeNodeND;
  * 
  *
  */
-public class DataStorageDynamoDB extends DataStorageBase {
+public class DepDataStorageDynamoDB extends DepDataStorageBase {
 
 	/*
 	 * Before running the code: Fill in your AWS access credentials in the provided
@@ -85,8 +81,8 @@ public class DataStorageDynamoDB extends DataStorageBase {
 	private boolean dynamoLog = true;
 	private String region;
 
-	public DataStorageDynamoDB(String region, ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.DYNAMODB, logger, treeName, numDimensions);
+	public DepDataStorageDynamoDB(String region, ILogger logger, String treeName) {
+		super(StorageType.DYNAMODB, logger, treeName);
 		this.region = region;
 		try {
 			init();
@@ -177,18 +173,12 @@ public class DataStorageDynamoDB extends DataStorageBase {
 
 	}
 
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, IRTreeCache cache) {
+	public DepRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, DepIRTreeCache cache) {
 		Map<String, AttributeValue> item = newNode(nodeId, children, parent, items, rectangle);
 		addItemToTable(item, treeName);
-		
-		IRTreeNode node = null;
-		if (numDimensions == 2) {
-			node = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			node = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
-		
+
+		DepRTreeNode node = new DepRTreeNode(nodeId, children, parent, cache, logger);
 		return node;
 	}
 
@@ -279,7 +269,7 @@ public class DataStorageDynamoDB extends DataStorageBase {
 		}
 	}
 
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache) {
+	public DepRTreeNode getCloudRTreeNode(String tableName, String nodeId, DepIRTreeCache cache) {
 
 		JSONParser parser;
 		Object obj;
@@ -339,13 +329,8 @@ public class DataStorageDynamoDB extends DataStorageBase {
 			e1.printStackTrace();
 		}
 //		logger.log("rectangle: " + r);
-		
-		IRTreeNode newNode = null;
-		if (cache.getNumDimensions() == 2) {
-			newNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			newNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
+
+		DepRTreeNode newNode = new DepRTreeNode(nodeId, children, parent, cache, logger);
 
 		newNode.setRectangle(r);
 

@@ -15,7 +15,7 @@ import rtree.item.LocationItem2D;
 import rtree.item.LocationItemBase;
 import rtree.item.LocationItemND;
 import rtree.log.ILogger;
-import rtree.rectangle.HyperCuboid;
+import rtree.rectangle.RectangleND;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
@@ -29,17 +29,17 @@ import rtree.rectangle.Rectangle2D;
  * @author David Sergio
  *
  */
-public class RTreeNode {
+public class DepRTreeNode {
 
 	List<String> children;
 	String parent;
 	List<ILocationItem> locationItems;
 	IHyperRectangle rectangle;
 	String nodeId;
-	RTreeCache cache;
+	DepIRTreeCache cache;
 	private ILogger logger;
 
-	public RTreeNode(String nodeId, String childrenStr, String parent, RTreeCache cache, ILogger logger) {
+	public DepRTreeNode(String nodeId, String childrenStr, String parent, DepIRTreeCache cache, ILogger logger) {
 		this.cache = cache;
 		this.logger = logger;
 		this.nodeId = nodeId;
@@ -73,7 +73,7 @@ public class RTreeNode {
 		this.locationItems = new ArrayList<ILocationItem>();
 		
 		if (cache != null) {
-			this.rectangle = new HyperCuboid(cache.getNumDimensions());
+			this.rectangle = new RectangleND(cache.getNumDimensions());
 		}
 //		this.rectangle = new Rectangle();
 	}
@@ -256,7 +256,7 @@ public class RTreeNode {
 		}
 	}
 	
-	public void updateRectangleNDimensional(RTreeNode node) {
+	public void updateRectangleNDimensional(DepRTreeNode node) {
 		logger.log(rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
 		
 		IHyperRectangle childSum = node.rectangle;
@@ -274,7 +274,7 @@ public class RTreeNode {
 		
 		
 		if (node.children != null) {
-			RTreeNode firstChild = cache.getNode(node.getChildren().get(0));
+			DepRTreeNode firstChild = cache.getNode(node.getChildren().get(0));
 			if (firstChild != null && firstChild.rectangle != null) {
 				for (int i = 0; i < rectangle.getNumberDimensions(); i++) {
 					minimums.set(i, firstChild.getRectangle().getDim1(i));
@@ -290,7 +290,7 @@ public class RTreeNode {
 			
 			for (String child : node.children) {
 				
-				RTreeNode childNode = cache.getNode(child);
+				DepRTreeNode childNode = cache.getNode(child);
 				if (childNode != null && childNode.rectangle != null) {
 					
 					logger.log("childSum: " + childSum);
@@ -324,7 +324,7 @@ public class RTreeNode {
 	
 	}
 	
-	public void updateRectangle2D(RTreeNode node) {
+	public void updateRectangle2D(DepRTreeNode node) {
 		
 		logger.log("BRANCH UPDATE RECTANGLE:::: " + node.nodeId + " ... node.children: " + node.children + " node.parent: " + node.parent);
 		
@@ -336,7 +336,7 @@ public class RTreeNode {
 		int maxY = node.rectangle.getDim2(1);
 		
 		if (node.children != null) {
-			RTreeNode firstChild = cache.getNode(node.getChildren().get(0));
+			DepRTreeNode firstChild = cache.getNode(node.getChildren().get(0));
 			if (firstChild != null && firstChild.rectangle != null) {
 				minX = firstChild.getRectangle().getDim1(0);
 				minY = firstChild.getRectangle().getDim1(1);
@@ -351,7 +351,7 @@ public class RTreeNode {
 			
 			for (String child : node.children) {
 				
-				RTreeNode childNode = cache.getNode(child);
+				DepRTreeNode childNode = cache.getNode(child);
 				if (childNode != null && childNode.rectangle != null) {
 					
 					logger.log("childSum: " + childSum);
