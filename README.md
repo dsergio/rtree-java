@@ -5,10 +5,11 @@
 
 N-Dimensional R-Tree data structure using minimum bounding boxes to hold data in a balanced R-Tree structure with configurable storage and configurable split (insertion) algorithms. The structure allows for fast O(log<sub>M</sub>n) querying by boundaries. For example, one might want to query all landmarks on a map that fall within a geographical region. This structure is designed for such queries.
 
-https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1
+
 
 pom.xml:
 ```
+<!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
 <dependency>
   <groupId>dsergio</groupId>
   <artifactId>rtree</artifactId>
