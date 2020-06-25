@@ -12,6 +12,11 @@ import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 import rtree.storage.IDataStorage;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTree2D extends RTreeBase {
 
 	/**

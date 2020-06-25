@@ -18,10 +18,7 @@ import rtree.storage.StorageType;
 
 /**
  * 
- * R-Tree Base class with configurable split algorithms and configurable storage implementations
- * 
  * @author David Sergio
- * 
  *
  */
 public abstract class RTreeBase implements IRTree {

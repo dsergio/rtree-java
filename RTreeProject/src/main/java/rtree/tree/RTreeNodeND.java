@@ -14,6 +14,11 @@ import rtree.log.ILogger;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeNodeND extends RTreeNodeBase {
 
 	/**

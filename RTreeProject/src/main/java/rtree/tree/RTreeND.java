@@ -13,6 +13,11 @@ import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.storage.IDataStorage;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeND extends RTreeBase {
 
 	/**

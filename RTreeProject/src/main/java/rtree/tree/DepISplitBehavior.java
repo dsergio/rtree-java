@@ -3,6 +3,13 @@ package rtree.tree;
 import rtree.item.ILocationItem;
 import rtree.log.ILogger;
 
+/**
+ * 
+ * TODO deprecate
+ * 
+ * @author David Sergio
+ *
+ */
 public interface DepISplitBehavior {
 
 	public boolean didBranchSplit();

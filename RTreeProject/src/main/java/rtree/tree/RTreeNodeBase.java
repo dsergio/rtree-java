@@ -19,9 +19,6 @@ import rtree.rectangle.IHyperRectangle;
 
 /**
  * 
- * RTreeNode Base Class
- * 
- * 
  * @author David Sergio
  *
  */

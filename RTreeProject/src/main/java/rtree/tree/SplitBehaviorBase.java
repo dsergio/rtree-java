@@ -5,8 +5,6 @@ import rtree.log.ILogger;
 
 /**
  * 
- * Split Behavior base class
- * 
  * @author David Sergio
  *
  */

@@ -14,6 +14,11 @@ import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
 import rtree.storage.IDataStorage;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeCacheND extends RTreeCacheBase {
 
 	/**

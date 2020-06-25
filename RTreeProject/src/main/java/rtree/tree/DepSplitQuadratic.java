@@ -16,7 +16,7 @@ import rtree.rectangle.Rectangle2D;
 
 /**
  * 
- * This class is the quadratic split algorithm.
+ * TODO deprecate
  * 
  * @author David Sergio
  *

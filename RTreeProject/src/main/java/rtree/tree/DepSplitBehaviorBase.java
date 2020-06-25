@@ -5,7 +5,7 @@ import rtree.log.ILogger;
 
 /**
  * 
- * Split Behavior base class
+ * TODO deprecate
  * 
  * @author David Sergio
  *

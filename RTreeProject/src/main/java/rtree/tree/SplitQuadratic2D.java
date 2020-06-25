@@ -12,6 +12,11 @@ import rtree.log.LogLevel;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class SplitQuadratic2D extends SplitBehaviorBase {
 	
 	final String description;

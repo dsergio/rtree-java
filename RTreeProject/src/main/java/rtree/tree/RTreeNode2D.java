@@ -13,6 +13,11 @@ import rtree.log.ILogger;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeNode2D extends RTreeNodeBase {
 
 	/**

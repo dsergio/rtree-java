@@ -23,8 +23,7 @@ import rtree.rectangle.Rectangle2D;
 
 /**
  * 
- * RTreeNode
- * Fully N-Dimensional
+ * TODO deprecate
  * 
  * @author David Sergio
  *

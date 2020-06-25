@@ -13,6 +13,11 @@ import rtree.log.ILogger;
 import rtree.rectangle.Rectangle2D;
 import rtree.storage.IDataStorage;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeCache2D extends RTreeCacheBase {
 
 	/**

@@ -6,8 +6,7 @@ import rtree.item.ILocationItem;
 
 /**
  * 
- * Linear Split Algorithm
- * Implementation is in progress.
+ * TODO deprecate
  * 
  * @author David Sergio
  *

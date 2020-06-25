@@ -9,6 +9,11 @@ import org.json.simple.JSONArray;
 import rtree.item.ILocationItem;
 import rtree.rectangle.IHyperRectangle;
 
+/**
+ * 
+ * @author David Sergio
+ *
+ */
 public interface IRTreeNode {
 
 	public String getNodeId();
@@ -21,7 +26,6 @@ public interface IRTreeNode {
 	public void updateRectangle();
 	public void updateRectangle(boolean goUp);
 	public void updateRectangle(IRTreeNode node);
-	
 	
 	public int getNumberOfItems();
 	public boolean isLeafNode();
