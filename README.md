@@ -3,16 +3,15 @@
 # rtree-java
 
 
-Cloud-based R-Tree structure which can store N-Dimensional spatial data in a R-Tree structure in persistent storage, using Java. This project was created to demonstrate a simple cloud-based tree structure in AWS DynamoDB, however I am currently working on extending it in several aspects.
+N-Dimensional R-Tree data structure using minimum bounding boxes to hold data in a balanced R-Tree structure with configurable storage. The structure allows for fast O(log<sub>M</sub>n) querying by boundaries. For example, one might want to query all landmarks on a map that fall within a geographical region. This structure is designed for such queries.
 
 pom.xml:
-
 ```
-	<dependency>
-	  <groupId>dsergio</groupId>
-	  <artifactId>rtree</artifactId>
-	  <version>1.0</version>
-	</dependency>`
+<dependency>
+  <groupId>dsergio</groupId>
+  <artifactId>rtree</artifactId>
+  <version>1.0</version>
+</dependency>
 ```
 
 Properties of RTree:
@@ -40,6 +39,8 @@ The metadata table contains the following attributes
  * maxX
  * minY
  * maxY
+ * minimums
+ * maximums
 
 ### Data Table
 The data table contains the following attributes
@@ -53,16 +54,16 @@ The data table contains the following attributes
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
-To compile: `mvn package`
+Compile: `mvn package` or see above pom.xml
 
 
-## Run GUI 
+## Run GUI (2D only for now)
 
 `java -cp .\target\rtree-1.0.jar Tester gui [treeName] [optional maxChildren] [optional maxItems]`
 
 e.g. `java -cp .\target\rtree-1.0.jar Tester gui tree1`
 
-## Insert CLI and GUI 
+## Insert CLI and GUI
 
 The CLI feature will read a data file (see example [wa_cities](https://github.com/dsergio/rtree-java/blob/master/wa_cities)) with each line in the form<br /><br />
 `city name,state abbreviation;latitude,longitude`<br /><br />
