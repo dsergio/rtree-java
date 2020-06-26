@@ -538,4 +538,10 @@ public class DataStorageDynamoDB extends DataStorageBase {
 		
 	}
 
+	@Override
+	public void clearData() {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

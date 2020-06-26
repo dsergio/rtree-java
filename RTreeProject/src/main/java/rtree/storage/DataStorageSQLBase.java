@@ -34,11 +34,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 	protected DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
 		super(storageType, logger, treeName, numDimensions);
-		init();
 	}
-
-	@Override
-	public abstract void init();
 
 	@Override
 	public void close() {
@@ -62,7 +58,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		long time = System.currentTimeMillis();
 		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 
-		String query = "INSERT INTO `rtree_data` (`nodeId`, `parent`, `rectangle`, `items`, `children`) "
+		String query = "INSERT INTO `" + tablePrefix + "_data` (`nodeId`, `parent`, `rectangle`, `items`, `children`) "
 				+ "VALUES (?, ?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
@@ -151,7 +147,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 		long time = System.currentTimeMillis();
 		
-		String update = "UPDATE `rtree_data` ";
+		String update = "UPDATE `" + tablePrefix + "_data` ";
 
 		String set = " SET nodeId = nodeId ";
 
@@ -210,7 +206,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 		long time = System.currentTimeMillis();
 		
-		String select = " SELECT * FROM rtree_data ";
+		String select = " SELECT * FROM " + tablePrefix + "_data ";
 
 		String where = " WHERE `nodeId` = ?";
 
@@ -353,7 +349,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 	@Override
 	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
-		String query = "INSERT INTO `rtree_metadata` (`treeName`, `maxChildren`, `maxItems`) " + "VALUES (?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`) " + "VALUES (?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -375,7 +371,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 	@Override
 	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
-		String query = "INSERT INTO `rtree_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`) " + "VALUES (?, ?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`) " + "VALUES (?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -399,7 +395,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	@Override
 	public boolean metaDataExists(String treeName) {
 
-		String select = " SELECT * FROM `rtree_metadata` ";
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
 
@@ -426,7 +422,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 		int maxChildren = 4; // default to 4
 
-		String select = " SELECT * FROM `rtree_metadata` ";
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
 
@@ -454,7 +450,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	public int getMaxItems(String treeName) {
 		int maxItems = 4; // default to 4
 
-		String select = " SELECT * FROM `rtree_metadata` ";
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
 
@@ -483,7 +479,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		
 		int N = 2; // default to 2
 		
-		String select = " SELECT * FROM `rtree_metadata` ";
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
 
@@ -510,7 +506,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	@Override
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
 		
-		String update = "UPDATE `rtree_metadata` ";
+		String update = "UPDATE `" + tablePrefix + "_metadata` ";
 		String set = " SET treeName = treeName" + ", minX = ? " + ", maxX = ? " + ", minY = ? " + ", maxY = ? " + "";
 		String where = " WHERE treeName = ? ";
 
@@ -548,7 +544,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			arrMax.add(maximums.get(i));
 		}
 		
-		String update = "UPDATE `rtree_metadata` ";
+		String update = "UPDATE `" + tablePrefix + "_metadata` ";
 		String set = " SET treeName = treeName" + ", minimums = ? " + ", maximums = ? ";
 		String where = " WHERE treeName = ? ";
 
@@ -572,5 +568,38 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		}
 		
 	}
+
+	@Override
+	public void clearData() {
+		
+		
+		String deleteData = "DELETE FROM " + tablePrefix + "_data WHERE 1; ";
+		
+
+		PreparedStatement stmt = null;
+
+		try {
+			stmt = conn.prepareStatement(deleteData, Statement.RETURN_GENERATED_KEYS);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+		String deleteMetadata = "DELETE FROM " + tablePrefix + "_metadata WHERE 1; ";
+		
+		try {
+			stmt = conn.prepareStatement(deleteMetadata, Statement.RETURN_GENERATED_KEYS);
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+	}
+	
+	
 
 }

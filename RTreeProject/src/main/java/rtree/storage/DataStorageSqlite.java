@@ -14,6 +14,15 @@ import rtree.log.ILogger;
  */
 public class DataStorageSqlite extends DataStorageSQLBase {
 
+	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions, boolean isTest) {
+		super(StorageType.SQLITE, logger, treeName, numDimensions);
+		if (isTest) {
+			this.isTest = true;
+			tablePrefix = "rtree_test";
+		}
+		init();
+	}
+	
 	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
 		super(StorageType.SQLITE, logger, treeName, numDimensions);
 		init();
@@ -44,7 +53,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 
 		Statement stmt = null;
 
-		String sql = " CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
+		String sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
 				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
 				+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL "
 				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
@@ -60,7 +69,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 
 			stmt = conn.createStatement();
 
-			sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
+			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_data (nodeId VARCHAR(255) NOT NULL, "
 					+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
 			logger.log("create table: \n" + sql);

@@ -14,7 +14,6 @@ import rtree.tree.IRTreeNode;
  */
 public interface IDataStorage {
 	
-	public void init();
 	public void close();
 	
 	public String getTreeName();
@@ -42,5 +41,7 @@ public interface IDataStorage {
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY);
 	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums);
 	public StorageType getStorageType();
+	
+	public void clearData();
 	
 }

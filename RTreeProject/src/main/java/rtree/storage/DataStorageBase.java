@@ -14,14 +14,20 @@ public abstract class DataStorageBase implements IDataStorage {
 	protected long addTime = 0;
 	protected long updateTime = 0;
 	protected int numDimensions;
+	protected boolean isTest;
+	protected String tablePrefix;
 	
 	public DataStorageBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
 		this.storageType = storageType;
 		this.logger = logger;
 		this.treeName = treeName;
 		this.numDimensions = numDimensions;
+		this.isTest = false;
+		this.tablePrefix = "rtree";
 		validateTreeName();
 	}
+	
+	protected abstract void init();
 	
 	public String getTreeName() {
 		return treeName;

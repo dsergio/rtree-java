@@ -40,7 +40,7 @@ public class Tester {
 		// configurations
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
 		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.PROD);
-		rtree.storage.StorageType cloudType = rtree.storage.StorageType.MYSQL;
+		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
 		
 		if (args.length < 2)  {
 			logger.log("Usage: java Tester gui [treeName] [optional maxChildren] [optional maxItems]");

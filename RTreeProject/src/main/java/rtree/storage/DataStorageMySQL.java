@@ -62,7 +62,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 
 		Statement stmt = null;
 
-		String sql = " CREATE TABLE IF NOT EXISTS rtree_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT "
+		String sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT "
 				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
 				+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL " 
 				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
@@ -78,7 +78,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 
 			stmt = conn.createStatement();
 
-			sql = "CREATE TABLE IF NOT EXISTS rtree_data (nodeId VARCHAR(255) NOT NULL, "
+			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_data (nodeId VARCHAR(255) NOT NULL, "
 					+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
 			logger.log("create table: \n" + sql);
