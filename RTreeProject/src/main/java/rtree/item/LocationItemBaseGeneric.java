@@ -1,6 +1,7 @@
 package rtree.item;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -8,22 +9,22 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-public abstract class LocationItemBase implements ILocationItem {
+public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements ILocationItemGeneric<T> {
 
-	protected List<Integer> dimensionArray;
+	protected List<T> dimensionArray;
 	protected int numberDimensions;
 	protected Object data;
 	protected String type;
 	
-	public LocationItemBase(int numberDimensions) {
+	public LocationItemBaseGeneric(int numberDimensions) {
 		this.numberDimensions = numberDimensions;
-		dimensionArray = new ArrayList<Integer>();
+		dimensionArray = new ArrayList<T>();
 		while (dimensionArray.size() < numberDimensions) {
 			dimensionArray.add(null);
 		}
 	}
 	
-	public List<Integer> getDimensionArray() {
+	public List<T> getDimensionArray() {
 		return dimensionArray;
 	}
 	
@@ -31,14 +32,14 @@ public abstract class LocationItemBase implements ILocationItem {
 		return numberDimensions;
 	}
 	
-	public void setDim(int dim, int value) {
+	public void setDim(int dim, T value) {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions + " you entered dim: " + dim + " value: " + value);
 		}
 		dimensionArray.set(dim, value);
 	}
 	
-	public Integer getDim(int dim) {
+	public T getDim(int dim) {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions + " you entered dim: " + dim);
 		}
@@ -55,29 +56,55 @@ public abstract class LocationItemBase implements ILocationItem {
 
 	public abstract JSONObject getJson();
 	
-	public static Integer space(ILocationItem e1, ILocationItem e2) {
+	public static <T extends IRType<T>> Double space(ILocationItemGeneric<T> e1, ILocationItemGeneric<T> e2) {
 		
 		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
 			throw new IllegalArgumentException("Dimensions of items must be the same.");
 		}
 		
-		int spaceTotal = 1; 
+		double spaceTotal = 1; 
 		for (int i = 0; i < e1.getDimensionArray().size(); i++) {
 			if (e1.getDimensionArray().get(i) == null || e1.getDimensionArray().get(i) == null) {
 				throw new IllegalArgumentException("Dimension " + i + " is missing in one of the inputs.");
 			}
-			spaceTotal = spaceTotal * Math.abs((e1.getDim(i) - e2.getDim(i)));
+			
+			double d = e1.getDim(i).distanceTo(e2.getDim(i));
+	        
+			spaceTotal = spaceTotal * d;
+			
 		}
 		
 		return spaceTotal;
 	}
 	
+	public static <T extends IRType<T>> BoundingBox getBoundingBox(ILocationItemGeneric<T> e1, ILocationItemGeneric<T> e2) {
+		
+		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
+			throw new IllegalArgumentException("Dimensions of items must be the same.");
+		}
+		
+		BoundingBox box = new BoundingBox(e1.getNumberDimensions());
+		
+		for (int i = 0; i < e1.getDimensionArray().size(); i++) {
+			if (e1.getDimensionArray().get(i) == null || e1.getDimensionArray().get(i) == null) {
+				throw new IllegalArgumentException("Dimension " + i + " is missing in one of the inputs.");
+			}
+			
+			double d = e1.getDim(i).distanceTo(e2.getDim(i));
+			
+	        box.setDim(i, d);
+			
+		}
+		
+		return box;
+	}
+	
 	@SuppressWarnings("unchecked")
-	public static JSONArray getItemsJSON(List<ILocationItem> locationItems) {
+	public static <T extends IRType<T>> JSONArray getItemsJSON(List<ILocationItemGeneric<T>> locationItems) {
 		
 		JSONArray arr = new JSONArray();
 		if (locationItems != null) {
-			for (ILocationItem item : locationItems) {
+			for (ILocationItemGeneric<T> item : locationItems) {
 				
 				JSONObject obj = new JSONObject();
 				
