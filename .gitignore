@@ -40,7 +40,8 @@ all_us_cities
 
 todo
 
-RTreeData/.classpath
+.classpath
+.settings
 
 RTreeData/src/main/resources/config.properties
 

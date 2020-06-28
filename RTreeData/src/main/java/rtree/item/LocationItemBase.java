@@ -14,6 +14,7 @@ public abstract class LocationItemBase implements ILocationItem {
 	protected int numberDimensions;
 	protected Object data;
 	protected String type;
+	protected Integer id;
 	
 	public LocationItemBase(int numberDimensions) {
 		this.numberDimensions = numberDimensions;
