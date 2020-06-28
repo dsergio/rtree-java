@@ -22,7 +22,7 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
-RTreeProject/doc
+RTreeData/doc
 
 .prefs
 
@@ -40,9 +40,9 @@ all_us_cities
 
 todo
 
-RTreeProject/.classpath
+RTreeData/.classpath
 
-RTreeProject/src/main/resources/config.properties
+RTreeData/src/main/resources/config.properties
 
 *.prefs
 

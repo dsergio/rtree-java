@@ -12,7 +12,6 @@ import rtree.item.ILocationItemGeneric;
 import rtree.item.LocationItemBaseGeneric;
 import rtree.item.LocationItemNDGeneric;
 import rtree.item.RBoolean;
-import rtree.item.RDouble;
 import rtree.item.RInteger;
 
 class LocationItemGenericTests {
