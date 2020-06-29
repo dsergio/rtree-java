@@ -4,6 +4,13 @@
 
 N-Dimensional R-Tree data structure using minimum bounding boxes to hold data in a balanced R-Tree structure with configurable storage and configurable split (insertion) algorithms. The structure allows for fast O(log<sub>M</sub>n) querying by boundaries. For example, one might want to query all landmarks on a map that fall within a geographical region. This structure is designed for such queries.
 
+Properties of RTree:
+* Depth-balanced
+* Max number of children, and max number of leaf node Items
+* Each branch node contains a rectangle and a set of children nodes
+* Each leaf node contains a rectangle and a set of point data.
+* Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.
+
 ## RTreeWeb
 TBD
 
@@ -25,14 +32,7 @@ pom.xml:
 </dependency>
 ```
 
-Properties of RTree:
-* Depth-balanced
-* Max number of children, and max number of leaf node Items
-* Each branch node contains a rectangle and a set of children nodes
-* Each leaf node contains a rectangle and a set of point data.
-* Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.
-
-## Storage Configurations
+### Storage Configurations
 
 ### MySQL
 This application uses a `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
@@ -62,20 +62,20 @@ Example `rtree_data` table:
 |0829f348|4D_TestTree_1|{"3_1":4,"3_2":85,"z1":43,"y1":19,"z2":71,"x1":22,"y2":97,"x2":44}|[{"3":4,"x":32,"y":39,"z":71,"type":"Buffalo"},{"3":85,"x":44,"y":97,"z":71,"type":"White Tiger"},{"3":85,"x":32,"y":77,"z":57,"type":"Uakari"},{"3":52,"x":22,"y":19,"z":43,"type":"Monkey"}]|[]
 |8D_TestTree_1|NULL|{"3_1":1,"3_2":90,"4_1":0,"4_2":90,"5_1":17,"5_2":91,"6_1":24,"6_2":87,"7_1":1,"7_2":94,"z1":2,"y1":22,"z2":76,"x1":6,"y2":90,"x2":59}|[]|["d68ecc6f","a7d50781","17ad9e40","f52d34ab"]
 
-## Usage
+## RTreeData GUI Usage (2D Java Swing Implementation)
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
 Compile: `mvn package` or see above pom.xml
 
 
-## Run GUI (2D only for now)
+### Run GUI
 
 `java -cp .\target\rtree-1.0.jar Tester gui [treeName] [optional maxChildren] [optional maxItems]`
 
 e.g. `java -cp .\target\rtree-1.0.jar Tester gui tree1`
 
-## Insert CLI and GUI
+### Insert CLI and GUI
 
 The CLI feature will read a data file (see example [wa_cities](https://github.com/dsergio/rtree-java/blob/master/wa_cities)) with each line in the form<br /><br />
 `city name,state abbreviation;latitude,longitude`<br /><br />
@@ -85,7 +85,7 @@ and insert the item into the R-Tree.
 
 e.g. `java -cp .\target\rtree-1.0.jar Tester cli cloudtree28 ../wa_cities 100 8 8`
 
-## Using the GUI
+### Using the GUI
 
 The GUI is based on swing Java Graphics using a BorderLayout. 
 GUI Features
