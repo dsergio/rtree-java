@@ -10,7 +10,7 @@
 	<version>0.0.1</version>
 
 	<name>RTreeBusiness</name>
-	<description>A simple RTreeBusiness.</description>
+	<description>RTreeBusiness</description>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
@@ -33,6 +33,8 @@
 			<artifactId>rtree</artifactId>
 			<version>1.0.2</version>
 		</dependency>
+		
+		
 
 	</dependencies>
 

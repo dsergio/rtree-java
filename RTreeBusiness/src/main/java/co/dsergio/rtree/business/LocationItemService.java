@@ -13,6 +13,7 @@ public class LocationItemService {
 		
 		ILocationItem item = new LocationItemND(N);
 		item.setType(type);
+		
 		return item;
 		
 	}

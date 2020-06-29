@@ -1,8 +1,11 @@
 package rtree.item;
 
+
+
 import org.json.simple.JSONObject;
 
 public class LocationItemND extends LocationItemBase {
+
 
 	public LocationItemND(int numberDimensions) {
 		super(numberDimensions);

@@ -4,9 +4,9 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>Location Item</title>
+<title>RTree List</title>
 </head>
 <body>
-
+<h1>RTree List</h1>
 </body>
 </html>
