@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import org.json.simple.JSONObject;
+
 import rtree.item.ILocationItem;
 import rtree.rectangle.IHyperRectangle;
 
@@ -31,7 +33,7 @@ public interface IRTree {
 	public List<ILocationItem> getPoints();
 	public Map<ILocationItem, Integer> getPointsWithDepth();
 	public void printTree();
-	
+	public JSONObject getJson();
 
 	public int numAdds();
 	public int numReads();

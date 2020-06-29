@@ -46,11 +46,11 @@ class RTree2DTests {
 		// Arrange
 		int N = 2;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		// Act
 		try {
-			new RTree2D(dataStorage, 4, 4, logger);
+			new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -66,11 +66,11 @@ class RTree2DTests {
 		int N = 2;
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTree2D(dataStorage, numChildrenExpected, numItemsExpected, logger);
+			tree = new RTree2D(dataStorage, numChildrenExpected, numItemsExpected, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -98,10 +98,10 @@ class RTree2DTests {
 		int N = 2;
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree2D(dataStorage, 4, 4, logger);
+			tree = new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -131,10 +131,10 @@ class RTree2DTests {
 		int N = 2;
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree2D(dataStorage, 4, 4, logger);
+			tree = new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

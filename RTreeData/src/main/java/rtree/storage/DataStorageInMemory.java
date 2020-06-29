@@ -12,6 +12,7 @@ import rtree.log.ILogger;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
 import rtree.rectangle.RectangleND;
+import rtree.tree.IRTree;
 import rtree.tree.IRTreeCache;
 import rtree.tree.IRTreeNode;
 import rtree.tree.RTreeNode2D;
@@ -29,9 +30,11 @@ public class DataStorageInMemory extends DataStorageBase {
 	private int maxItems;
 	private int maxChildren;
 	private Map<String, IRTreeNode> localData;
+	private int numDimensions;
 	
-	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.INMEMORY, logger, treeName, numDimensions);
+//	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
+	public DataStorageInMemory(ILogger logger) {
+		super(StorageType.INMEMORY, logger);
 		localData = new HashMap<String, IRTreeNode>();
 	}
 	
@@ -67,6 +70,8 @@ public class DataStorageInMemory extends DataStorageBase {
 		logger.log("rectangle: " + rectangle);
 		
 		// construct the node
+		
+		int numDimensions = getNumDimensions(treeName);
 		
 		IRTreeNode node = null;
 		if (numDimensions == 2) {
@@ -124,12 +129,12 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
+	public void updateItem(String treeName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.updateItem with parameters: ");
-		logger.log("tableName: " + tableName);
+		logger.log("tableName: " + treeName);
 		logger.log("nodeId: " + nodeId);
 		logger.log("children: " + children);
 		logger.log("parent: " + parent);
@@ -144,6 +149,8 @@ public class DataStorageInMemory extends DataStorageBase {
 		}
 		
 		node.setParent(parent);
+		
+		int numDimensions = getNumDimensions(treeName);
 		
 		IHyperRectangle r;
 		if (numDimensions == 2) {
@@ -194,11 +201,11 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache) {
+	public IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
-		logger.log("tableName: " + tableName);
+		logger.log("treeName: " + treeName);
 		logger.log("nodeId: " + nodeId);
 		
 		numReads++;
@@ -260,12 +267,12 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
 		
 	}
 
 	@Override
-	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums) {
+	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -283,6 +290,19 @@ public class DataStorageInMemory extends DataStorageBase {
 	public void clearData() {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public int getNumDimensions(String treeName) {
+		return numDimensions;
+	}
+
+
+	@Override
+	public List<IRTree> getAllTrees(IDataStorage dataStorage) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

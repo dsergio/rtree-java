@@ -25,8 +25,8 @@ public class RTreeND extends RTreeBase {
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTreeND(IDataStorage dataStorage, ILogger logger) throws Exception {
-		super(dataStorage, logger);
+	public RTreeND(IDataStorage dataStorage, ILogger logger, String treeName) throws Exception {
+		super(dataStorage, logger, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -39,8 +39,8 @@ public class RTreeND extends RTreeBase {
 	 * @param numDimensions
 	 * @throws Exception
 	 */
-	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions) throws Exception {
-		super(dataStorage, maxChildren, maxItems, logger, numDimensions);
+	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, logger, numDimensions, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -52,8 +52,8 @@ public class RTreeND extends RTreeBase {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger) throws Exception {
-		super(dataStorage, maxChildren, maxItems, logger);
+	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, logger, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -63,8 +63,8 @@ public class RTreeND extends RTreeBase {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems) throws Exception {
-		super(dataStorage, maxChildren, maxItems);
+	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -72,8 +72,8 @@ public class RTreeND extends RTreeBase {
 	 * @param dataStorage
 	 * @throws Exception
 	 */
-	public RTreeND(IDataStorage dataStorage) throws Exception {
-		super(dataStorage);
+	public RTreeND(IDataStorage dataStorage, String treeName) throws Exception {
+		super(dataStorage, treeName);
 		// TODO Auto-generated constructor stub
 	}
 	
@@ -166,7 +166,7 @@ public class RTreeND extends RTreeBase {
 				}
 				
 				if (updateBoundaries) {
-					cache.getDBAccess().updateMetaDataBoundariesNDimensional(minimums, maximums);
+					cache.getDBAccess().updateMetaDataBoundariesNDimensional(minimums, maximums, treeName);
 					boundariesSet = true;
 				}
 				

@@ -1,8 +1,13 @@
 package rtree.storage;
 
+import java.io.File;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.builder.fluent.Configurations;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+
 import rtree.log.ILogger;
 
 /**
@@ -13,9 +18,12 @@ import rtree.log.ILogger;
  *
  */
 public class DataStorageSqlite extends DataStorageSQLBase {
+	
+	private String dir;
 
-	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions, boolean isTest) {
-		super(StorageType.SQLITE, logger, treeName, numDimensions);
+//	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions, boolean isTest) {
+	public DataStorageSqlite(ILogger logger, boolean isTest) {
+		super(StorageType.SQLITE, logger);
 		if (isTest) {
 			this.isTest = true;
 			tablePrefix = "rtree_test";
@@ -23,17 +31,33 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 		init();
 	}
 	
-	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.SQLITE, logger, treeName, numDimensions);
+//	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
+	public DataStorageSqlite(ILogger logger) {
+		super(StorageType.SQLITE, logger);
 		init();
 	}
 
 	@Override
 	public void init() {
+		
+		Configurations configs = new Configurations();
+		try {
+
+			Configuration config = configs.properties(new File("resources/config.properties"));
+			dir = config.getString("SQLITE.dir");
+
+		} catch (ConfigurationException cex) {
+			logger.log(cex);
+			cex.printStackTrace();
+		}
+		
+		if (dir == null) {
+			dir = System.getProperty("user.dir");
+		}
 
 		try {
 			Class.forName("org.sqlite.JDBC");
-			String connectionString = "jdbc:sqlite:" + System.getProperty("user.dir") + java.io.File.separator + "rtree" + ".db";
+			String connectionString = "jdbc:sqlite:" + dir + java.io.File.separator + "rtree" + ".db";
 //			System.out.println("SQLITE CONNECTION STRING: " + connectionString);
 			conn = DriverManager.getConnection(connectionString);
 		} catch (Exception e) {
@@ -82,5 +106,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 		}
 
 	}
+
+	
 
 }

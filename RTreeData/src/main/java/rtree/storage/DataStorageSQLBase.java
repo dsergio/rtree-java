@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -16,8 +17,10 @@ import rtree.log.ILogger;
 import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
+import rtree.tree.IRTree;
 import rtree.tree.IRTreeCache;
 import rtree.tree.IRTreeNode;
+import rtree.tree.RTreeND;
 import rtree.tree.RTreeNode2D;
 import rtree.tree.RTreeNodeND;
 
@@ -32,8 +35,9 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 	protected Connection conn;
 	
-	protected DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
-		super(storageType, logger, treeName, numDimensions);
+//	public DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
+	public DataStorageSQLBase(StorageType storageType, ILogger logger) {
+		super(storageType, logger);
 	}
 
 	@Override
@@ -50,6 +54,35 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 	@Override
 	public abstract void initializeStorage();
+
+	@Override
+	public int getNumDimensions(String treeName) {
+		
+		int N = 2; // default to 2
+
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			stmt.setString(1, treeName);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				N = resultSet.getInt("N");
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return N;
+	}
 
 	@Override
 	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
@@ -82,6 +115,8 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			logger.log(e);
 			e.printStackTrace();
 		}
+		
+		int numDimensions = getNumDimensions(treeName);
 		
 		IRTreeNode node = null;
 		if (numDimensions == 2) {
@@ -474,37 +509,9 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		return maxItems;
 	}
 	
-	@Override
-	public int getNumDimensions() {
-		
-		int N = 2; // default to 2
-		
-		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
-		String where = " WHERE `treeName` = ? ";
-		String query = select + where;
-
-		PreparedStatement stmt;
-		try {
-			stmt = conn.prepareStatement(query);
-
-			stmt.setString(1, treeName);
-
-			ResultSet resultSet = stmt.executeQuery();
-
-			if (resultSet.next()) {
-				N = resultSet.getInt("N");
-			}
-
-		} catch (SQLException e) {
-			logger.log(e);
-			e.printStackTrace();
-		}
-
-		return N;
-	}
 
 	@Override
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY) {
+	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
 		
 		String update = "UPDATE `" + tablePrefix + "_metadata` ";
 		String set = " SET treeName = treeName" + ", minX = ? " + ", maxX = ? " + ", minY = ? " + ", maxY = ? " + "";
@@ -535,7 +542,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums) {
+	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName) {
 		
 		JSONArray arrMin = new JSONArray();
 		JSONArray arrMax = new JSONArray();
@@ -600,6 +607,42 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		
 	}
 	
-	
+	@Override
+	public List<IRTree> getAllTrees(IDataStorage dataStorage) {
+		
+		List<IRTree> trees = new ArrayList<IRTree>();
 
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String query = select;
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				String treeName = resultSet.getString("treeName");
+				int maxChildren = resultSet.getInt("maxChildren");
+				int maxItems = resultSet.getInt("maxItems");
+				int N = resultSet.getInt("N");
+				
+				IRTree tree;
+				try {
+					tree = new RTreeND(dataStorage, maxChildren, maxItems, logger, N, treeName);
+					trees.add(tree);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return trees;
+	}
 }

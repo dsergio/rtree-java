@@ -24,8 +24,8 @@ public class RTree2D extends RTreeBase {
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTree2D(IDataStorage dataStorage, ILogger logger) throws Exception {
-		super(dataStorage, logger);
+	public RTree2D(IDataStorage dataStorage, ILogger logger, String treeName) throws Exception {
+		super(dataStorage, logger, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -38,8 +38,8 @@ public class RTree2D extends RTreeBase {
 	 * @param numDimensions
 	 * @throws Exception
 	 */
-	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions) throws Exception {
-		super(dataStorage, maxChildren, maxItems, logger, numDimensions);
+	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, logger, numDimensions, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -51,8 +51,8 @@ public class RTree2D extends RTreeBase {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger) throws Exception {
-		super(dataStorage, maxChildren, maxItems, logger);
+	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, logger, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -62,8 +62,8 @@ public class RTree2D extends RTreeBase {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems) throws Exception {
-		super(dataStorage, maxChildren, maxItems);
+	public RTree2D(IDataStorage dataStorage, int maxChildren, int maxItems, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -71,8 +71,8 @@ public class RTree2D extends RTreeBase {
 	 * @param dataStorage
 	 * @throws Exception
 	 */
-	public RTree2D(IDataStorage dataStorage) throws Exception {
-		super(dataStorage);
+	public RTree2D(IDataStorage dataStorage, String treeName) throws Exception {
+		super(dataStorage, treeName);
 		// TODO Auto-generated constructor stub
 	}
 
@@ -149,7 +149,7 @@ public class RTree2D extends RTreeBase {
 				}
 				
 				if (updateBoundaries) {
-					cache.getDBAccess().updateMetaDataBoundaries(minX, maxX, minY, maxY);
+					cache.getDBAccess().updateMetaDataBoundaries(minX, maxX, minY, maxY, treeName);
 					boundariesSet = true;
 				}
 				

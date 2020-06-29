@@ -46,11 +46,11 @@ class RTree3DTests {
 		// Arrange
 		int N = 3;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		// Act
 		try {
-			new RTreeND(dataStorage, 4, 4, logger, N);
+			new RTreeND(dataStorage, 4, 4, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -66,11 +66,11 @@ class RTree3DTests {
 		int N = 3;
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTreeND(dataStorage, numChildrenExpected, numItemsExpected, logger, N);
+			tree = new RTreeND(dataStorage, numChildrenExpected, numItemsExpected, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -98,10 +98,10 @@ class RTree3DTests {
 		int N = 3;
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, "TestTree1", N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N);
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -136,10 +136,10 @@ class RTree3DTests {
 		String treeName = "TestTree1";
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger, treeName, N);
+		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N);
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, treeName);
 		} catch (Exception e) {
 			e.printStackTrace();
 			fail("Failed to create tree");

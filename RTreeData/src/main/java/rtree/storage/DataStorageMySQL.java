@@ -5,16 +5,20 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
+
 import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import rtree.log.ILogger;
+import rtree.tree.IRTree;
 
 public class DataStorageMySQL extends DataStorageSQLBase {
 
-	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
-		super(StorageType.MYSQL, logger, treeName, numDimensions);
+//	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
+	public DataStorageMySQL(ILogger logger) {
+		super(StorageType.MYSQL, logger);
 		
 	}
 	
@@ -91,7 +95,6 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 		}
 
 	}
-
 	
 
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import org.json.simple.JSONObject;
+
 import rtree.item.ILocationItem;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
@@ -53,8 +55,8 @@ public abstract class RTreeBase implements IRTree {
 	 * @param dataStorage
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage dataStorage) throws Exception {
-		this(dataStorage, 4, 4);
+	public RTreeBase(IDataStorage dataStorage, String treeName) throws Exception {
+		this(dataStorage, 4, 4, treeName);
 	}
 	
 	/**
@@ -67,8 +69,8 @@ public abstract class RTreeBase implements IRTree {
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage dataStorage, ILogger logger) throws Exception {
-		this(dataStorage, 4, 4, logger); // default to Quadratic
+	public RTreeBase(IDataStorage dataStorage, ILogger logger, String treeName) throws Exception {
+		this(dataStorage, 4, 4, logger, treeName); // default to Quadratic
 	}
 	
 	/**
@@ -80,8 +82,8 @@ public abstract class RTreeBase implements IRTree {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV)); // default to DEV, Quadratic
+	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, String treeName) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), treeName); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -94,8 +96,8 @@ public abstract class RTreeBase implements IRTree {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), 2); // default to DEV, Quadratic, 2-D
+	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), 2, treeName); // default to DEV, Quadratic, 2-D
 	}
 	
 	/**
@@ -108,10 +110,10 @@ public abstract class RTreeBase implements IRTree {
 	 * @param numDimensions
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions) throws Exception {
+	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
-		this.treeName = dataStorage.getTreeName();
+		this.treeName = treeName;
 		this.storageType = dataStorage.getStorageType();
 		this.logger = logger;
 		
@@ -173,6 +175,17 @@ public abstract class RTreeBase implements IRTree {
 		splitBehavior.initialize(maxChildren, treeName, cache, logger);
 	}
 	
+	
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject getJson() {
+		JSONObject obj = new JSONObject();
+		obj.put("name", treeName);
+		obj.put("numDimensions", numDimensions);
+		return obj;
+	}
+
 	@Override
 	public IRTreeCache getCache() {
 		return cache;

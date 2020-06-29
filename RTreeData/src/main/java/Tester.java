@@ -13,7 +13,6 @@ import rtree.log.ILoggerPaint;
 import rtree.log.LogLevel;
 import rtree.log.LoggerPaint;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageDynamoDB;
 import rtree.storage.DataStorageInMemory;
 import rtree.storage.DataStorageMySQL;
 import rtree.storage.DataStorageSqlite;
@@ -115,24 +114,24 @@ public class Tester {
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dataStorage = new DataStorageMySQL(logger, inputTreeName, 2);
+				dataStorage = new DataStorageMySQL(logger);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dataStorage = new DataStorageInMemory(logger, inputTreeName, 2);
+			dataStorage = new DataStorageInMemory(logger);
 			break;
 		case DYNAMODB:
-			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName, 2); // use a static value for now
+//			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName, 2); // use a static value for now
 			break;
 		case SQLITE:
-			dataStorage = new DataStorageSqlite(logger, inputTreeName, 2);
+			dataStorage = new DataStorageSqlite(logger);
 			break;
 		default:
 			try {
-				dataStorage = new DataStorageMySQL(logger, inputTreeName, 2);
+				dataStorage = new DataStorageMySQL(logger);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -158,12 +157,12 @@ public class Tester {
 					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 				
-				tree = new RTree2D(dataStorage, inputMaxChildrenInt, inputMaxItemsInt);
+				tree = new RTree2D(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2, inputTreeName);
 				
 			} else {
 				
 				
-				tree = new RTree2D(dataStorage);
+				tree = new RTree2D(dataStorage, logger, inputTreeName);
 //				tree = new RTree(dataStorage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), 3); // testing 3D
 				
 			}

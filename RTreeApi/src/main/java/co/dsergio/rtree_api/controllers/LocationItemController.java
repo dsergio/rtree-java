@@ -52,8 +52,7 @@ public class LocationItemController {
 		return mv;
 	}
 	
-	@RequestMapping(value="/create", method = RequestMethod.GET,
-            produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String create(HttpServletRequest request, HttpServletResponse response) {
 		
 		
