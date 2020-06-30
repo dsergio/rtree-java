@@ -3,7 +3,7 @@ package rtree.storage;
 import rtree.log.ILogger;
 
 public abstract class DataStorageBase implements IDataStorage {
-	
+
 	public final StorageType storageType;
 	protected ILogger logger;
 //	protected final String treeName;

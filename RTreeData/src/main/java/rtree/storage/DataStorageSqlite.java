@@ -71,33 +71,55 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 	
 	@Override
 	public void initializeStorage() {
-		// create metadata table if it doesn't exist
-		// metadata table contains the maxChildren and maxItems parameters,
-		// and the min and max spatial boundaries
 
 		Statement stmt = null;
-
-		String sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
-				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
-				+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL "
-				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
-				+ ")";
-		logger.log("create table: \n" + sql);
+		String sql = null;
 
 		try {
+			
+			sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
+					+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
+					+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL "
+					+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
+					+ ")";
+			logger.log("create table: \n" + sql);
+			
 			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
 
-			// create data table if it doesn't exist
-			// all trees in one table 'rtree_data'
-
-			stmt = conn.createStatement();
-
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+		try {
+			
 			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_data (nodeId VARCHAR(255) NOT NULL, "
 					+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
 			logger.log("create table: \n" + sql);
+			
+			stmt = conn.createStatement();
+			stmt.executeUpdate(sql);
 
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+		try {
+			
+			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_items ("
+					+ " id VARCHAR(255) NOT NULL, "
+					+ " N INT NOT NULL, " 
+					+ " location TEXT NULL, " 
+					+ " type VARCHAR(255) NULL, "
+					+ " PRIMARY KEY ( id ) "
+					+ ")";
+			
+			logger.log("create table: \n" + sql);
+			
+			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {

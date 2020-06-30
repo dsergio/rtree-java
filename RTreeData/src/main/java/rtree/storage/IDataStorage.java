@@ -2,6 +2,7 @@ package rtree.storage;
 
 import java.util.List;
 
+import rtree.item.ILocationItem;
 import rtree.tree.IRTree;
 import rtree.tree.IRTreeCache;
 import rtree.tree.IRTreeNode;
@@ -18,12 +19,15 @@ public interface IDataStorage {
 	public void close();
 	
 //	public String getTreeName();
-	public List<IRTree> getAllTrees(IDataStorage dataStorage);
+	public List<IRTree> getAllTrees();
+	public List<ILocationItem> getAllLocationItems();
 	
 	public void initializeStorage();
 	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache cache);
 	public void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
 	public IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache);
+	
+	public void addItem(String Id, int N, String location, String type);
 	
 	// use these for performance analysis
 	public int getNumAdds();

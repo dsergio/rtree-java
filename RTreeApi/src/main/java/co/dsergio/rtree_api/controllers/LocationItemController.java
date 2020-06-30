@@ -1,8 +1,11 @@
 package co.dsergio.rtree_api.controllers;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -19,6 +22,12 @@ import rtree.item.ILocationItem;
 @RequestMapping("/item")
 public class LocationItemController {
 	
+	/**
+	 * temporary
+	 * 
+	 * @param id
+	 * @return
+	 */
 	@RequestMapping(value="/getView/{id}", method = RequestMethod.GET)
 	public ModelAndView getView(@PathVariable int id) {
 		
@@ -38,6 +47,13 @@ public class LocationItemController {
 		return mv;
 	}
 	
+	/**
+	 * temporary
+	 * 
+	 * @param request
+	 * @param response
+	 * @return
+	 */
 	@RequestMapping(value="/createView", method = RequestMethod.GET)
 	public ModelAndView createView(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -52,17 +68,22 @@ public class LocationItemController {
 		return mv;
 	}
 	
-	@RequestMapping(value="/create", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody String create(HttpServletRequest request, HttpServletResponse response) {
+	@SuppressWarnings("unchecked")
+	@RequestMapping(value="/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody String get(HttpServletRequest request, HttpServletResponse response) {
 		
 		
 		LocationItemService locationItemService = new LocationItemService();
-		ILocationItem item = locationItemService.create("my type", 3);
-		item.setDim(0, 10);
-		item.setDim(1, 11);
-		item.setDim(2, 12);
+		List<ILocationItem> items = locationItemService.fetchAll();
 		
-		return item.getJson().toJSONString();
+		JSONArray jsonArray = new JSONArray();
+		
+		for (ILocationItem i : items) {
+			jsonArray.add(i.getJson().toJSONString());
+		}
+		
+		return jsonArray.toJSONString();
+		
 	}
 	
 	

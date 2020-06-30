@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import rtree.item.ILocationItem;
 import rtree.log.ILogger;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.Rectangle2D;
@@ -300,9 +301,23 @@ public class DataStorageInMemory extends DataStorageBase {
 
 
 	@Override
-	public List<IRTree> getAllTrees(IDataStorage dataStorage) {
+	public List<IRTree> getAllTrees() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+	@Override
+	public List<ILocationItem> getAllLocationItems() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void addItem(String Id, int N, String location, String type) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

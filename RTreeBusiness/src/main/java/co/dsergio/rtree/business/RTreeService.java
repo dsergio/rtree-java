@@ -2,16 +2,21 @@ package co.dsergio.rtree.business;
 
 import java.util.List;
 
-import rtree.storage.ApplicationDbContext;
 import rtree.tree.IRTree;
 
-public class RTreeService {
+public class RTreeService extends EntityService {
 	
 	public List<IRTree> fetchAll() {
-		
-		ApplicationDbContext applicationDbContext = new ApplicationDbContext();
-		return applicationDbContext.treeSet;
-		
+		return dbContext.treeSet;
+	}
+	
+	public IRTree fetchByTreeName(String treeName) {
+		for (IRTree t : dbContext.treeSet) {
+			if (t.getTreeName().equals(treeName)) {
+				return t;
+			}
+		}
+		return null;
 	}
 
 }

@@ -2,6 +2,7 @@ package rtree.item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -14,14 +15,23 @@ public abstract class LocationItemBase implements ILocationItem {
 	protected int numberDimensions;
 	protected Object data;
 	protected String type;
-	protected Integer id;
+	protected final String id;
 	
-	public LocationItemBase(int numberDimensions) {
+	public LocationItemBase(int numberDimensions, String id) {
 		this.numberDimensions = numberDimensions;
+		this.id = id;
 		dimensionArray = new ArrayList<Integer>();
 		while (dimensionArray.size() < numberDimensions) {
 			dimensionArray.add(null);
 		}
+	}
+	
+	public LocationItemBase(int numberDimensions) {
+		this(numberDimensions, UUID.randomUUID().toString());
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public List<Integer> getDimensionArray() {
@@ -98,6 +108,7 @@ public abstract class LocationItemBase implements ILocationItem {
 							break;
 					}
 					obj.put("type", item.getType());
+					obj.put("id", item.getId());
 
 				}
 				arr.add(obj);

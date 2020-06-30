@@ -13,6 +13,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import rtree.item.ILocationItem;
+import rtree.item.LocationItemND;
 import rtree.log.ILogger;
 import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
@@ -175,6 +177,36 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		return node;
 
 	}
+	
+	
+
+	@Override
+	public void addItem(String Id, int N, String location, String type) {
+		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`) "
+				+ "VALUES (?, ?, ?, ?);";
+
+		PreparedStatement stmt = null;
+		int c = 1;
+
+		try {
+
+			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+			stmt.setString(c++, Id);
+			stmt.setInt(c++, N);
+			stmt.setString(c++, location);
+			stmt.setString(c++, type);
+
+			logger.log("[QUERY]: " + stmt.toString());
+
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+	}
 
 	@Override
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
@@ -266,12 +298,14 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			
 			int N = cache.getNumDimensions();
 			
-			IHyperRectangle r;
-			if (N == 2) {
-				r = new Rectangle2D();
-			} else {
-				r = new RectangleND(N);
-			}
+			IHyperRectangle r = new RectangleND(N);
+			
+//			IHyperRectangle r;
+//			if (N == 2) {
+//				r = new Rectangle2D();
+//			} else {
+//				r = new RectangleND(N);
+//			}
 			
 			if (resultSet.next()) {
 				children = resultSet.getString("children");
@@ -313,12 +347,14 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 					}
 				}
 				
+
+				returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
 				
-				if (cache.getNumDimensions() == 2) {
-					returnNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
-				} else {
-					returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
-				}
+//				if (cache.getNumDimensions() == 2) {
+//					returnNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
+//				} else {
+//					returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
+//				}
 
 				returnNode.setRectangle(r);
 				returnNode.setItemsJson(items);
@@ -608,7 +644,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 	
 	@Override
-	public List<IRTree> getAllTrees(IDataStorage dataStorage) {
+	public List<IRTree> getAllTrees() {
 		
 		List<IRTree> trees = new ArrayList<IRTree>();
 
@@ -621,7 +657,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 			ResultSet resultSet = stmt.executeQuery();
 
-			if (resultSet.next()) {
+			while (resultSet.next()) {
 				String treeName = resultSet.getString("treeName");
 				int maxChildren = resultSet.getInt("maxChildren");
 				int maxItems = resultSet.getInt("maxItems");
@@ -629,7 +665,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 				
 				IRTree tree;
 				try {
-					tree = new RTreeND(dataStorage, maxChildren, maxItems, logger, N, treeName);
+					tree = new RTreeND(this, maxChildren, maxItems, logger, N, treeName);
 					trees.add(tree);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -644,5 +680,76 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		}
 
 		return trees;
+	}
+	
+	@Override
+	public List<ILocationItem> getAllLocationItems() {
+		List<ILocationItem> items = new ArrayList<ILocationItem>();
+
+		String select = " SELECT * FROM `" + tablePrefix + "_items` ";
+		String query = select;
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			while (resultSet.next()) {
+				
+				String id = resultSet.getString("id");
+				int N = resultSet.getInt("N");
+				String location = resultSet.getString("location");
+				String type = resultSet.getString("type");
+				
+				ILocationItem item;
+				try {
+					item = new LocationItemND(N, id);
+					
+					JSONParser parser = new JSONParser();
+					JSONObject obj = (JSONObject) parser.parse(location);
+										
+					for (int j = 0; j < N; j++) {
+
+						int value;
+
+						switch (j) {
+						case 0:
+							value = Integer.parseInt(obj.get("x").toString());
+
+							break;
+						case 1:
+							value = Integer.parseInt(obj.get("y").toString());
+
+							break;
+						case 2:
+							value = Integer.parseInt(obj.get("z").toString());
+
+							break;
+						default:
+							value = Integer.parseInt(obj.get(j + "").toString());
+
+							break;
+						}
+
+						item.setDim(j, value);
+					}
+					
+					item.setType(type);
+					
+					items.add(item);
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return items;
 	}
 }

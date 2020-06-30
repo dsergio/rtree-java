@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 
 public interface ILocationItem {
 	
+	public String getId();
 	public String getType();
 	public void setType(String type);
 	public int getNumberDimensions();
@@ -25,6 +26,7 @@ public interface ILocationItem {
 	 */
 	public Integer getDim(int dim);
 	public List<Integer> getDimensionArray();
+	public JSONObject getLocationJson();
 	
 	
 	

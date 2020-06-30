@@ -62,6 +62,13 @@ Example `rtree_data` table:
 |0829f348|4D_TestTree_1|{"3_1":4,"3_2":85,"z1":43,"y1":19,"z2":71,"x1":22,"y2":97,"x2":44}|[{"3":4,"x":32,"y":39,"z":71,"type":"Buffalo"},{"3":85,"x":44,"y":97,"z":71,"type":"White Tiger"},{"3":85,"x":32,"y":77,"z":57,"type":"Uakari"},{"3":52,"x":22,"y":19,"z":43,"type":"Monkey"}]|[]
 |8D_TestTree_1|NULL|{"3_1":1,"3_2":90,"4_1":0,"4_2":90,"5_1":17,"5_2":91,"6_1":24,"6_2":87,"7_1":1,"7_2":94,"z1":2,"y1":22,"z2":76,"x1":6,"y2":90,"x2":59}|[]|["d68ecc6f","a7d50781","17ad9e40","f52d34ab"]
 
+### Items Table
+Example `rtree_items` table: 
+
+|Id|N|location|type
+|----------|----------|----------|----------
+|TBD|TBD|TBD|TBD
+
 ## RTreeData GUI Usage (2D Java Swing Implementation)
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  

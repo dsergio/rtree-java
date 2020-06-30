@@ -19,6 +19,7 @@ import rtree.storage.DataStorageSqlite;
 import rtree.storage.IDataStorage;
 import rtree.tree.IRTree;
 import rtree.tree.RTree2D;
+import rtree.tree.RTreeND;
 
 public class Tester {
 
@@ -157,12 +158,12 @@ public class Tester {
 					throw new IllegalArgumentException("Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 				
-				tree = new RTree2D(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2, inputTreeName);
+				tree = new RTreeND(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2, inputTreeName);
 				
 			} else {
 				
 				
-				tree = new RTree2D(dataStorage, logger, inputTreeName);
+				tree = new RTreeND(dataStorage, logger, inputTreeName);
 //				tree = new RTree(dataStorage, 4, 4, new LoggerStdOut(LogLevel.DEV), new SplitQuadratic(), 3); // testing 3D
 				
 			}

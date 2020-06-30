@@ -124,6 +124,9 @@ public class RTreeND extends RTreeBase {
 			throw new IllegalArgumentException("Item dimension must equal tree dimension.");
 		}
 		
+		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
+		
+		
 		if (node == null && getNode(treeName) == null) { // empty tree
 			
 			IHyperRectangle rND = new RectangleND(itemNumDimensions);

@@ -5,14 +5,18 @@
 <html>
 <head>
 <meta charset="ISO-8859-1">
-<title>RTree List</title>
+<title>RTree Detail</title>
 </head>
 <body>
-<h1>RTree List</h1>
+<h1>RTree Detail</h1>
 
 <ul>
-<c:forEach items="${result}" var="item">
-	<li> <a href = "/RTreeWeb/get/${item.name}">${item}</a></li>
+<c:forEach items="${points}" var="point">
+	<li> ${point}</li>
+</c:forEach>
+
+<c:forEach items="${rectangles}" var="r">
+	<li> ${r}</li>
 </c:forEach>
 </ul>
 </body>

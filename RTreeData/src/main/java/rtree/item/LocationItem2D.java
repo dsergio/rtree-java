@@ -49,6 +49,7 @@ public class LocationItem2D extends LocationItemBase{
 		obj.put("x", x);
 		obj.put("y", y);
 		obj.put("type", type);
+		obj.put("id", id);
 		return obj;
 	}
 	
@@ -60,5 +61,14 @@ public class LocationItem2D extends LocationItemBase{
 	
 	static int area2D(LocationItem2D e1, LocationItem2D e2) {
 		return Math.abs(e1.getX() - e2.getX()) * Math.abs(e1.getY() - e2.getY());
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject getLocationJson() {
+		JSONObject obj = new JSONObject();
+		obj.put("x", x);
+		obj.put("y", y);
+		return obj;
 	}
 }
