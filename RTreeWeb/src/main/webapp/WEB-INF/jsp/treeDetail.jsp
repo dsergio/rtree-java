@@ -6,9 +6,14 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>RTree Detail</title>
+	<!-- JQuery -->
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+	integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+	crossorigin="anonymous"></script>
+	
 </head>
 <body>
-<h1>RTree Detail</h1>
+<h1>RTree Detail - ${treeName}</h1>
 
 <ul>
 <c:forEach items="${points}" var="point">
@@ -19,5 +24,7 @@
 	<li> ${r}</li>
 </c:forEach>
 </ul>
+
+
 </body>
 </html>

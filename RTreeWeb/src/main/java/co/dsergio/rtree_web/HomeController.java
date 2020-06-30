@@ -42,6 +42,7 @@ public class HomeController {
 		ModelAndView mv = new ModelAndView();
 		mv.setViewName("treeDetail");
 		
+		mv.addObject("treeName", treeName);
 		mv.addObject("points", obj.get("points"));
 		mv.addObject("rectangles", obj.get("rectangles"));
 		

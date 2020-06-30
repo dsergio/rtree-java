@@ -67,7 +67,7 @@ Example `rtree_items` table:
 
 |Id|N|location|type
 |----------|----------|----------|----------
-|TBD|TBD|TBD|TBD
+|e4fc87d7-0e97-43fe-9727-e6cfcd57c7e9|2|{"x":199,"y":334}|Hedgehog
 
 ## RTreeData GUI Usage (2D Java Swing Implementation)
 
