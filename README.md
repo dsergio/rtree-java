@@ -12,13 +12,14 @@ Properties of RTree:
 * Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.
 
 ## RTreeWeb
-TBD
+* Configuration:  `config.properties` configuration file in the `RTreeWeb/src/main/resources` directory.
+* URL: TBD
 
 ## RTreeApi
-TBD
+* URL: TBD
 
 ## RTreeBusiness
-TBD
+* TBD
 
 ## RTreeData
 
@@ -35,7 +36,10 @@ pom.xml:
 ### Storage Configurations
 
 ### MySQL
-This application uses a `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
+Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
+
+### Sqlite
+Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
 
 ### AWS DynamoDB
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
