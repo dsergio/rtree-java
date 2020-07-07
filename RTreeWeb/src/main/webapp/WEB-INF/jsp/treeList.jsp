@@ -4,6 +4,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="stylesheet" type="text/css" href="css/styles.css"/>
 <meta charset="ISO-8859-1">
 <title>RTree List</title>
 </head>

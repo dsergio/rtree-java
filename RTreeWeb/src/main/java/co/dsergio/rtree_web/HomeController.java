@@ -39,8 +39,23 @@ public class HomeController {
 	public ModelAndView get(@PathVariable String treeName) {
 		
 		JSONObject obj = client.getObject("/rtree/get/" + treeName);
+		
+		int N = 0;
+		
+		if (obj.get("N") != null) {
+			N = Integer.parseInt(obj.get("N").toString());
+		}
+		
 		ModelAndView mv = new ModelAndView();
-		mv.setViewName("treeDetail");
+		
+		if (N == 3) {
+			mv.setViewName("treeDetail3D");
+		} else if (N == 2) {
+			mv.setViewName("treeDetail2D");
+		} else {
+			mv.setViewName("treeDetailND");
+		}
+		
 		
 		mv.addObject("treeName", treeName);
 		mv.addObject("points", obj.get("points"));

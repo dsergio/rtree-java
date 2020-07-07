@@ -52,6 +52,15 @@ public class RTreeController {
 		
 		if (tree != null) {
 			List<ILocationItem> points = tree.getPoints();
+			
+			if (points.size() > 0) {
+				ILocationItem i = points.get(0);
+				int N = i.getNumberDimensions();
+				ret.put("N", N);
+			} else {
+				ret.put("N", 0);
+			}
+			
 			List<IHyperRectangle> rectangles = tree.getRectangles();
 			
 			JSONArray arr = new JSONArray();

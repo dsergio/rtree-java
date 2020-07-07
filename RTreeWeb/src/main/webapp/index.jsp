@@ -2,6 +2,6 @@
     pageEncoding="ISO-8859-1"%>
 <html>
 <body>
-<h1>RTreeWeb</h1>
+<h1><a href="app">RTreeWeb</a></h1>
 </body>
 </html>
