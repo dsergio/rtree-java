@@ -22,8 +22,12 @@ public class Client {
 		Configurations configs = new Configurations();
 		try {
 
-			Configuration config = configs.properties(new File("resources/config.properties"));
-			apiUrl = config.getString("ApiUrl");
+			if (System.getenv("RTreeApiUrl") != null) {
+				apiUrl = System.getenv("RTreeApiUrl");
+			} else {
+				Configuration config = configs.properties(new File("resources/config.properties"));
+				apiUrl = config.getString("ApiUrl");
+			}
 
 		} catch (ConfigurationException cex) {
 			cex.printStackTrace();
