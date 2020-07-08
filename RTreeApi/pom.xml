@@ -48,28 +48,37 @@
 			<artifactId>jstl</artifactId>
 			<version>1.2</version>
 		</dependency>
-		
+
+		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+			<scope>provided</scope>
+		</dependency>
+
+
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
 		<dependency>
-		    <groupId>com.fasterxml.jackson.core</groupId>
-		    <artifactId>jackson-databind</artifactId>
-		    <version>2.11.1</version>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.11.1</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-core</artifactId>
-    <version>2.11.1</version>
-</dependency>
-		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-core</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
 		<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-annotations -->
-<dependency>
-    <groupId>com.fasterxml.jackson.core</groupId>
-    <artifactId>jackson-annotations</artifactId>
-    <version>2.11.1</version>
-</dependency>
-		
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-annotations</artifactId>
+			<version>2.11.1</version>
+		</dependency>
+
 
 		<!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
 		<dependency>
@@ -77,7 +86,7 @@
 			<artifactId>rtree</artifactId>
 			<version>1.0.2</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>co.dsergio</groupId>
 			<artifactId>rtree-business</artifactId>
