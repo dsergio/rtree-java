@@ -27,7 +27,6 @@ public class RTreeController {
 	@RequestMapping(value="/get", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody String get(HttpServletRequest request, HttpServletResponse response) {
 		
-		
 		RTreeService rtreeService = new RTreeService();
 		List<IRTree> trees = rtreeService.fetchAll();
 		

@@ -202,37 +202,39 @@ class RTree3DTests {
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		IDataStorage dataStorage = new DataStorageInMemory(logger);
+//		IDataStorage dataStorage = new DataStorageSqlite(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N, "3D_Tree2");
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, "3D_Tree7");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
 		}
 		
 		// Act
-//		for (int i = 0; i < 10; i++) {
-//			
-//			int x = r.nextInt(500);
-//			int y = r.nextInt(500);
-//			int z = r.nextInt(500);
-//			ILocationItem item = new LocationItemND(N);
-//			item.setDim(0, x);
-//			item.setDim(1, y);
-//			item.setDim(2, z);
-//			
-//			int animal_index = r.nextInt(animals.length);
-//			item.setType(animals[animal_index]);
-//			
-//			try {
-//				if (tree != null) {
-//					tree.insertType(item);
-//				}
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//				fail("could not insert 3D items");
-//			}
-//		}
+		for (int i = 0; i < 20; i++) {
+			
+			int x = r.nextInt(200);
+			int y = r.nextInt(200);
+			int z = r.nextInt(200);
+			ILocationItem item = new LocationItemND(N);
+			
+			item.setDim(0, x);
+			item.setDim(1, y);
+			item.setDim(2, z);
+			
+			int animal_index = r.nextInt(animals.length);
+			item.setType(animals[animal_index]);
+			
+			try {
+				if (tree != null) {
+					tree.insertType(item);
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+				fail("could not insert 3D items");
+			}
+		}
 		
 		// Assert
 		assertTrue(true);

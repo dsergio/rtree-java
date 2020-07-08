@@ -86,6 +86,7 @@ public class RTreeND extends RTreeBase {
 	public void insertType(ILocationItem locationItem) throws IOException {
 		
 		logger.log("~~INSERT: " + "GOING TO INSERT: " + locationItem);
+		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
 		insertNDimensional(locationItem, getNode(treeName));
 //		printTree();
 	}
@@ -112,6 +113,7 @@ public class RTreeND extends RTreeBase {
 //		leafNodeSplit = false;
 //		branchSplit = false;
 		logger.log("~~INSERT: N:" + numDimensions + " START");
+		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
 		insertNDimensional(locationItem, getNode(treeName));
 		logger.log("**************************************************************************************************************************");
 //		printTree();
@@ -124,7 +126,7 @@ public class RTreeND extends RTreeBase {
 			throw new IllegalArgumentException("Item dimension must equal tree dimension.");
 		}
 		
-		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
+//		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
 		
 		
 		if (node == null && getNode(treeName) == null) { // empty tree
