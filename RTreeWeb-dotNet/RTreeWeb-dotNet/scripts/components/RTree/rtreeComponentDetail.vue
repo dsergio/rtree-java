@@ -9,7 +9,7 @@
                 <div class="content">
                     <h3>Points</h3>
                     <ul v-for="i in tree.points">
-                        <li class="locationItem">{{i.type}}</li>
+                        <li class="locationItem" :id="i.id">{{i.json}}</li>
                     </ul>
 
                     <h3>Rectangles</h3>

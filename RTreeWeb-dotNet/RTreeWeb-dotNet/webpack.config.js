@@ -43,6 +43,14 @@ module.exports = (env, argv) => {
         module: {
             rules: [
                 {
+                    test: /JavaScript/,
+                    loader: 'file-loader',
+                    options: {
+                        path: distPath,
+                        publicPath: '/static-js'
+                    }
+                },
+                {
                     test: /\.scss$/,
                     use: [
                         { loader: MiniCssExtractPlugin.loader },

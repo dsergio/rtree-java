@@ -4,6 +4,10 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>RTreeWeb_dotNet</RootNamespace>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <TypescriptCompileBlocked>true</TypescriptCompileBlocked>
+  </PropertyGroup>
 
   <ItemGroup>
     <None Remove="scripts\api-client.g.ts" />
