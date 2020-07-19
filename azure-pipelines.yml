@@ -32,12 +32,16 @@ steps:
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
     goals: 'install'
 
-- script: ./rtree-api-boot/mvnw package -Pprod -DskipTests
-- task: CopyFiles@2
-inputs:
-    SourceFolder: 'target'
-    Contents: '*.war'
-    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'rtree-api-boot/rtree-api-boot/pom.xml'
+    mavenOptions: '-Xmx3072m'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.8'
+    jdkArchitectureOption: 'x64'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    goals: 'install'
 
 - task: PublishBuildArtifacts@1
   inputs:
