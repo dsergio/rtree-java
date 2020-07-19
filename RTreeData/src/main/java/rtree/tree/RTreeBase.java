@@ -491,4 +491,9 @@ public abstract class RTreeBase implements IRTree {
 	public void updateRoot() {
 		getNode(treeName);
 	}
+	
+	@Override
+	public int getNumDimensions() {
+		return numDimensions;
+	}
 }

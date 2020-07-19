@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import co.dsergio.rtree.business.RTreeService;
+import co.dsergio.rtree.business.services.RTreeService;
 import rtree.item.ILocationItem;
 import rtree.rectangle.IHyperRectangle;
 import rtree.tree.IRTree;

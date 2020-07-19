@@ -1,4 +1,4 @@
-package co.dsergio.rtree.business;
+package co.dsergio.rtree.business.services;
 
 import java.util.List;
 
@@ -21,8 +21,12 @@ public class LocationItemService extends EntityService {
 		
 	}
 
-	public ILocationItem get(int id) {
-		// TODO Auto-generated method stub
+	public ILocationItem fetchByItemId(String id) {
+		for (ILocationItem i : dbContext.locationItemSet) {
+			if (i.getId().equals(id)) {
+				return i;
+			}
+		}
 		return null;
 	}
 }

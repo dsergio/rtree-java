@@ -15,37 +15,37 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import co.dsergio.rtree.business.LocationItemService;
+import co.dsergio.rtree.business.services.LocationItemService;
 import rtree.item.ILocationItem;
 
 @Controller
 @RequestMapping("/item")
 public class LocationItemController {
 	
-	/**
-	 * temporary
-	 * 
-	 * @param id
-	 * @return
-	 */
-	@RequestMapping(value="/getView/{id}", method = RequestMethod.GET)
-	public ModelAndView getView(@PathVariable int id) {
-		
-		
-		LocationItemService locationItemService = new LocationItemService();
-		ILocationItem item = locationItemService.get(id);
-		
-		ModelAndView mv = new ModelAndView();
-		mv.setViewName("locationItemView");
-		
-		if (item != null) {
-			mv.addObject("locationItem", item.getJson().toJSONString());
-		} else {
-			mv.addObject("locationItem", "not found");
-		}
-		
-		return mv;
-	}
+//	/**
+//	 * temporary
+//	 * 
+//	 * @param id
+//	 * @return
+//	 */
+//	@RequestMapping(value="/getView/{id}", method = RequestMethod.GET)
+//	public ModelAndView getView(@PathVariable int id) {
+//		
+//		
+//		LocationItemService locationItemService = new LocationItemService();
+//		ILocationItem item = locationItemService.get(id);
+//		
+//		ModelAndView mv = new ModelAndView();
+//		mv.setViewName("locationItemView");
+//		
+//		if (item != null) {
+//			mv.addObject("locationItem", item.getJson().toJSONString());
+//		} else {
+//			mv.addObject("locationItem", "not found");
+//		}
+//		
+//		return mv;
+//	}
 	
 	/**
 	 * temporary

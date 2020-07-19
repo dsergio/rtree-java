@@ -42,4 +42,5 @@ public interface IRTree {
 	public long getReadTime();
 	public long getUpdateTime();
 	
+	public int getNumDimensions();
 }

@@ -1,0 +1,48 @@
+﻿@inject Microsoft.Extensions.Configuration.IConfiguration configuration;
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <!-- Stylesheets -->
+    <% for (var filename in htmlWebpackPlugin.files.css) { %>
+    <link href="~<%= htmlWebpackPlugin.files.css[filename] %>" rel="stylesheet" />
+    <% } %>
+    <!-- End Stylesheets -->
+</head>
+<body>
+    <nav class="navbar" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+            <a class="navbar-item" asp-controller="Home" asp-action="Index">
+                RTree
+            </a>
+            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarSecretSanta">
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            </a>
+        </div>
+        <div id="navbarRTree" class="navbar-menu">
+            <div class="navbar-start">
+                <a class="navbar-item" asp-controller="Home" asp-action="Index">Home</a>
+                <a class="navbar-item" asp-controller="RTree" asp-action="Index">RTree List</a>
+            </div>
+        </div>
+    </nav>
+    <section class="section">
+        <div class="content">
+            @RenderBody()
+        </div>
+    </section>
+    <script>
+        var apiUrl = "@(configuration["ApiUrl"])";
+    </script>
+    <!-- Scripts -->
+    <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
+    <script src="~<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
+    <% } %>
+    <!-- End Scripts -->
+    @RenderSection("scripts", required: false)
+</body>
+</html>

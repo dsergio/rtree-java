@@ -1,4 +1,4 @@
-package co.dsergio.rtree.business;
+package co.dsergio.rtree.business.services;
 
 import java.util.List;
 

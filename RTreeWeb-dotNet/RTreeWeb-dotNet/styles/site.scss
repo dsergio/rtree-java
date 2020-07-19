@@ -1,0 +1,18 @@
+﻿@charset "utf-8";
+
+@import "~bulma/sass/utilities/initial-variables";
+@import "~bulma/sass/utilities/functions";
+
+$secondary: #8BC91D;
+$secondary-invert: findColorInvert($secondary) !default;
+
+$primary: #ff006e;
+$link: #b200ff;
+$navbar-item-color: $link;
+
+@import "~bulma/sass/utilities/derived-variables";
+
+$addColors: ( "secondary":($secondary, $secondary-invert) );
+$colors: map-merge($colors, $addColors);
+
+@import "~bulma/bulma";
