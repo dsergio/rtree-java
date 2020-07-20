@@ -18,7 +18,8 @@ public class ApplicationDbContext {
 	public ApplicationDbContext() {
 		
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		dataStorage = new DataStorageSqlite(logger);
+//		dataStorage = new DataStorageSqlite(logger);
+		dataStorage = new DataStorageMySQL(logger);
 		
 		treeSet = dataStorage.getAllTrees();
 		locationItemSet = dataStorage.getAllLocationItems();

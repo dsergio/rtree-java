@@ -19,35 +19,36 @@ steps:
     jdkArchitectureOption: 'x64'
     publishJUnitResults: true
     testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'install'
-
-- task: Maven@3
+    goals: 'package'
+- task: UseDotNet@2
   inputs:
-    mavenPomFile: 'RTreeBusiness/pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'install'
-
-- task: Maven@3
+    packageType: 'sdk'
+    version: '3.1.x'
+- task: Npm@1
   inputs:
-    mavenPomFile: 'rtree-api-boot/rtree-api-boot/pom.xml'
-    mavenOptions: '-Xmx3072m'
-    javaHomeOption: 'JDKVersion'
-    jdkVersionOption: '1.8'
-    jdkArchitectureOption: 'x64'
-    publishJUnitResults: true
-    testResultsFiles: '**/surefire-reports/TEST-*.xml'
-    goals: 'install'
-
-- task: CopyFiles@2
+    command: 'install'
+    workingDir: 'RTreeWeb-dotNet/RTreeWeb-dotNet'
+- task: Npm@1
   inputs:
-    SourceFolder: '$(system.defaultworkingdirectory)'
-    Contents: '**/*.jar'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+    command: 'custom'
+    workingDir: 'RTreeWeb-dotNet/RTreeWeb-dotNet'
+    customCommand: 'run build:prod'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'build'
+    projects: '**/*.csproj'
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'test'
+    projects: '**/test/**/*.csproj'
+
+- task: DotNetCoreCLI@2
+  inputs:
+    command: 'publish'
+    publishWebProjects: false
+    projects: |
+      **/RTreeWeb-dotNet/RTreeWeb-dotNet.csproj
+    arguments: '--configuration $(BuildConfiguration) --output "$(build.artifactstagingdirectory)"'
 
 - task: PublishBuildArtifacts@1
   inputs:

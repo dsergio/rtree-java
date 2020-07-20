@@ -20,6 +20,7 @@ import rtree.log.LoggerStdOut;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.RectangleND;
 import rtree.storage.DataStorageInMemory;
+import rtree.storage.DataStorageMySQL;
 import rtree.storage.DataStorageSqlite;
 import rtree.storage.IDataStorage;
 import rtree.tree.IRTree;
@@ -203,9 +204,10 @@ class RTree3DTests {
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		IDataStorage dataStorage = new DataStorageInMemory(logger);
 //		IDataStorage dataStorage = new DataStorageSqlite(logger);
+//		IDataStorage dataStorage = new DataStorageMySQL(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N, "3D_Tree7");
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, "3D_Tree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();

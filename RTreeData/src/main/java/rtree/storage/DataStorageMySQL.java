@@ -19,7 +19,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 //	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
 	public DataStorageMySQL(ILogger logger) {
 		super(StorageType.MYSQL, logger);
-		
+		init();
 	}
 	
 	@Override
@@ -29,28 +29,47 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 		String password = "";
 		String host = "";
 		String database = "";
+		
+		if (System.getenv("MYSQL.user") != null && 
+			System.getenv("MYSQL.password") != null && 
+			System.getenv("MYSQL.host") != null && 
+			System.getenv("MYSQL.database") != null
+			) {
+			username = System.getenv("MYSQL.user");
+			password = System.getenv("MYSQL.password");
+			host = System.getenv("MYSQL.host");
+			database = System.getenv("MYSQL.database");
+			
+		} else {
 
-		Configurations configs = new Configurations();
-		try {
-
-			Configuration config = configs.properties(new File("resources/config.properties"));
-			username = config.getString("MYSQL.user");
-			password = config.getString("MYSQL.password");
-			host = config.getString("MYSQL.host");
-			database = config.getString("MYSQL.database");
-
-		} catch (ConfigurationException cex) {
-			logger.log(cex);
-			cex.printStackTrace();
+			Configurations configs = new Configurations();
+			try {
+	
+				Configuration config = configs.properties(new File("resources/config.properties"));
+				username = config.getString("MYSQL.user");
+				password = config.getString("MYSQL.password");
+				host = config.getString("MYSQL.host");
+				database = config.getString("MYSQL.database");
+	
+			} catch (ConfigurationException cex) {
+				logger.log(cex);
+				cex.printStackTrace();
+			}
 		}
 
 		String url = "jdbc:mysql://" + host + ":3306/" + database;
+		
+		
 
 		Connection conn = null;
 		try {
+			Class.forName("com.mysql.jdbc.Driver");
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
 			logger.log(e);
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -87,6 +106,26 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
 			logger.log("create table: \n" + sql);
 
+			stmt.executeUpdate(sql);
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+		
+		try {
+			
+			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_items ("
+					+ " id VARCHAR(255) NOT NULL, "
+					+ " N INT NOT NULL, " 
+					+ " location TEXT NULL, " 
+					+ " type VARCHAR(255) NULL, "
+					+ " PRIMARY KEY ( id ) "
+					+ ")";
+			
+			logger.log("create table: \n" + sql);
+			
+			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);
 
 		} catch (SQLException e) {
