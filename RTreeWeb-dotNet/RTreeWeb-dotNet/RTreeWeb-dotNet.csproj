@@ -8,16 +8,19 @@
   <PropertyGroup>
     <TypescriptCompileBlocked>true</TypescriptCompileBlocked>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Remove="wwwroot\static-js\**" />
+    <Content Remove="wwwroot\static-js\**" />
+    <EmbeddedResource Remove="wwwroot\static-js\**" />
+    <None Remove="wwwroot\static-js\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <None Remove="scripts\api-client.g.ts" />
     <None Remove="scripts\client.ts" />
     <None Remove="scripts\main.ts" />
     <None Remove="scripts\vue-shim.d.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
   </ItemGroup>
 
   <ItemGroup>
