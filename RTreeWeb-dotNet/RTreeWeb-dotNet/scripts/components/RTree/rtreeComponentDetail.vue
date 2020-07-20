@@ -7,6 +7,9 @@
             </header>
             <section class="modal-card-body">
                 <div class="content">
+
+                    <div id="threejsCanvas"></div>
+
                     <h3>Points</h3>
                     <ul v-for="i in tree.points">
                         <li class="locationItem" :id="i.id">{{i.json}}</li>
@@ -17,15 +20,17 @@
                         <li class="rectangle">{{i.json}}</li>
                     </ul>
 
-
-                    <div id="threejsCanvas"></div>
-
                     <div class="field is-grouped">
+                        <!--
                         <div class="control">
                             <button id="submit" class="button is-primary" @click.once="save">Submit</button>
                         </div>
                         <div class="control">
-                            <a class="button" @click="cancel" >Cancel</a>
+                            <a class="button" @click="cancel">Cancel</a>
+                        </div>
+                        -->
+                        <div class="control">
+                            <a class="button" @click="cancel">Close</a>
                         </div>
                     </div>
                 </div>

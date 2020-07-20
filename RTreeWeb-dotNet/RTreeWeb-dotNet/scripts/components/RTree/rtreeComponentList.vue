@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <h2>RTree List</h2>
-        <button class="button is-secondary" @click="create()">Create New RTree</button>
+        <!--<button class="button is-secondary" @click="create()">Create New RTree</button>-->
         <table class="table">
             <thead>
                 <tr>
@@ -15,8 +15,8 @@
                     <td>{{t.name}}</td>
                     <td>{{t.numDimensions}}</td>
                     <td>
-                        <button class="button is-primary" @click="edit(t)">Edit</button>
-                        <button class="button" @click="deleteTree(t)">Delete</button>
+                        <button class="button is-primary" @click="edit(t)">Show/Edit</button>
+                        <!--<button class="button" @click="deleteTree(t)">Delete</button>-->
                     </td>
                 </tr>
             </tbody>
