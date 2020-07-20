@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -8,13 +8,6 @@
   <PropertyGroup>
     <TypescriptCompileBlocked>true</TypescriptCompileBlocked>
   </PropertyGroup>
-  
-  <ItemGroup>
-    <Compile Remove="wwwroot\static-js\**" />
-    <Content Remove="wwwroot\static-js\**" />
-    <EmbeddedResource Remove="wwwroot\static-js\**" />
-    <None Remove="wwwroot\static-js\**" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Remove="scripts\api-client.g.ts" />

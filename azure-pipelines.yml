@@ -47,7 +47,7 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: |
-      **/RTreeWeb-dotNet/RTreeWeb-dotNet.csproj
+      **/RTreeWeb-dotNet.csproj
     arguments: '--configuration $(BuildConfiguration) --output "$(build.artifactstagingdirectory)"'
 
 - task: PublishBuildArtifacts@1
