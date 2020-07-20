@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -13,7 +14,9 @@ namespace RTreeWeb_dotNet
 	{
 		public static void Main(string[] args)
 		{
-			CreateHostBuilder(args).Build().Run();
+			CreateHostBuilder(args)
+				.UseContentRoot(Directory.GetCurrentDirectory())
+				.Build().Run();
 		}
 
 		public static IHostBuilder CreateHostBuilder(string[] args) =>
