@@ -3,7 +3,7 @@
 @import "~bulma/sass/utilities/initial-variables";
 @import "~bulma/sass/utilities/functions";
 
-$secondary: #8BC91D;
+/*$secondary: #8BC91D;
 $secondary-invert: findColorInvert($secondary) !default;
 
 $primary: #ff006e;
@@ -13,6 +13,13 @@ $navbar-item-color: $link;
 @import "~bulma/sass/utilities/derived-variables";
 
 $addColors: ( "secondary":($secondary, $secondary-invert) );
-$colors: map-merge($colors, $addColors);
+$colors: map-merge($colors, $addColors);*/
 
+
+
+
+@import "../node_modules/bulmaswatch/nuclear/_variables.scss";
 @import "~bulma/bulma";
+@import "../node_modules/bulmaswatch/nuclear/_overrides.scss";
+
+

@@ -31,9 +31,11 @@
     //import { RTree2, RTreeClient2 } from '../../client';
     import { RTree, RTreeClient } from '../../api-client.g';
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
+
     declare var apiUrl: string;
 
-    apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
+    //apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
+    //apiUrl = "http://localhost:8080";
 
     @Component({
         components: {

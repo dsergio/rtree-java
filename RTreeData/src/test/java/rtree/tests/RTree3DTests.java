@@ -207,7 +207,7 @@ class RTree3DTests {
 //		IDataStorage dataStorage = new DataStorageMySQL(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N, "3D_Tree1");
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, "2D_Tree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
