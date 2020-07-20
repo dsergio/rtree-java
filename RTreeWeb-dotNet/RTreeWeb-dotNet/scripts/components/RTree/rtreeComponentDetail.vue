@@ -38,7 +38,7 @@
     import { RTree, RTreeClient } from '../../api-client.g';
 
     declare var apiUrl: string;
-    apiUrl = "http://localhost:8080";
+    apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
 
     @Component
     export default class RTreeComponentDetail extends Vue {

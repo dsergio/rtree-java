@@ -33,7 +33,7 @@
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
     declare var apiUrl: string;
 
-    apiUrl = "http://localhost:8080";
+    apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
 
     @Component({
         components: {
