@@ -14,7 +14,8 @@
       "launchUrl": "RTree",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }
+      },
+      "ancmHostingModel": "OutOfProcess"
     },
     "RTreeWeb_dotNet": {
       "commandName": "Project",
