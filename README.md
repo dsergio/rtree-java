@@ -11,19 +11,17 @@ Properties of RTree:
 * Each leaf node contains a rectangle and a set of point data.
 * Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.
 
-## RTreeWeb
+## RTreeWeb-dotNet
 * Configuration:  `config.properties` configuration file in the `RTreeWeb/src/main/resources` directory.
-* URL: TBD
+* URL: http://dsergio-rtree-app.azurewebsites.net/RTree/
 
-## RTreeApi
-* URL: TBD
-
-## RTreeBusiness
-* TBD
+## rtree-api-boot
+* Spring Boot Rest API
+* URL: http://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html
 
 ## RTreeData
 
-pom.xml:
+* pom.xml:
 ```
 <!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
 <dependency>
@@ -36,7 +34,7 @@ pom.xml:
 ### Storage Configurations
 
 ### MySQL
-Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
+Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory, or environment variables.
 
 ### Sqlite
 Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
