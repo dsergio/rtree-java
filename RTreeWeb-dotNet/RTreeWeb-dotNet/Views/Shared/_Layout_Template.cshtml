@@ -3,6 +3,20 @@
 
 <html>
 <head>
+
+    <!-- Google Tag Manager -->
+    <script>
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-K4JSST6');</script>
+    <!-- End Google Tag Manager -->
+
+
     <meta name="viewport" content="width=device-width" />
     <title>@ViewBag.Title</title>
     <!-- Stylesheets -->
@@ -12,6 +26,15 @@
     <!-- End Stylesheets -->
 </head>
 <body>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K4JSST6"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+
     <nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" asp-controller="Home" asp-action="Index">
@@ -43,7 +66,9 @@
     <script src="~<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
     <% } %>
     <!-- End Scripts -->
+
     @RenderSection("scripts", required: false)
+    @RenderSection("threescripts", required: false)
 
 </body>
 </html>

@@ -1,1 +1,9 @@
 ﻿<div id="rtreeList"></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+@section ThreeScripts {
+    @{await Html.RenderPartialAsync("_ThreeScripts");}
+}

@@ -54,6 +54,13 @@
         }
 
         async mounted() {
+            let event = new CustomEvent("detail-view", {
+                bubbles: true,
+                detail: {
+                    N: () => this.tree.numDimensions
+                }
+            });
+            document.dispatchEvent(event);
         }
 
         @Emit('rtree-saved')

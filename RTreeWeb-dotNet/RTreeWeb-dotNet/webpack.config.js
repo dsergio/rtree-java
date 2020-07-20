@@ -16,6 +16,7 @@ module.exports = (env, argv) => {
     // paths
     const distPath = path.resolve(__dirname, './wwwroot');
     const imgDistPath = path.resolve(distPath, './img');
+    const staticDistPath = path.resolve(distPath, './static-js');
     const srcPath = '.';
     const templatePath = path.resolve(__dirname, './Views/Shared');
 
@@ -42,14 +43,6 @@ module.exports = (env, argv) => {
 
         module: {
             rules: [
-                {
-                    test: /JavaScript/,
-                    loader: 'file-loader',
-                    options: {
-                        path: distPath,
-                        publicPath: '/static-js'
-                    }
-                },
                 {
                     test: /\.scss$/,
                     use: [
@@ -98,7 +91,8 @@ module.exports = (env, argv) => {
                 [
                     // {from: 'favicon', to: distPath},
                     // {from: 'icons', to: iconDistPath},
-                    { from: 'images', to: imgDistPath }
+                    { from: 'images', to: imgDistPath },
+                    { from: 'scripts/three', to: staticDistPath }
                 ],
                 {
                     context: srcPath,
