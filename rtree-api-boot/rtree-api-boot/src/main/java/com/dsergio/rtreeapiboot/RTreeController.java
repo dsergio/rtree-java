@@ -34,7 +34,7 @@ public class RTreeController {
 	
 	@ApiOperation(value="RTree_getAll", notes = "Get all RTree structures from metadata", nickname = "RTree_getAll")
 	@SuppressWarnings("unchecked")
-	@CrossOrigin(origins = "https://localhost:44381")
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<List<RTree>> get(HttpServletRequest request, HttpServletResponse response) {
 		
@@ -61,7 +61,7 @@ public class RTreeController {
 	
 	@ApiOperation(value="RTree_get", notes = "Get RTree structure by treeName", nickname = "RTree_get")
 	@SuppressWarnings("unchecked")
-	@CrossOrigin(origins = "https://localhost:44381")
+	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTree> get(@PathVariable String treeName) {
 		
