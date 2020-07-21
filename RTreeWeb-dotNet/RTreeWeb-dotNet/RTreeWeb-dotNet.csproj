@@ -29,4 +29,8 @@
     <TypeScriptCompile Include="scripts\vue-shim.d.ts" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="images\" />
+  </ItemGroup>
+
 </Project>

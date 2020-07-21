@@ -21,7 +21,7 @@
     <title>@ViewBag.Title</title>
     <!-- Stylesheets -->
     
-    <link href="~/css/main.bb2cd0c3a1c709312e22.css" rel="stylesheet" />
+    <link href="~/css/main.ff8bf1d67208ef748092.css" rel="stylesheet" />
     
     <!-- End Stylesheets -->
 </head>
@@ -35,7 +35,112 @@
     <!-- End Google Tag Manager (noscript) -->
 
 
-    <nav class="navbar" role="navigation" aria-label="main navigation">
+
+
+
+    <section>
+        <div>
+            <nav class="navbar is-light">
+                <div class="container">
+                    <div class="navbar-brand">
+                        <a class="navbar-item">
+                            <img src="~/img/logo.png" alt="Logo">
+                        </a>
+                        <span class="navbar-burger burger" data-target="navbarMenuHero10">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </span>
+                    </div>
+                    <div id="navbarMenuHero10" class="navbar-menu">
+                        <div class="navbar-end">
+                            <a class="navbar-item is-active" asp-controller="Home" asp-action="Index">
+                                RTree
+                            </a>
+                            <a class="navbar-item" href="https://github.com/dsergio/rtree-java/wiki/N-Dimensional-R-Tree" target="_blank">
+                                Wiki
+                            </a>
+                            <a class="navbar-item" href="https://github.com/dsergio/rtree-java" target="_blank">
+                                Github
+                            </a>
+
+                            <div class="navbar-item has-dropdown is-hoverable">
+                                <div class="navbar-link">
+                                    More
+                                </div>
+                                <div id="moreDropdown" class="navbar-dropdown ">
+                                    <a class="navbar-item " href="https://dsergio.co/portfolio/site/" target="_blank">
+                                        <div class="level is-mobile">
+                                            <div class="level-left">
+                                                <div class="level-item">
+                                                    <p>
+                                                        <strong>Portfolio</strong>
+                                                        <br>
+                                                        <small>See other projects</small>
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            <span class="navbar-item">
+                                <a class="button is-primary is-inverted" href="https://github.com/dsergio/rtree-java/archive/master.zip">
+                                    <span class="icon">
+                                        <i class="fab fa-github"></i>
+                                    </span>
+                                    <span>Download</span>
+                                </a>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <!-- Hero content: will be in the middle -->
+        <div class="hero is-light">
+            <div class="hero-body">
+                <div class="container has-text-centered">
+                    <h1 class="title">
+                        N-Dimensional R-Tree
+                    </h1>
+                    <h2 class="subtitle">
+                        Web App
+                    </h2>
+                </div>
+            </div>
+            <!-- Hero footer: will stick at the bottom -->
+            <div class="hero-foot">
+                <nav class="tabs">
+                    <div class="container">
+                        <ul>
+                            <li class="is-active">
+                                <a asp-controller="Home" asp-action="Index">Home</a>
+                            </li>
+                            <li class="is-active">
+                                <a asp-controller="RTree" asp-action="Index">App</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Examples" asp-action="Index">Examples</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Description" asp-action="Index">Description</a>
+                            </li>
+                            <li>
+                                <a asp-controller="Design" asp-action="Index">Design</a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    @*<nav class="navbar" role="navigation" aria-label="main navigation">
         <div class="navbar-brand">
             <a class="navbar-item" asp-controller="Home" asp-action="Index">
                 RTree
@@ -52,18 +157,37 @@
                 <a class="navbar-item" asp-controller="RTree" asp-action="Index">RTree List</a>
             </div>
         </div>
-    </nav>
+    </nav>*@
+
+
+
+
+
+
+
+
+
     <section class="section">
         <div class="content">
             @RenderBody()
         </div>
     </section>
+
+
+
+
+
+
+
+
+
+
     <script>
         var apiUrl = "@(configuration["ApiUrl"])";
     </script>
     <!-- Scripts -->
     
-    <script src="~/js/main.bb2cd0c3a1c709312e22.js"></script>
+    <script src="~/js/main.ff8bf1d67208ef748092.js"></script>
     
     <!-- End Scripts -->
 
