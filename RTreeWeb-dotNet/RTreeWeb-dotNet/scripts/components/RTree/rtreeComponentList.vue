@@ -17,17 +17,22 @@
                     <td>
                         <button class="button is-primary" @click="edit(t)">Show/Edit</button>
                         <!--<button class="button" @click="deleteTree(t)">Delete</button>-->
+
                     </td>
                 </tr>
             </tbody>
         </table>
-        <rtree-component-detail v-if="selectedTree != null"
-                                :tree="selectedTree"
-                                @rtree-saved="refresh()"></rtree-component-detail>
+        <!--<spinner v-if="isLoading == true"></spinner>-->
+        <spinner v-if="isLoading == true"></spinner>
+        <spinner v-if="trees == null"></spinner>
+        <rtreeComponentDetail v-if="selectedTree != null"
+                              :tree="selectedTree"
+                              @rtree-saved="refresh()"></rtreeComponentDetail>
     </div>
 </template>
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
+    import Spinner from 'vue-spinner-component/src/Spinner.vue';
     //import { RTree2, RTreeClient2 } from '../../client';
     import { RTree, RTreeClient } from '../../api-client.g';
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
@@ -39,13 +44,15 @@
 
     @Component({
         components: {
-            rtreeComponentDetail
+            rtreeComponentDetail,
+            Spinner
         }
     })
     export default class RTreeComponentList extends Vue {
         trees: RTree[] = null;
         selectedTree: RTree = null;
         rtreeClient: RTreeClient;
+        isLoading: boolean = false;
 
         constructor() {
             super();
@@ -58,8 +65,10 @@
         }
 
         async edit(tree: RTree) {
+            this.isLoading = true;
             tree = await this.rtreeClient.get(tree.name);
             this.selectedTree = tree;
+            this.isLoading = false;
         }
 
         async refresh() {
@@ -67,4 +76,5 @@
             this.selectedTree = null;
         }
     }
+
 </script>
