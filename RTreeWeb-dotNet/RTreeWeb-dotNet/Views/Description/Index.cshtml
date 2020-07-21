@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Description</h1>
+
+<ul>
+    <li>
+        <p>N-Dimensional R-Tree structure which can store spatial data in an R-Tree structure with configurable storage, such as Amazon AWS DynamoDB, MySQL, Sqlite, In-Memory, etc., using Java.</p>
+    </li>
+
+    <li><p>The split algorithm as well as the storage type can be configured. New algorithms and storage types can be easily added. </p></li>
+    <li>
+        <p>
+            <u>Possible extensions of this project:</u> The data type (spatial in this case) could be changed, either in number of dimensions or in type of data. This structure could be used to calculate clusters of sets of binary attribute data, or other data types. I hope to use binary attribute data for dissimilarity measurements. Instead of using an "x" or "y" label, a binary attribute might be "Medical Test 1", "Medical Test 2", ..., "Medical Test 100" each of which could be positive or negative. These attributes then could be measured against another set of attributes to calculate "distance" or dissimilarity.
+        </p>
+    </li>
+    <li>
+        <p>
+            <u>In Progress</u>: REST API using Spring Boot, Generics and additional types with compareTo and distanceTo methods, .NET Core Web App using three.js, VueJS.
+        </p>
+    </li>
+
+    <li><p>This project uses Maven for build and project dependencies, such as JSON, JDBC and AWS DynamoDB.</p></li>
+
+    <li>
+        <p>
+            Properties of RTree:
+            <ul>
+                <li>Depth-balanced</li>
+                <li>Max number of children, and max number of leaf node Items</li>
+                <li>Each branch node contains a rectangle and a set of children nodes</li>
+                <li>Each leaf node contains a rectangle and a set of point data.</li>
+                <li>Split Algorithm: The split algorithm determines how to split up the overflow of items or children when a node exceeds the max, which occurs recursively from the leaf node up to the root if required. This implementation uses quadradic split. The quadradic split in the leaf node calculates the worst combination of two items (largest combined rectangle). These two items are the seeds, and the other items are distributed to either of the two seeds in a way that minimizes the enlargement area. There are other flavors of split algorithms that could be explored in order to optimize performance.</li>
+            </ul>
+        </p>
+    </li>
+</ul>
