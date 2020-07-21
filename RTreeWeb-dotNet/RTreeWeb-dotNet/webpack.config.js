@@ -92,6 +92,7 @@ module.exports = (env, argv) => {
                     // {from: 'favicon', to: distPath},
                     // {from: 'icons', to: iconDistPath},
                     { from: 'images', to: imgDistPath },
+                    { from: 'scripts/two', to: staticDistPath },
                     { from: 'scripts/three', to: staticDistPath }
                 ],
                 {
