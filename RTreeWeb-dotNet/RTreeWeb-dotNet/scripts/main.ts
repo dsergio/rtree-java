@@ -10,6 +10,4 @@ document.addEventListener("DOMContentLoaded", async () => {
             render: h => h(RTreeComponentList)
         }).$mount('#rtreeList');
     }
-
-    console.log("test1");
 });
