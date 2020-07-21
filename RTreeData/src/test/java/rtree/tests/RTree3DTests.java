@@ -207,7 +207,7 @@ class RTree3DTests {
 //		IDataStorage dataStorage = new DataStorageMySQL(logger);
 		
 		try {
-			tree = new RTreeND(dataStorage, 4, 4, logger, N, "2D_Tree1");
+			tree = new RTreeND(dataStorage, 4, 4, logger, N, "15D_Tree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -216,14 +216,27 @@ class RTree3DTests {
 		// Act
 		for (int i = 0; i < 20; i++) {
 			
-			int x = r.nextInt(200);
-			int y = r.nextInt(200);
-			int z = r.nextInt(200);
 			ILocationItem item = new LocationItemND(N);
 			
-			item.setDim(0, x);
-			item.setDim(1, y);
-			item.setDim(2, z);
+			item.setDim(0, r.nextInt(200));
+			item.setDim(1, r.nextInt(200));
+			item.setDim(2, r.nextInt(200));
+			
+//			item.setDim(3, r.nextInt(200));
+//			item.setDim(4, r.nextInt(200));
+//			item.setDim(5, r.nextInt(200));
+//			
+//			item.setDim(6, r.nextInt(200));
+//			item.setDim(7, r.nextInt(200));
+//			item.setDim(8, r.nextInt(200));
+//
+//			item.setDim(9, r.nextInt(200));
+//			item.setDim(10, r.nextInt(200));
+//			item.setDim(11, r.nextInt(200));
+//			
+//			item.setDim(12, r.nextInt(200));
+//			item.setDim(13, r.nextInt(200));
+//			item.setDim(14, r.nextInt(200));
 			
 			int animal_index = r.nextInt(animals.length);
 			item.setType(animals[animal_index]);
