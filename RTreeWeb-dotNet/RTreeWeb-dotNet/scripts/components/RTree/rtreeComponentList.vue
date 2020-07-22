@@ -15,7 +15,7 @@
                     <td>{{t.name}}</td>
                     <td>{{t.numDimensions}}</td>
                     <td>
-                        <button data-telemetry-action :data-telemetry-action-id="t.name" v-bind="telemetryActionAttributes(t)" class="button is-primary" @click="edit(t)">Show/Edit</button>
+                        <button v-if="isLoading == false" data-telemetry-action :data-telemetry-action-id="t.name" v-bind="telemetryActionAttributes(t)" class="button is-primary" @click="edit(t)">Show/Edit</button>
                         <!--<button class="button" @click="deleteTree(t)">Delete</button>-->
 
                     </td>

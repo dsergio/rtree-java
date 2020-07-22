@@ -37,10 +37,10 @@
                     <div class="field is-grouped">
 
                         <div class="control">
-                            <button id="submit" class="button is-primary" @click.once="save">Submit</button>
+                            <button id="submit" v-if="isUpdateLoading == false" class="button is-primary" @click.once="save">Submit</button>
                         </div>
                         <div class="control">
-                            <a class="button" @click="cancel">Cancel</a>
+                            <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
                         </div>
                         <!--
         <div class="control">
