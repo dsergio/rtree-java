@@ -13,11 +13,11 @@ Properties of RTree:
 
 ## RTreeWeb-dotNet
 * Configuration:  `config.properties` configuration file in the `RTreeWeb/src/main/resources` directory.
-* URL: http://dsergio-rtree-app.azurewebsites.net/RTree/
+* URL: https://dsergio-rtree-app.azurewebsites.net/RTree/
 
 ## rtree-api-boot
 * Spring Boot Rest API
-* URL: http://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html
+* URL: https://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html
 
 ## RTreeData
 
