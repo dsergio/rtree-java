@@ -1,0 +1,27 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Analytics</h1>
+
+<p>
+    This application uses an analytics data layer written in Typescript.
+    See <a href="https://github.com/dsergio/rtree-java/tree/master/RTreeWeb-dotNet/RTreeWeb-dotNet/scripts/analyticsDataLayer" target="_blank">code here</a>. 
+    The analytics data layer is designed to allow for several implementations. For example, the data layer can be used with GA and Adobe Analytics simultaneously.
+</p>
+
+<p>
+    This application uses GTM and GA with pageviews and event tracking. Example event:
+    <ul>
+        <li>Category: rtree app</li>
+        <li>Action: show/edit</li>
+        <li>Label: [treeName]</li>
+    </ul>
+</p>
+
+<img src="~/img/gtm-config.png" />
+
+<br /><br />
+
+<img src="~/img/analytics-datalayer-attributes.png" />
