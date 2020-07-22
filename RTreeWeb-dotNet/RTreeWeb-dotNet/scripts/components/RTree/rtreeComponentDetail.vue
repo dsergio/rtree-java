@@ -13,14 +13,18 @@
                     <div id="canvasContainer2D"></div>
 
                     <h3>Points</h3>
-                    <ul v-for="i in tree.points">
-                        <li class="locationItem" :id="i.id">{{i.json}}</li>
-                    </ul>
+                    <div style="overflow-y:auto;height:200px;">
+                        <ul v-for="i in tree.points">
+                            <li class="locationItem" :id="i.id">{{i.json}}</li>
+                        </ul>
+                    </div>
 
                     <h3>Rectangles</h3>
-                    <ul v-for="i in tree.rectangles">
-                        <li class="rectangle">{{i.json}}</li>
-                    </ul>
+                    <div style="overflow-y:auto;height:200px;">
+                        <ul v-for="i in tree.rectangles">
+                            <li class="rectangle">{{i.json}}</li>
+                        </ul>
+                    </div>
                     <h3>Insert item</h3>
                     <div v-for="i in tree.numDimensions" :key="i" class="field">
                         <label class="label">Dimension {{i - 1}}</label>
