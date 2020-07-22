@@ -1,6 +1,8 @@
 package rtree.storage;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import rtree.item.ILocationItem;
 import rtree.log.ILogger;
@@ -12,8 +14,10 @@ public class ApplicationDbContext {
 	
 	private IDataStorage dataStorage;
 	
-	public List<IRTree> treeSet;
-	public List<ILocationItem> locationItemSet;
+//	public List<IRTree> treeSet;
+//	public List<ILocationItem> locationItemSet;
+	public Map<String, IRTree> treeSetMap;
+	public Map<String, ILocationItem> locationItemSetMap;
 	
 	public ApplicationDbContext() {
 		
@@ -21,12 +25,18 @@ public class ApplicationDbContext {
 //		dataStorage = new DataStorageSqlite(logger);
 		dataStorage = new DataStorageMySQL(logger);
 		
-		treeSet = dataStorage.getAllTrees();
-		locationItemSet = dataStorage.getAllLocationItems();
-	}
-	
-	public void save() {
+		List<IRTree> treeSet = dataStorage.getAllTrees();
+		List<ILocationItem> locationItemSet = dataStorage.getAllLocationItems();
 		
+		treeSetMap = new HashMap<String, IRTree>();
+		locationItemSetMap = new HashMap<String, ILocationItem>();
+		
+		for (IRTree t : treeSet) {
+			treeSetMap.put(t.getTreeName(), t);
+		}
+		for (ILocationItem i : locationItemSet) {
+			locationItemSetMap.put(i.getId(), i);
+		}
 	}
 	
 }

@@ -13,11 +13,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.dsergio.rtree.business.dto.LocationItem;
 import co.dsergio.rtree.business.dto.RTree;
 import co.dsergio.rtree.business.services.RTreeService;
 import io.swagger.annotations.Api;
@@ -57,6 +59,28 @@ public class RTreeController {
 		return ResponseEntity.ok(returnRTreeList);
 		
 //		return jsonArray.toJSONString();
+	}
+	
+	@ApiOperation(value="RTree_insert", notes = "Insert into RTree", nickname = "RTree_insert")
+	@SuppressWarnings("unchecked")
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value="/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<RTree> insert(@PathVariable String treeName, @RequestBody LocationItem item) {
+		
+		item.itemId = null;
+		item.itemType = null;
+		
+		RTreeService rtreeService = new RTreeService();
+		rtreeService.insert(treeName, item);
+		
+		
+		IRTree tree = rtreeService.fetchByTreeName(treeName);
+		
+		if (tree != null) {
+			RTree treeRet = new RTree(tree.getTreeName(), tree.getNumDimensions(), tree.getRectangles(), tree.getPoints());
+			return ResponseEntity.ok(treeRet);
+		}
+		return ResponseEntity.ok(null);
 	}
 	
 	@ApiOperation(value="RTree_get", notes = "Get RTree structure by treeName", nickname = "RTree_get")

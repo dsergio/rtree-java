@@ -27,7 +27,8 @@
         <spinner v-if="trees == null"></spinner>
         <rtreeComponentDetail v-if="selectedTree != null"
                               :tree="selectedTree"
-                              @rtree-saved="refresh()"></rtreeComponentDetail>
+                              @rtree-saved="refresh()"
+                              @rtree-closed="close()"></rtreeComponentDetail>
     </div>
 </template>
 <script lang="ts">
@@ -120,7 +121,15 @@
         }
 
         async refresh() {
-            this.trees = await this.rtreeClient.getAll();
+            let tempTree = this.selectedTree;
+            this.selectedTree = null;
+            this.isLoading = true;
+            this.selectedTree = await this.rtreeClient.get(tempTree.name);
+            this.isLoading = false;
+            tempTree = null;
+        }
+
+        async close() {
             this.selectedTree = null;
         }
     }

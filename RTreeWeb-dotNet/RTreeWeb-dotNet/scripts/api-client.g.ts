@@ -7,8 +7,6 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-
 export interface IRTreeClient {
     /**
      * RTree_getAll
@@ -21,15 +19,22 @@ export interface IRTreeClient {
      * @return OK
      */
     get(treeName: string): Promise<RTree>;
+    /**
+     * RTree_insert
+     * @param item item
+     * @param treeName treeName
+     * @return OK
+     */
+    insert(item: LocationItem, treeName: string): Promise<RTree>;
 }
 
 export class RTreeClient implements IRTreeClient {
-    private instance: AxiosInstance;
+    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
+    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
+        this.http = http ? http : <any>window;
         this.baseUrl = baseUrl ? baseUrl : "localhost:8080/";
     }
 
@@ -41,51 +46,48 @@ export class RTreeClient implements IRTreeClient {
         let url_ = this.baseUrl + "/api/RTree/";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
+        return this.http.fetch(url_, options_).then((_response: Response) => {
             return this.processGetAll(_response);
         });
     }
 
-    protected processGetAll(response: AxiosResponse): Promise<RTree[]> {
+    protected processGetAll(response: Response): Promise<RTree[]> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            if (Array.isArray(resultData200)) {
-                result200 = [] as any;
-                for (let item of resultData200)
-                    result200!.push(RTree.fromJS(item));
-            }
-            return result200;
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                if (Array.isArray(resultData200)) {
+                    result200 = [] as any;
+                    for (let item of resultData200)
+                        result200!.push(RTree.fromJS(item));
+                }
+                return result200;
+            });
         } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("Forbidden", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Forbidden", status, _responseText, _headers);
+            });
         } else if (status === 404) {
-            const _responseText = response.data;
-            return throwException("Not Found", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<RTree[]>(<any>null);
     }
@@ -102,47 +104,107 @@ export class RTreeClient implements IRTreeClient {
         url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <AxiosRequestConfig>{
+        let options_ = <RequestInit>{
             method: "GET",
-            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
+        return this.http.fetch(url_, options_).then((_response: Response) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: AxiosResponse): Promise<RTree> {
+    protected processGet(response: Response): Promise<RTree> {
         const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200 = _responseText;
-            result200 = RTree.fromJS(resultData200);
-            return result200;
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RTree.fromJS(resultData200);
+                return result200;
+            });
         } else if (status === 401) {
-            const _responseText = response.data;
-            return throwException("Unauthorized", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Unauthorized", status, _responseText, _headers);
+            });
         } else if (status === 403) {
-            const _responseText = response.data;
-            return throwException("Forbidden", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Forbidden", status, _responseText, _headers);
+            });
         } else if (status === 404) {
-            const _responseText = response.data;
-            return throwException("Not Found", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("Not Found", status, _responseText, _headers);
+            });
         } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RTree>(<any>null);
+    }
+
+    /**
+     * RTree_insert
+     * @param item item
+     * @param treeName treeName
+     * @return OK
+     */
+    insert(item: LocationItem, treeName: string): Promise<RTree> {
+        let url_ = this.baseUrl + "/api/RTree/{treeName}";
+        if (treeName === undefined || treeName === null)
+            throw new Error("The parameter 'treeName' must be defined.");
+        url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(item);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processInsert(_response);
+        });
+    }
+
+    protected processInsert(response: Response): Promise<RTree> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RTree.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status === 201) {
+            return response.text().then((_responseText) => {
+                return throwException("Created", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+                return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+                return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+                return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
         }
         return Promise.resolve<RTree>(<any>null);
     }
@@ -318,6 +380,62 @@ export interface IILocationItem {
     locationJson?: { [key: string]: any; } | undefined;
     numberDimensions?: number | undefined;
     type?: string | undefined;
+}
+
+export class LocationItem implements ILocationItem {
+    dimensionArray?: number[] | undefined;
+    itemId?: string | undefined;
+    itemType?: string | undefined;
+    numberDimensions?: number | undefined;
+
+    constructor(data?: ILocationItem) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["dimensionArray"])) {
+                this.dimensionArray = [] as any;
+                for (let item of _data["dimensionArray"])
+                    this.dimensionArray!.push(item);
+            }
+            this.itemId = _data["itemId"];
+            this.itemType = _data["itemType"];
+            this.numberDimensions = _data["numberDimensions"];
+        }
+    }
+
+    static fromJS(data: any): LocationItem {
+        data = typeof data === 'object' ? data : {};
+        let result = new LocationItem();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.dimensionArray)) {
+            data["dimensionArray"] = [];
+            for (let item of this.dimensionArray)
+                data["dimensionArray"].push(item);
+        }
+        data["itemId"] = this.itemId;
+        data["itemType"] = this.itemType;
+        data["numberDimensions"] = this.numberDimensions;
+        return data;
+    }
+}
+
+export interface ILocationItem {
+    dimensionArray?: number[] | undefined;
+    itemId?: string | undefined;
+    itemType?: string | undefined;
+    numberDimensions?: number | undefined;
 }
 
 export class RTree implements IRTree {
