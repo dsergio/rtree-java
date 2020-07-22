@@ -1,7 +1,10 @@
 ﻿<template>
     <div>
         <h2>RTree List</h2>
-        <button v-if="isLoading == false" class="button is-secondary" @click="create()">Create New RTree</button>
+
+        <spinner v-if="isLoading == true || trees == null"></spinner>
+
+        <button v-if="isLoading == false && trees != null" class="button is-secondary" @click="create()">Create New RTree</button>
         <table class="table">
             <thead>
                 <tr>
@@ -23,10 +26,6 @@
             </tbody>
         </table>
 
-
-        <!--<spinner v-if="isLoading == true"></spinner>-->
-        <spinner v-if="isLoading == true"></spinner>
-        <spinner v-if="trees == null"></spinner>
         <rtreeComponentDetail v-if="selectedTree != null"
                               :tree="selectedTree"
                               @rtree-saved="refresh()"
@@ -144,6 +143,10 @@
             this.selectedTree = null;
             this.newTree = null;
             this.isLoading = true;
+
+            this.trees = await this.rtreeClient.getAll();
+            this.initAnalyticsDataLayer();
+
             this.selectedTree = await this.rtreeClient.get(tempTree.name);
             this.isLoading = false;
             tempTree = null;

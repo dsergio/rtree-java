@@ -104,12 +104,28 @@
             item.numberDimensions = this.tree.numDimensions;
             console.log("newItemDimensionArray: ", this.newItemDimensionArray);
             await client.insert(item, this.tree.name);
-            
+
+
+            let event = new CustomEvent("detail-close", {
+                bubbles: true,
+                detail: {
+                    N: () => this.tree.numDimensions
+                }
+            });
+            document.dispatchEvent(event);
+
             this.isUpdateLoading = false;
         }
 
         @Emit('rtree-closed')
         cancel() {
+            let event = new CustomEvent("detail-close", {
+                bubbles: true,
+                detail: {
+                    N: () => this.tree.numDimensions
+                }
+            });
+            document.dispatchEvent(event);
         }
     }
 </script>

@@ -1,26 +1,14 @@
 ﻿
-
-
-
-
-var scene = new THREE.Scene();
-// var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-var camera = new THREE.PerspectiveCamera(100, 1, 0.1, 1000);
-
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
-//document.body.appendChild( renderer.domElement );
-
-
-
-// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-var material = new THREE.MeshBasicMaterial({ color: 0xfefefe, wireframe: true, opacity: 0.5 });
-
-var cubes = [];
-
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
-
-var clock = new THREE.Clock();
+var scene;
+var camera;
+var renderer;
+var material;
+var cubes;
+var points;
+var controls;
+var clock;
+var resolution;
+var graph;
 
 var colors = [
 	0xed6a5a,
@@ -40,18 +28,57 @@ var colors = [
 	0x70c1b3
 ];
 
-var resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
-var graph = new THREE.Object3D();
+function init() {
+	scene = new THREE.Scene();
+	// var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
+	camera = new THREE.PerspectiveCamera(100, 1, 0.1, 1000);
+
+	renderer = new THREE.WebGLRenderer();
+	renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
+	//document.body.appendChild( renderer.domElement );
+
+	// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+	material = new THREE.MeshBasicMaterial({ color: 0xfefefe, wireframe: true, opacity: 0.5 });
+
+	cubes = [];
+	points = [];
+
+	controls = new THREE.OrbitControls(camera, renderer.domElement);
+
+	clock = new THREE.Clock();
+
+	resolution = new THREE.Vector2(window.innerWidth, window.innerHeight);
+	graph = new THREE.Object3D();
+}
+
+
 
 $(document).ready(function () {
+
 	$(document).on("detail-view", function (e) {
 		console.log("we're showing the detail view N: " + e.detail.N(), e);
 		if (e.detail.N() == 3) {
+
+			init();
 			render3DRTree();
+
+		}
+	});
+
+	$(document).on("detail-close", function (e) {
+		console.log("we're showing the detail view N: " + e.detail.N(), e);
+		if (e.detail.N() == 3) {
+			clear3DRTree();
 		}
 	});
 });
 
+function clear3DRTree() {
+	var myNode = document.getElementById("threejsCanvas");
+	while (myNode.firstChild) {
+		myNode.removeChild(myNode.firstChild);
+	}
+}
 
 function render3DRTree() {
 
@@ -80,8 +107,6 @@ function render3DRTree() {
 		cubes.push(cube);
 
 	});
-
-	var points = [];
 
 	$(".locationItem").each(function () {
 
