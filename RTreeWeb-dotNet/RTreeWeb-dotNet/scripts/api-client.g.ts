@@ -14,6 +14,19 @@ export interface IRTreeClient {
      */
     getAll(): Promise<RTree[]>;
     /**
+     * RTree_newTree
+     * @param rtreeCreate rtreeCreate
+     * @return OK
+     */
+    newTree(rtreeCreate: RTreeCreate): Promise<RTree>;
+    /**
+     * RTree_search
+     * @param searchRectangle searchRectangle
+     * @param treeName treeName
+     * @return OK
+     */
+    search(searchRectangle: SearchRectangle, treeName: string): Promise<{ [key: string]: ILocationItem[]; }>;
+    /**
      * RTree_get
      * @param treeName treeName
      * @return OK
@@ -90,6 +103,134 @@ export class RTreeClient implements IRTreeClient {
             });
         }
         return Promise.resolve<RTree[]>(<any>null);
+    }
+
+    /**
+     * RTree_newTree
+     * @param rtreeCreate rtreeCreate
+     * @return OK
+     */
+    newTree(rtreeCreate: RTreeCreate): Promise<RTree> {
+        let url_ = this.baseUrl + "/api/RTree/";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(rtreeCreate);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processNewTree(_response);
+        });
+    }
+
+    protected processNewTree(response: Response): Promise<RTree> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                result200 = RTree.fromJS(resultData200);
+                return result200;
+            });
+        } else if (status === 201) {
+            return response.text().then((_responseText) => {
+                return throwException("Created", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+                return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+                return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+                return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<RTree>(<any>null);
+    }
+
+    /**
+     * RTree_search
+     * @param searchRectangle searchRectangle
+     * @param treeName treeName
+     * @return OK
+     */
+    search(searchRectangle: SearchRectangle, treeName: string): Promise<{ [key: string]: ILocationItem[]; }> {
+        let url_ = this.baseUrl + "/api/RTree/search/{treeName}";
+        if (treeName === undefined || treeName === null)
+            throw new Error("The parameter 'treeName' must be defined.");
+        url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(searchRectangle);
+
+        let options_ = <RequestInit>{
+            body: content_,
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            }
+        };
+
+        return this.http.fetch(url_, options_).then((_response: Response) => {
+            return this.processSearch(_response);
+        });
+    }
+
+    protected processSearch(response: Response): Promise<{ [key: string]: ILocationItem[]; }> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+                let result200: any = null;
+                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+                if (resultData200) {
+                    result200 = {} as any;
+                    for (let key in resultData200) {
+                        if (resultData200.hasOwnProperty(key))
+                            result200![key] = resultData200[key] ? resultData200[key].map((i: any) => ILocationItem.fromJS(i)) : [];
+                    }
+                }
+                return result200;
+            });
+        } else if (status === 201) {
+            return response.text().then((_responseText) => {
+                return throwException("Created", status, _responseText, _headers);
+            });
+        } else if (status === 401) {
+            return response.text().then((_responseText) => {
+                return throwException("Unauthorized", status, _responseText, _headers);
+            });
+        } else if (status === 403) {
+            return response.text().then((_responseText) => {
+                return throwException("Forbidden", status, _responseText, _headers);
+            });
+        } else if (status === 404) {
+            return response.text().then((_responseText) => {
+                return throwException("Not Found", status, _responseText, _headers);
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<{ [key: string]: ILocationItem[]; }>(<any>null);
     }
 
     /**
@@ -500,6 +641,114 @@ export interface IRTree {
     numDimensions?: number | undefined;
     points?: ILocationItem[] | undefined;
     rectangles?: IHyperRectangle[] | undefined;
+}
+
+export class RTreeCreate implements IRTreeCreate {
+    maxChildren?: number | undefined;
+    maxItems?: number | undefined;
+    numDimensions?: number | undefined;
+    treeName?: string | undefined;
+
+    constructor(data?: IRTreeCreate) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.maxChildren = _data["maxChildren"];
+            this.maxItems = _data["maxItems"];
+            this.numDimensions = _data["numDimensions"];
+            this.treeName = _data["treeName"];
+        }
+    }
+
+    static fromJS(data: any): RTreeCreate {
+        data = typeof data === 'object' ? data : {};
+        let result = new RTreeCreate();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["maxChildren"] = this.maxChildren;
+        data["maxItems"] = this.maxItems;
+        data["numDimensions"] = this.numDimensions;
+        data["treeName"] = this.treeName;
+        return data;
+    }
+}
+
+export interface IRTreeCreate {
+    maxChildren?: number | undefined;
+    maxItems?: number | undefined;
+    numDimensions?: number | undefined;
+    treeName?: string | undefined;
+}
+
+export class SearchRectangle implements ISearchRectangle {
+    dimensionArray1?: number[] | undefined;
+    dimensionArray2?: number[] | undefined;
+    numberDimensions?: number | undefined;
+
+    constructor(data?: ISearchRectangle) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["dimensionArray1"])) {
+                this.dimensionArray1 = [] as any;
+                for (let item of _data["dimensionArray1"])
+                    this.dimensionArray1!.push(item);
+            }
+            if (Array.isArray(_data["dimensionArray2"])) {
+                this.dimensionArray2 = [] as any;
+                for (let item of _data["dimensionArray2"])
+                    this.dimensionArray2!.push(item);
+            }
+            this.numberDimensions = _data["numberDimensions"];
+        }
+    }
+
+    static fromJS(data: any): SearchRectangle {
+        data = typeof data === 'object' ? data : {};
+        let result = new SearchRectangle();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.dimensionArray1)) {
+            data["dimensionArray1"] = [];
+            for (let item of this.dimensionArray1)
+                data["dimensionArray1"].push(item);
+        }
+        if (Array.isArray(this.dimensionArray2)) {
+            data["dimensionArray2"] = [];
+            for (let item of this.dimensionArray2)
+                data["dimensionArray2"].push(item);
+        }
+        data["numberDimensions"] = this.numberDimensions;
+        return data;
+    }
+}
+
+export interface ISearchRectangle {
+    dimensionArray1?: number[] | undefined;
+    dimensionArray2?: number[] | undefined;
+    numberDimensions?: number | undefined;
 }
 
 export class ApiException extends Error {

@@ -59,8 +59,6 @@
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
     declare var apiUrl: string;
 
-    //apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
-    //apiUrl = "http://localhost:8080";
 
     @Component({
         components: {

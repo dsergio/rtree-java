@@ -43,6 +43,20 @@ public class RTreeND extends RTreeBase {
 		super(dataStorage, maxChildren, maxItems, logger, numDimensions, treeName);
 		// TODO Auto-generated constructor stub
 	}
+	
+	/**
+	 * @param dataStorage
+	 * @param maxChildren
+	 * @param maxItems
+	 * @param logger
+	 * @param splitBehavior
+	 * @param numDimensions
+	 * @throws Exception
+	 */
+	public RTreeND(IDataStorage dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName) throws Exception {
+		super(dataStorage, maxChildren, maxItems, numDimensions, treeName);
+		// TODO Auto-generated constructor stub
+	}
 
 	/**
 	 * @param dataStorage

@@ -14,8 +14,6 @@ public class ApplicationDbContext {
 	
 	private IDataStorage dataStorage;
 	
-//	public List<IRTree> treeSet;
-//	public List<ILocationItem> locationItemSet;
 	public Map<String, IRTree> treeSetMap;
 	public Map<String, ILocationItem> locationItemSetMap;
 	
@@ -39,4 +37,7 @@ public class ApplicationDbContext {
 		}
 	}
 	
+	public IDataStorage getDataStorage() {
+		return dataStorage;
+	}
 }

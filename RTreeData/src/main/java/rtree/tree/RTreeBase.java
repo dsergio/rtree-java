@@ -87,6 +87,19 @@ public abstract class RTreeBase implements IRTree {
 	}
 	
 	/**
+	 * default LogLevel: LogLevel.DEV
+	 * default SplitBehavior: SplitQuadratic
+	 * 
+	 * @param dataStorage
+	 * @param maxChildren
+	 * @param maxItems
+	 * @throws Exception
+	 */
+	public RTreeBase(IDataStorage dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), numDimensions, treeName); // default to DEV, Quadratic
+	}
+	
+	/**
 	 * 
 	 * @param dataStorage
 	 * @param maxChildren

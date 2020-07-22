@@ -1,7 +1,7 @@
 ﻿<template>
     <div>
         <h2>RTree List</h2>
-        <!--<button class="button is-secondary" @click="create()">Create New RTree</button>-->
+        <button v-if="isLoading == false" class="button is-secondary" @click="create()">Create New RTree</button>
         <table class="table">
             <thead>
                 <tr>
@@ -22,6 +22,8 @@
                 </tr>
             </tbody>
         </table>
+
+
         <!--<spinner v-if="isLoading == true"></spinner>-->
         <spinner v-if="isLoading == true"></spinner>
         <spinner v-if="trees == null"></spinner>
@@ -29,31 +31,35 @@
                               :tree="selectedTree"
                               @rtree-saved="refresh()"
                               @rtree-closed="close()"></rtreeComponentDetail>
+        <rtreeComponentCreate v-if="newTree != null"
+                              :tree="newTree"
+                              @rtree-created="refreshCreated()"
+                              @rtree-closed="close()"></rtreeComponentCreate>
     </div>
 </template>
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
-    //import { RTree2, RTreeClient2 } from '../../client';
     import { RTree, RTreeClient } from '../../api-client.g';
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
+    import rtreeComponentCreate from './rtreeComponentCreate.vue';
 
     import { Telemetry, TelemetryConfigGA, TelemetryEventGA, TelemetryPageGA, ITelementryEvent } from '../../analyticsDataLayer/analyticsDataLayer';
 
     declare var apiUrl: string;
 
-    //apiUrl = "http://dsergio-rtree-api-boot.azurewebsites.net";
-    //apiUrl = "http://localhost:8080";
 
     @Component({
         components: {
             rtreeComponentDetail,
+            rtreeComponentCreate,
             Spinner
         }
     })
     export default class RTreeComponentList extends Vue {
         trees: RTree[] = null;
         selectedTree: RTree = null;
+        newTree: RTree = null;
         rtreeClient: RTreeClient;
         isLoading: boolean = false;
 
@@ -113,6 +119,10 @@
             return obj;
         }
 
+        create() {
+            this.newTree = <RTree>{};
+        }
+
         async edit(tree: RTree) {
             this.isLoading = true;
             tree = await this.rtreeClient.get(tree.name);
@@ -129,8 +139,19 @@
             tempTree = null;
         }
 
+        async refreshCreated() {
+            let tempTree = this.newTree;
+            this.selectedTree = null;
+            this.newTree = null;
+            this.isLoading = true;
+            this.selectedTree = await this.rtreeClient.get(tempTree.name);
+            this.isLoading = false;
+            tempTree = null;
+        }
+
         async close() {
             this.selectedTree = null;
+            this.newTree = null;
         }
     }
 
