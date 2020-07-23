@@ -43,7 +43,7 @@
             <nav class="navbar is-light">
                 <div class="container">
                     <div class="navbar-brand">
-                        <a class="navbar-item">
+                        <a class="navbar-item" asp-controller="Home" asp-action="Index">
                             <img src="~/img/logo.png" alt="Logo">
                         </a>
                         <span class="navbar-burger burger" data-target="navbarMenuHero10">
@@ -53,8 +53,18 @@
                         </span>
                     </div>
                     <div id="navbarMenuHero10" class="navbar-menu">
+                        <div class="navbar-start">
+                            <a class="navbar-item" asp-controller="Home" asp-action="Index">
+                                Home
+                            </a>
+
+                            <a class="navbar-item" asp-controller="Description" asp-action="Index">
+                                Description
+                            </a>
+                        </div>
+
                         <div class="navbar-end">
-                            <a class="navbar-item is-active" asp-controller="Home" asp-action="Index">
+                            <a class="navbar-item is-active" asp-controller="RTree" asp-action="Index">
                                 RTree
                             </a>
                             <a class="navbar-item" href="https://github.com/dsergio/rtree-java/wiki/N-Dimensional-R-Tree" target="_blank">
@@ -83,7 +93,7 @@
                                         </div>
                                     </a>
 
-                                    <a class="navbar-item " href="http://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html" target="_blank">
+                                    <a class="navbar-item " href="https://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html" target="_blank">
                                         <div class="level is-mobile">
                                             <div class="level-left">
                                                 <div class="level-item">
@@ -100,9 +110,7 @@
                             </div>
                             <span class="navbar-item">
                                 <a class="button is-primary is-inverted" href="https://github.com/dsergio/rtree-java/archive/master.zip">
-                                    <span class="icon">
-                                        <i class="fab fa-github"></i>
-                                    </span>
+
                                     <span>Download</span>
                                 </a>
                             </span>
@@ -128,11 +136,11 @@
                 <nav class="tabs">
                     <div class="container">
                         <ul>
-                            <li class="is-active">
+                            <li>
                                 <a asp-controller="Home" asp-action="Index">Home</a>
                             </li>
                             <li class="is-active">
-                                <a asp-controller="RTree" asp-action="Index">App</a>
+                                <a asp-controller="RTree" asp-action="Index">RTree</a>
                             </li>
                             <li>
                                 <a asp-controller="Examples" asp-action="Index">Examples</a>
@@ -158,23 +166,23 @@
 
 
     @*<nav class="navbar" role="navigation" aria-label="main navigation">
-        <div class="navbar-brand">
-            <a class="navbar-item" asp-controller="Home" asp-action="Index">
-                RTree
-            </a>
-            <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarRTree">
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-                <span aria-hidden="true"></span>
-            </a>
-        </div>
-        <div id="navbarRTree" class="navbar-menu">
-            <div class="navbar-start">
-                <a class="navbar-item" asp-controller="Home" asp-action="Index">Home</a>
-                <a class="navbar-item" asp-controller="RTree" asp-action="Index">RTree List</a>
+            <div class="navbar-brand">
+                <a class="navbar-item" asp-controller="Home" asp-action="Index">
+                    RTree
+                </a>
+                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarRTree">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
             </div>
-        </div>
-    </nav>*@
+            <div id="navbarRTree" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="navbar-item" asp-controller="RTree" asp-action="Index">RTree List</a>
+                </div>
+            </div>
+        </nav>*@
 
 
 
