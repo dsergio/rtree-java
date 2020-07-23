@@ -45,7 +45,7 @@ function init() {
 
 	var threejsWidth = document.getElementById("threejsCanvas").parentElement.clientWidth;
 	var threejsHeight = document.getElementById("threejsCanvas").parentElement.clientHeight;
-	renderer.setSize(threejsWidth * 0.8, threejsHeight * 0.5);
+	renderer.setSize(threejsWidth * 0.8, threejsWidth * 0.8);
 	//renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
 	//document.body.appendChild( renderer.domElement );
 
