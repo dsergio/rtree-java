@@ -5,6 +5,14 @@
         <spinner v-if="isLoading == true || trees == null"></spinner>
 
         <button v-if="isLoading == false && trees != null" class="button is-secondary" @click="create()">Create New RTree</button>
+        <br /><br />
+        <div class="field">
+            <label class="label">Search</label>
+            <div class="control">
+                <input v-if="isLoading == false && trees != null" class="input" type="text" v-model="searchQuery" placeholder="Search" />
+            </div>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -14,7 +22,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="t in trees" :key="t.name">
+                <tr v-for="t in resultQuery()" :key="t.name">
                     <td>{{t.name}}</td>
                     <td>{{t.numDimensions}}</td>
                     <td>
@@ -61,12 +69,13 @@
         newTree: RTree = null;
         rtreeClient: RTreeClient;
         isLoading: boolean = false;
-
         telemetry: Telemetry;
+        searchQuery: string;
 
         constructor() {
             super();
             this.rtreeClient = new RTreeClient(apiUrl);
+            this.searchQuery = "";
         }
 
         async mounted() {
@@ -155,6 +164,18 @@
         async close() {
             this.selectedTree = null;
             this.newTree = null;
+        }
+
+        resultQuery() {
+
+            if (this.searchQuery != "") {
+                return this.trees.filter((item) => {
+                    return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v))
+                });
+
+            } else {
+                return this.trees;
+            }
         }
     }
 
