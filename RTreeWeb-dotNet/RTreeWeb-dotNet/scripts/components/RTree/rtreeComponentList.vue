@@ -1,6 +1,6 @@
 ﻿<template>
     <div>
-        <h2>RTree List</h2>
+        <h2 v-if="isLoading == false && trees != null">RTree List</h2>
 
         <spinner v-if="isLoading == true || trees == null"></spinner>
 

@@ -42,7 +42,11 @@ function init() {
 	camera = new THREE.PerspectiveCamera(100, 1, 0.1, 5000);
 
 	renderer = new THREE.WebGLRenderer();
-	renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
+
+	var threejsWidth = document.getElementById("threejsCanvas").parentElement.clientWidth;
+	var threejsHeight = document.getElementById("threejsCanvas").parentElement.clientHeight;
+	renderer.setSize(threejsWidth * 0.8, threejsHeight * 0.5);
+	//renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
 	//document.body.appendChild( renderer.domElement );
 
 	// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
