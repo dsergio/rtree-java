@@ -3,16 +3,16 @@
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <h2 class="modal-card-title">RTree Detail - {{tree.name}}</h2>
+                <h2 class="modal-card-title">RTree Detail</h2>
                 <button class="delete" @click="cancel" aria-label="close"></button>
             </header>
             <section class="modal-card-body">
                 <div class="content">
-
+                    <h3>{{tree.name}}</h3>
                     <div v-if="tree.points.length != 0" id="threejsCanvas"></div>
                     <div v-if="tree.points.length != 0" id="canvasContainer2D"></div>
 
-                    
+
                     <article v-if="tree.points.length == 0" class="message is-info">
                         <div class="message-header">
                             Info
@@ -20,15 +20,15 @@
                         <div class="message-body">This R-Tree does not contain any points. Add points below.</div>
                     </article>
 
-                    <h3>Points</h3>
-                    <div style="overflow-y:auto;height:200px;">
+                    <h3 v-if="tree.points.length != 0">Points</h3>
+                    <div v-if="tree.points.length != 0" style="overflow-y:auto;height:200px;">
                         <ul v-for="i in tree.points">
                             <li class="locationItem" :id="i.id">{{i.json}}</li>
                         </ul>
                     </div>
 
-                    <h3>Rectangles</h3>
-                    <div style="overflow-y:auto;height:200px;">
+                    <h3 v-if="tree.points.length != 0">Rectangles</h3>
+                    <div v-if="tree.points.length != 0" style="overflow-y:auto;height:200px;">
                         <ul v-for="i in tree.rectangles">
                             <li class="rectangle">{{i.json}}</li>
                         </ul>
