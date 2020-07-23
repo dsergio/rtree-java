@@ -30,15 +30,29 @@ var colors = [
 
 function init() {
 	scene = new THREE.Scene();
+	scene.background = new THREE.Color('white');
+
+	const color = 0xFFFFFF;
+	const intensity = 1;
+	const light = new THREE.DirectionalLight(color, intensity);
+	light.position.set(500, 500, 500);
+	scene.add(light);
+
 	// var camera = new THREE.PerspectiveCamera( 75, window.innerWidth/window.innerHeight, 0.1, 1000 );
-	camera = new THREE.PerspectiveCamera(100, 1, 0.1, 1000);
+	camera = new THREE.PerspectiveCamera(100, 1, 0.1, 5000);
 
 	renderer = new THREE.WebGLRenderer();
 	renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
 	//document.body.appendChild( renderer.domElement );
 
 	// var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-	material = new THREE.MeshBasicMaterial({ color: 0xfefefe, wireframe: true, opacity: 0.5 });
+
+	//material = new THREE.MeshBasicMaterial({ color: 0xfefefe, wireframe: false, opacity: 0.5 });
+	material = new THREE.MeshPhongMaterial({
+		color: 0xca61ce,
+		opacity: 0.5,
+		transparent: true,
+	});
 
 	cubes = [];
 	points = [];
@@ -86,8 +100,39 @@ function render3DRTree() {
 
 	$(".rectangle").each(function () {
 
+		material = new THREE.MeshPhongMaterial({
+			color: 0xca61ce,
+			opacity: 0.2,
+			transparent: true,
+		});
+
 		var obj = JSON.parse($(this).html());
 		var rectangleId = $(this).attr("id");
+		var rectangleLevel = obj["level"];
+
+		if (rectangleLevel == 1) {
+			material.color = new THREE.Color('red');
+			material.opacity = 0.2;
+		} else if (rectangleLevel == 2) {
+			material.color = new THREE.Color('orange');
+			material.opacity = 0.3;
+		} else if (rectangleLevel == 3) {
+			material.color = new THREE.Color('yellow');
+			material.opacity = 0.4;
+		} else if (rectangleLevel == 4) {
+			material.color = new THREE.Color('green');
+			material.opacity = 0.5;
+		} else if (rectangleLevel == 5) {
+			material.color = new THREE.Color('blue');
+			material.opacity = 0.7;
+		} else if (rectangleLevel == 6) {
+			material.color = 0x4B0082;
+			material.opacity = 0.8;
+		} else {
+			material.color = new THREE.Color('black');
+			material.opacity = 0.9;
+		}
+		console.log("rendering ", obj, " color: ", material.color);
 
 		var width = Math.abs(obj["x2"] - obj["x1"]);
 		var height = Math.abs(obj["y2"] - obj["y1"]);
@@ -116,6 +161,8 @@ function render3DRTree() {
 		const widthSegments = 11;
 		const heightSegments = 10;
 		const geometry = new THREE.SphereBufferGeometry(radius, widthSegments, heightSegments);
+
+		material = new THREE.MeshBasicMaterial({ color: new THREE.Color('black'), wireframe: false, opacity: 1 });
 
 		var point = new THREE.Mesh(geometry, material);
 		point.position.x = obj["x"];

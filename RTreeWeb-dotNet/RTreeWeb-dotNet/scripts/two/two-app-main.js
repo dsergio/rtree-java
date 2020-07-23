@@ -99,6 +99,7 @@ function drawTree(c, ctx, id) {
 
 		var obj = JSON.parse($(this).html());
 		var rectangleId = $(this).attr("id");
+		var rectangleLevel = obj["level"];
 
 		console.log("obj: ", obj);
 

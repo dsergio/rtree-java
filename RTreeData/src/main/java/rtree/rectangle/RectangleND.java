@@ -43,7 +43,7 @@ public class RectangleND extends HyperRectangleBase {
 				break;
 			}
 		}
-		
+		obj.put("level", level);
 		return obj;
 	}
 	
