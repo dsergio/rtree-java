@@ -9,8 +9,16 @@
             <section class="modal-card-body">
                 <div class="content">
 
-                    <div id="threejsCanvas"></div>
-                    <div id="canvasContainer2D"></div>
+                    <div v-if="tree.points.length != 0" id="threejsCanvas"></div>
+                    <div v-if="tree.points.length != 0" id="canvasContainer2D"></div>
+
+                    
+                    <article v-if="tree.points.length == 0" class="message is-info">
+                        <div class="message-header">
+                            Info
+                        </div>
+                        <div class="message-body">This R-Tree does not contain any points. Add points below.</div>
+                    </article>
 
                     <h3>Points</h3>
                     <div style="overflow-y:auto;height:200px;">

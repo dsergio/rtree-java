@@ -7,13 +7,13 @@
         <button v-if="isLoading == false && trees != null" class="button is-secondary" @click="create()">Create New RTree</button>
         <br /><br />
         <div class="field">
-            <label class="label">Search</label>
+            <label v-if="isLoading == false && trees != null" class="label">Search</label>
             <div class="control">
                 <input v-if="isLoading == false && trees != null" class="input" type="text" v-model="searchQuery" placeholder="Search" />
             </div>
         </div>
 
-        <table class="table">
+        <table v-if="isLoading == false" class="table">
             <thead>
                 <tr>
                     <th>Name</th>
