@@ -16,38 +16,37 @@ import rtree.tree.IRTreeNode;
  */
 public interface IDataStorage {
 	
-	public void close();
+	 void close();
 	
-//	public String getTreeName();
-	public List<IRTree> getAllTrees();
-	public List<ILocationItem> getAllLocationItems();
+	 List<IRTree> getAllTrees();
+	 List<ILocationItem> getAllLocationItems();
 	
-	public void initializeStorage();
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache cache);
-	public void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
-	public IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache);
+	 void initializeStorage();
+	 IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache cache);
+	 void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
+	 IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache);
 	
-	public void addItem(String Id, int N, String location, String type);
+	 void addItem(String Id, int N, String location, String type);
 	
 	// use these for performance analysis
-	public int getNumAdds();
-	public int getNumReads();
-	public int getNumUpdates();
-	public long getAddTime();
-	public long getReadTime();
-	public long getUpdateTime();
+	 int getNumAdds();
+	 int getNumReads();
+	 int getNumUpdates();
+	 long getAddTime();
+	 long getReadTime();
+	 long getUpdateTime();
 	
 	
-	public void addToMetaData(String treeName, int maxChildren, int maxItems); // store the maxChildren and maxItems values
-	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N); // store N, maxChildren and maxItems values
-	public boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
-	public int getMaxChildren(String treeName); // get the persistent maxChildren value
-	public int getMaxItems(String treeName);  // get the persistent maxItems value
-	public int getNumDimensions(String treeName);  // get number of dimensions
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName);
-	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName);
-	public StorageType getStorageType();
+	 void addToMetaData(String treeName, int maxChildren, int maxItems); // store the maxChildren and maxItems values
+	 void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N); // store N, maxChildren and maxItems values
+	 boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
+	 int getMaxChildren(String treeName); // get the persistent maxChildren value
+	 int getMaxItems(String treeName);  // get the persistent maxItems value
+	 int getNumDimensions(String treeName);  // get number of dimensions
+	 void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName);
+	 void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName);
+	 StorageType getStorageType();
 	
-	public void clearData();
+	 void clearData();
 	
 }

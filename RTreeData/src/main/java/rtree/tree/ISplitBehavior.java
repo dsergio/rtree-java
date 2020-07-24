@@ -10,13 +10,13 @@ import rtree.log.ILogger;
  */
 public interface ISplitBehavior {
 
-	public boolean didBranchSplit();
-	public IRTreeNode getNode(String nodeId);
+	 boolean didBranchSplit();
+	 IRTreeNode getNode(String nodeId);
 	
-	public void splitLeafNode(IRTreeNode node, ILocationItem locationItem);
-	public void splitBranchNode(IRTreeNode node);
+	 void splitLeafNode(IRTreeNode node, ILocationItem locationItem);
+	 void splitBranchNode(IRTreeNode node);
 	
-	public String getDescription();
-	public void initialize(int maxChildren, String treeName, IRTreeCache cacheContainer, ILogger logger);
+	 String getDescription();
+	 void initialize(int maxChildren, String treeName, IRTreeCache cacheContainer, ILogger logger);
 
 }

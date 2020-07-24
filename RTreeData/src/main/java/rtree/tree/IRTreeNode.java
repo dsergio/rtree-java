@@ -16,30 +16,30 @@ import rtree.rectangle.IHyperRectangle;
  */
 public interface IRTreeNode {
 
-	public String getNodeId();
-	public void setChildren(String childrenStr);
-	public JSONArray getChildrenJSON();
-	public JSONArray getItemsJSON();
-	public List<ILocationItem> getLocationItems();
-	public void addItem(ILocationItem locationItem) throws IOException;
+	 String getNodeId();
+	 void setChildren(String childrenStr);
+	 JSONArray getChildrenJSON();
+	 JSONArray getItemsJSON();
+	 List<ILocationItem> getLocationItems();
+	 void addItem(ILocationItem locationItem) throws IOException;
 	
-	public void updateRectangle();
-	public void updateRectangle(boolean goUp);
-	public void updateRectangle(IRTreeNode node);
+	 void updateRectangle();
+	 void updateRectangle(boolean goUp);
+	 void updateRectangle(IRTreeNode node);
 	
-	public int getNumberOfItems();
-	public boolean isLeafNode();
-	public IHyperRectangle getRectangle();
-	public void setRectangle(IHyperRectangle rectangle);
-	public List<String> getChildren();
-	public void setParent(String node);
-	public List<ILocationItem> getPoints();
-	public String getParent();
-	public void setChildren(List<String> newChildren);
-	public String toString();
+	 int getNumberOfItems();
+	 boolean isLeafNode();
+	 IHyperRectangle getRectangle();
+	 void setRectangle(IHyperRectangle rectangle);
+	 List<String> getChildren();
+	 void setParent(String node);
+	 List<ILocationItem> getPoints();
+	 String getParent();
+	 void setChildren(List<String> newChildren);
+	 String toString();
 	
 	
-	public void setItemsJson(String items);
-	public void setLocationItems(ArrayList<ILocationItem> arrayList);
+	 void setItemsJson(String items);
+	 void setLocationItems(ArrayList<ILocationItem> arrayList);
 
 }

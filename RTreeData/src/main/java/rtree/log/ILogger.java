@@ -2,10 +2,10 @@ package rtree.log;
 
 public interface ILogger {
 	
-	public void log(String message); // include a newline
-	public void log(); // log a newline
-	public void logExact(String message); // no newline
-	public LogLevel getLogLevel();
-	public void setLogLevel(LogLevel logLevel);
-	public void log(Exception e);
+	 void log(String message); // include a newline
+	 void log(); // log a newline
+	 void logExact(String message); // no newline
+	 LogLevel getLogLevel();
+	 void setLogLevel(LogLevel logLevel);
+	 void log(Exception e);
 }

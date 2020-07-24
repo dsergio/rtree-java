@@ -6,27 +6,27 @@ import org.json.simple.JSONObject;
 
 public interface ILocationItem {
 	
-	public String getId();
-	public String getType();
-	public void setType(String type);
-	public int getNumberDimensions();
-	public JSONObject getJson();
+	 String getId();
+	 String getType();
+	 void setType(String type);
+	 int getNumberDimensions();
+	 JSONObject getJson();
 	
 	/**
 	 * 
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @param value
 	 */
-	public void setDim(int dim, int value);
+	 void setDim(int dim, int value);
 	
 	/**
 	 * 
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @return value
 	 */
-	public Integer getDim(int dim);
-	public List<Integer> getDimensionArray();
-	public JSONObject getLocationJson();
+	 Integer getDim(int dim);
+	 List<Integer> getDimensionArray();
+	 JSONObject getLocationJson();
 	
 	
 	

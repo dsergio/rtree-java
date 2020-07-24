@@ -70,13 +70,8 @@ public class SplitQuadraticND extends SplitBehaviorBase {
 		if (node.getParent() == null) {
 			
 			logger.log("#SPLIT-LEAF: " + "we're at the root");
-//			logger.log("#SPLIT-LEAF: " + "root.children: " + root.children);
 			logger.log("#SPLIT-LEAF: " + "root.children: " + getNode(treeName).getChildren());
 			
-//			String newRootId = treeName;
-//			root = new RTreeNode(newRootId, null, null, cache, logger);
-//			root.setRectangle(Rectangle.sumRectangles(node.getRectangle(), locationItem));
-//			root.setChildren(newChildren);
 			
 			IRTreeNode rootTemp = new RTreeNodeND(treeName, null, null, cache, logger);
 			rootTemp.setChildren(newChildren);
@@ -172,15 +167,7 @@ public class SplitQuadraticND extends SplitBehaviorBase {
 		node1.updateRectangle();
 		node2.updateRectangle();
 		
-//		cache.remove(node1.getParent()); // ?
-		
-//		logger.log("node1 num: " + node1.getNumberOfItems() + " node2 num: " + node2.getNumberOfItems());
-		
 		splitBranchNode(cache.getNode(node1.getParent()));
-		
-//		if (!node.nodeId.equals(treeName)) {
-//			cache.updateNode(node.nodeId, null, null, "[]", null);
-//		}
 		
 		logger.log();
 		cache.printCache();
@@ -286,21 +273,13 @@ public class SplitQuadraticND extends SplitBehaviorBase {
 				rootsNewChildrenArr.add(nodesParentsNewChild2.getNodeId());
 				
 				
-//				root = new RTreeNode(treeName, null, null, cache, logger);
-//				root.children = new ArrayList<String>();
-//				root.children.add(nodesParentsNewChild1Id);
-//				root.children.add(nodesParentsNewChild2Id);
 				
 				logger.log("@~SPLIT BRANCH: " + "*****rootsNewChildrenArr: " + rootsNewChildrenArr);
 				cache.updateNode(treeName, rootsNewChildrenArr.toJSONString(), null, null, cache.getNode(treeName).getRectangle().getJson().toJSONString());
-//				root = cache.getNode(treeName);
-//				nodesParentsNewChild1.setParent(root.nodeId);
-//				nodesParentsNewChild2.setParent(root.nodeId);
+
 				nodesParentsNewChild1.setParent(treeName);
 				nodesParentsNewChild2.setParent(treeName);
 				
-//				node1.updateRectangle();
-//				node2.updateRectangle();
 				List<IHyperRectangle> listRect1 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild1.getChildren()) {
 					IHyperRectangle r = cache.getNode(s).getRectangle();
@@ -321,17 +300,14 @@ public class SplitQuadraticND extends SplitBehaviorBase {
 				cache.addNode(nodesParentsNewChild2.getNodeId(), nodesParentsNewChild2.getChildrenJSON().toJSONString(), treeName, null, node2SumRect.getJson().toJSONString(), nodesParentsNewChild2);
 				
 				for (String child : nodesParentsNewChild1Children) {
-//					logger.log("=== childNodes1 |" + child);
 					cache.getNode(child).setParent(nodesParentsNewChild1.getNodeId());
 					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild1.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
 				}
 				for (String child : nodesParentsNewChild2Children) {
-//					logger.log("=== childNodes2 |" + child);
 					cache.getNode(child).setParent(nodesParentsNewChild2.getNodeId());
 					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
 				}
 				
-//				splitBranchNode(root);
 				splitBranchNode(getNode(treeName));
 				
 			} else { // not at root
@@ -363,8 +339,6 @@ public class SplitQuadraticND extends SplitBehaviorBase {
 				nodesParentsNewChild1.setParent(nodesParent.getNodeId());
 				nodesParentsNewChild2.setParent(nodesParent.getNodeId());
 				
-//				node1.updateRectangle();
-//				node2.updateRectangle();
 				List<IHyperRectangle> listRect1 = new ArrayList<IHyperRectangle>();
 				for (String s : nodesParentsNewChild1.getChildren()) {
 					IHyperRectangle r = cache.getNode(s).getRectangle();
