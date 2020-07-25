@@ -1,166 +1,211 @@
 ﻿
+import { ITelemetryEvent } from './events/events';
+import { ITelemetryPage } from './pages/pages';
+
+export * from './events/events';
+export * from './pages/pages';
+
+export interface IEventDictionary {
+    [key: string]: ITelemetryEvent;
+};
+export interface IPageDictionary {
+    [key: string]: ITelemetryPage;
+};
+export interface IDataLayerDictionary {
+    [key: string]: ITelemetryDataLayer;
+};
 
 
 export class Telemetry {
-    config: TelemetryConfig;
-    events: IEventDictionary = {};
-    pages: IPageDictionary = {};
-    size: number = 0;
+    telemetryId: string;
+    dataLayers: IDataLayerDictionary = {};
+    dataLayersSize: number = 0;
 
-    constructor(config: TelemetryConfig) {
-        this.config = config;
+    constructor(telemetryId: string) {
+        this.telemetryId = telemetryId;
     }
 
-    addEvent(event: ITelementryEvent): void {
-        this.events[event.getId()] = event;
-        this.size++;
+    addDataLayer(dataLayer: ITelemetryDataLayer): void {
+        this.dataLayers[dataLayer.getId()] = dataLayer;
+        this.dataLayersSize++;
     }
 
-    getEvent(eventId: string): ITelementryEvent {
-        return this.events[eventId];
+    getDataLayer(dataLayerId: string): ITelemetryDataLayer {
+        return this.dataLayers[dataLayerId];
     }
 
-    addPage(page: TelemetryPage): void {
-        this.pages[page.id] = page;
+    getDataLayersCount(): number {
+        return this.dataLayersSize;
     }
 
-    getPage(pageId: string): TelemetryPage {
-        return this.pages[pageId];
-    }
+    generateDataLayer(): string {
 
-    getEventsCount(): number {
-        return this.size;
-    }
-}
+        let ret: any = {};
 
-abstract class TelemetryConfig {
-    type: string;
+        ret["telemetryId"] = this.telemetryId;
+        ret["dataLayerObjects"] = {};
 
-    constructor(type: string) {
-        this.type = type;
+        for (let key in this.dataLayers) {
+            let value = this.dataLayers[key];
+            ret["dataLayerObjects"][key] = value.generateDataLayer();
+        }
+
+        return JSON.stringify(ret);
     }
 }
 
-export interface IEventDictionary {
-    [key: string]: ITelementryEvent;
-};
-export interface IPageDictionary {
-    [key: string]: TelemetryPage;
-};
-
-
-export class TelemetryConfigGA extends TelemetryConfig {
-    tid: string;
-
-    constructor(tid: string) {
-        super("GA");
-        this.tid = tid;
-    }
-}
-
-
-
-
-
-abstract class TelemetryPage {
-    id: string;
-    pageName: string;
-
-    constructor(pageName: string, id: string) {
-        this.pageName = pageName;
-        this.id = id;
-    }
-
-    getPageName(): string {
-        return this.pageName;
-    }
-}
-
-export class TelemetryPageGA extends TelemetryPage {
-
-    constructor(pageName: string, id: string) {
-        super(pageName, id);
-    }
-}
-
-
-
-
-
-
-
-export interface ITelementryEvent {
-    
-    displayEvent: () => void;
+export interface ITelemetryDataLayer {
     getId(): string;
-    getTelemetryEventAttribute: (i: number) => string;
-    getTelementryEventAttributeCount(): number;
+    generateDataLayer(): {};
+    generatePageDataLayer(): {};
+    getRootObject(): string;
+    setPage(page: ITelemetryPage): void;
+    addEvent(event: ITelemetryEvent): void;
+    removeEvent(eventId: string): void;
+    getEvent(eventId: string): ITelemetryEvent;
+    clearEvents(): void;
 }
 
-abstract class TelemetryEvent implements ITelementryEvent {
-    id: string;
-    type: string;
 
-    constructor(type: string, id: string) {
-        this.type = type;
-        this.id = id;
+export class DataLayerTMSGeneric implements ITelemetryDataLayer {
+    dataLayerId: string;
+    events: IEventDictionary = {};
+    eventSize: number = 0;
+    page: ITelemetryPage;
+
+    constructor(dataLayerId: string) {
+        this.dataLayerId = dataLayerId;
+    }
+
+    clearEvents() {
+        this.events = {};
+    }
+
+    getRootObject(): string {
+        return "DataLayerTMSGeneric"
     }
 
     getId(): string {
-        return this.id
+        return this.dataLayerId
     }
 
-    abstract displayEvent(): void;
-    abstract getTelemetryEventAttribute(i: number): string;
-    abstract getTelementryEventAttributeCount(): number;
-}
-
-export class TelemetryEventGA extends TelemetryEvent {
-    eventCategory: string;
-    eventAction: string;
-    eventLabel?: string;
-
- 
-    constructor(id: string, eventCategory: string, eventAction: string, eventLabel: string) {
-        super("GA", id);
-        this.eventCategory = eventCategory;
-        this.eventAction = eventAction;
-        this.eventLabel = eventLabel;
+    addEvent(event: ITelemetryEvent): void {
+        this.events[event.getId()] = event;
+        this.eventSize++;
     }
 
-    
-    getTelementryEventAttributeCount(): number {
-        return 3;
-    }
-
-    displayEvent(): void {
-        console.log("id: " + this.id);
-        console.log("type:" + this.type);
-        console.log("eventCategory: " + this.eventCategory);
-        console.log("eventAction: " + this.eventAction);
-        if (this.eventLabel != null) {
-            console.log("eventLabel: " + this.eventLabel);
-        } else {
-            console.log("eventLabel: " + "not set");
+    removeEvent(eventId: string): void {
+        if (eventId in this.events) {
+            delete this.events[eventId];
+            this.eventSize--;
         }
     }
 
-    getTelemetryEventAttribute(i: number): string {
-        switch (i) {
-            case 0: {
-                return this.eventCategory;
-            }
-            case 1: {
-                return this.eventAction;
-            }
-            case 2: {
-                if (this.eventLabel != null) {
-                    return this.eventLabel;
-                } else {
-                    return "";
-                }
-            }
+    getEvent(eventId: string): ITelemetryEvent {
+        return this.events[eventId];
+    }
+
+    setPage(page: ITelemetryPage): void {
+        this.page = page;
+    }
+
+    getPage(): ITelemetryPage {
+        return this.page;
+    }
+
+    getEventsCount(): number {
+        return this.eventSize;
+    }
+
+    generateDataLayer(): string {
+
+        let obj: any = {};
+
+        obj[this.getRootObject()] = {};
+
+        obj[this.getRootObject()]["dataLayerId"] = this.dataLayerId;
+        obj[this.getRootObject()]["page"] = this.page.getPageObject();
+
+        obj[this.getRootObject()]["events"] = {};
+        for (let key in this.events) {
+            let value = this.events[key];
+            obj[this.getRootObject()]["events"] = value.getId();
         }
+
+        return JSON.stringify(obj);
+    }
+
+    generatePageDataLayer(): {} {
+
+        return this.page.getPageObject();
+    }
+
+}
+
+export class DataLayerGTM extends DataLayerTMSGeneric {
+
+    constructor(dataLayerId: string) {
+        super("DataLayerGTM");
+        this.dataLayerId = dataLayerId;
+    }
+
+    getRootObject(): string {
+        return "gtmDataLayer";
     }
 }
 
+export class DataLayerTealium extends DataLayerTMSGeneric {
+
+    constructor(dataLayerId: string) {
+        super("DataLayerTealium");
+        this.dataLayerId = dataLayerId;
+    }
+
+    getRootObject(): string {
+        return "utag_data";
+    }
+}
+
+
+
+declare global {
+    interface Window {
+        dataLayerCollection: any;
+        gtmDataLayer: any;
+        dataLayer: any;
+        utag_data: any;
+    }
+}
+
+export function attachDataLayerObjects(telemetry: Telemetry) {
+
+    var dataLayerCollection: any = {};
+    dataLayerCollection["dataLayerTMSGeneric"] = telemetry.getDataLayer("Generic").generatePageDataLayer();
+    dataLayerCollection["dataLayerGTM"] = telemetry.getDataLayer("GTM").generatePageDataLayer();
+    dataLayerCollection["dataLayerTealium"] = telemetry.getDataLayer("Tealium").generatePageDataLayer();
+
+
+    window.dataLayerCollection = dataLayerCollection || {};
+
+    if (window.gtmDataLayer) {
+        for (var i in dataLayerCollection["dataLayerGTM"]) {
+            window.gtmDataLayer[i] = dataLayerCollection["dataLayerGTM"][i];
+        }
+    } else {
+        window.gtmDataLayer =  dataLayerCollection["dataLayerGTM"];
+    }
+    if (dataLayerCollection["dataLayerGTM"]["isVirtual"]) {
+        window.dataLayer.push({ 'event': dataLayerCollection["dataLayerGTM"]['id'] });
+    }
+
+    if (window.utag_data) {
+        for (var i in dataLayerCollection["dataLayerTealium"]) {
+            window.utag_data[i] = dataLayerCollection["dataLayerTealium"][i];
+        }
+    } else {
+        window.utag_data = dataLayerCollection["dataLayerTealium"];
+    }
+
+
+    console.log("dataLayerCollection: ", dataLayerCollection);
+}

@@ -36,10 +36,12 @@
 
         <rtreeComponentDetail v-if="selectedTree != null"
                               :tree="selectedTree"
+                              :telemetry="telemetry"
                               @rtree-saved="refresh()"
                               @rtree-closed="close()"></rtreeComponentDetail>
         <rtreeComponentCreate v-if="newTree != null"
                               :tree="newTree"
+                              :telemetry="telemetry"
                               @rtree-created="refreshCreated()"
                               @rtree-closed="close()"></rtreeComponentCreate>
     </div>
@@ -51,10 +53,23 @@
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
     import rtreeComponentCreate from './rtreeComponentCreate.vue';
 
-    import { Telemetry, TelemetryConfigGA, TelemetryEventGA, TelemetryPageGA, ITelementryEvent } from '../../analyticsDataLayer/analyticsDataLayer';
+    import {
+        Telemetry,
+        ITelemetryDataLayer, DataLayerTMSGeneric, DataLayerGTM, DataLayerTealium,
+        ITelemetryPage, ITelemetryEvent,
+        TelemetryEventTMSGeneric,
+        TelemetryPageTMSGeneric, TelemetryPageGTM, TelemetryPageTealium, attachDataLayerObjects
+    } from '../../analyticsDataLayer/analyticsDataLayer';
 
     declare var apiUrl: string;
 
+    declare global {
+        interface Window {
+            dataLayerCollection: any;
+            dataLayer: any;
+            utag_data: any;
+        }
+    }
 
     @Component({
         components: {
@@ -79,48 +94,60 @@
         }
 
         async mounted() {
+
             this.trees = await this.rtreeClient.getAll();
+
+            let dataLayerTMSGeneric: ITelemetryDataLayer = new DataLayerTMSGeneric("Generic");
+            let dataLayerGTM: ITelemetryDataLayer = new DataLayerGTM("GTM");
+            let dataLayerTealium: ITelemetryDataLayer = new DataLayerTealium("Tealium");
+
+            this.telemetry = new Telemetry("telemetryID");
+            this.telemetry.addDataLayer(dataLayerTMSGeneric);
+            this.telemetry.addDataLayer(dataLayerGTM);
+            this.telemetry.addDataLayer(dataLayerTealium);
+
             this.initAnalyticsDataLayer();
+
             console.log("trees: ", this.trees);
         }
 
         initAnalyticsDataLayer(): void {
 
-            let telemetryConfigGA: TelemetryConfigGA = new TelemetryConfigGA("UA-173118780-1");
-            this.telemetry = new Telemetry(telemetryConfigGA);
+            let pageName = "rtree app home";
+            let pageId = "rtree app home";
 
-            let page: TelemetryPageGA = new TelemetryPageGA("rtree app home", "123");
-            this.telemetry.addPage(page);
+            let pageTMSGeneric: ITelemetryPage = new TelemetryPageTMSGeneric(pageName, pageId, false);
+            let pageGTM: ITelemetryPage = new TelemetryPageGTM(pageName, pageId, false);
+            let pageTealium: ITelemetryPage = new TelemetryPageTealium(pageName, pageId, false);
 
+            this.telemetry.getDataLayer("Generic").setPage(pageTMSGeneric);
+            this.telemetry.getDataLayer("GTM").setPage(pageGTM);
+            this.telemetry.getDataLayer("Tealium").setPage(pageTealium);
+
+            this.telemetry.getDataLayer("Generic").clearEvents();
             for (var i in this.trees) {
-                let eventShow: ITelementryEvent = new TelemetryEventGA(this.trees[i].name, "rtree app", "show/edit", this.trees[i].name);
-                this.telemetry.addEvent(eventShow);
+                let eventEditShow: ITelemetryEvent = new TelemetryEventTMSGeneric(this.trees[i].name);
+                eventEditShow.addEventAttribute(0, "rtree app");
+                eventEditShow.addEventAttribute(1, "show/edit");
+                eventEditShow.addEventAttribute(2, this.trees[i].name);
+                this.telemetry.getDataLayer("Generic").addEvent(eventEditShow);
+                //console.log("created event: ");
+                //eventEditShow.displayEvent();
             }
-            
+
+            attachDataLayerObjects(this.telemetry);
         }
 
         telemetryActionAttributes(t: RTree): object {
-            console.log("telemetry attr: ", t);
+            //console.log("event... telemetry attr: ", t);
             let i: number = 0;
             let obj: any = {};
             let id = t.name;
-            if (this.telemetry.getEvent(id) != null) {
-                for (i = 0; i < this.telemetry.getEvent(id).getTelementryEventAttributeCount(); i++) {
+            //console.log("event... id: " + id + " getEvent: ", this.telemetry.getDataLayer("TMSGenericID").getEvent(id));
+            if (this.telemetry.getDataLayer("Generic").getEvent(id) != null) {
+                for (i = 0; i < this.telemetry.getDataLayer("Generic").getEvent(id).getTelementryEventAttributeCount(); i++) {
                     let str: string = "data-telemetry-attribute-" + i;
-                    obj[str] = this.telemetry.getEvent(id).getTelemetryEventAttribute(i);
-                }
-            }
-            
-            return obj;
-        }
-
-        telemetryActionAttributes2(id: string): object {
-            let i: number = 0;
-            let obj: any = {};
-            if (this.telemetry.getEvent(id) != null) {
-                for (i = 0; i < this.telemetry.getEvent(id).getTelementryEventAttributeCount(); i++) {
-                    let str: string = "data-telemetry-attribute-" + i;
-                    obj[str] = this.telemetry.getEvent(id).getTelemetryEventAttribute(i);
+                    obj[str] = this.telemetry.getDataLayer("Generic").getEvent(id).getTelemetryEventAttribute(i);
                 }
             }
             
@@ -164,6 +191,7 @@
         async close() {
             this.selectedTree = null;
             this.newTree = null;
+            this.initAnalyticsDataLayer();
         }
 
         resultQuery() {

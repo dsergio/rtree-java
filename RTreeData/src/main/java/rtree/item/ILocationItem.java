@@ -4,6 +4,13 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+/**
+ * 
+ * R-Tree Location Item Type Interface
+ * 
+ * @author David Sergio
+ *
+ */
 public interface ILocationItem {
 	
 	 String getId();
@@ -25,7 +32,14 @@ public interface ILocationItem {
 	 * @return value
 	 */
 	 Integer getDim(int dim);
+	 
+	 /**
+	  * 0 for "x", 1 for "y", 2 for "z", etc.
+	  * 
+	  * @return Dimension Array
+	  */
 	 List<Integer> getDimensionArray();
+	 
 	 JSONObject getLocationJson();
 	
 	

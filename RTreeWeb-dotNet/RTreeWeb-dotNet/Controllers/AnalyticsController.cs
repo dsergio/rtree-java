@@ -8,6 +8,7 @@ namespace RTreeWeb_dotNet.Controllers
 {
     public class AnalyticsController : Controller
     {
+        [Route("/Analytics")]
         public IActionResult Index()
         {
             return View();

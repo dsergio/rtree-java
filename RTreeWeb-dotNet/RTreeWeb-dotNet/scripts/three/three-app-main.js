@@ -43,8 +43,13 @@ function init() {
 
 	renderer = new THREE.WebGLRenderer();
 
-	var threejsWidth = document.getElementById("threejsCanvas").parentElement.clientWidth;
-	var threejsHeight = document.getElementById("threejsCanvas").parentElement.clientHeight;
+	var threejsWidth = 300;
+	var threejsHeight = 300;
+	if (document.getElementById("threejsCanvas")) {
+		threejsWidth = document.getElementById("threejsCanvas").parentElement.clientWidth;
+		threejsHeight = document.getElementById("threejsCanvas").parentElement.clientHeight;
+	}
+	
 	renderer.setSize(threejsWidth * 0.8, threejsWidth * 0.8);
 	//renderer.setSize(window.innerWidth / 4, window.innerWidth / 4);
 	//document.body.appendChild( renderer.domElement );
@@ -76,7 +81,7 @@ $(document).ready(function () {
 
 	$(document).on("detail-view", function (e) {
 		console.log("we're showing the detail view N: " + e.detail.N(), e);
-		if (e.detail.N() == 3) {
+		if (e.detail.N() == 3 && e.detail.numberPoints() !== 0) {
 
 			init();
 			render3DRTree();
@@ -85,8 +90,8 @@ $(document).ready(function () {
 	});
 
 	$(document).on("detail-close", function (e) {
-		console.log("we're showing the detail view N: " + e.detail.N(), e);
-		if (e.detail.N() == 3) {
+		console.log("detail view close N: " + e.detail.N(), e);
+		if (e.detail.N() == 3 && e.detail.numberPoints() !== 0) {
 			clear3DRTree();
 		}
 	});

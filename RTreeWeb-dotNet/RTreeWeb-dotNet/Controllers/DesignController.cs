@@ -8,6 +8,7 @@ namespace RTreeWeb_dotNet.Controllers
 {
     public class DesignController : Controller
     {
+        [Route("/Design")]
         public IActionResult Index()
         {
             return View();

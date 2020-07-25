@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <None Remove="scripts\analyticsDataLayer.ts" />
+    <None Remove="scripts\analyticsDataLayer\events\events.ts" />
+    <None Remove="scripts\analyticsDataLayer\pages\pages.ts" />
     <None Remove="scripts\api-client.g.ts" />
     <None Remove="scripts\client.ts" />
     <None Remove="scripts\main.ts" />
@@ -25,6 +27,8 @@
 
   <ItemGroup>
     <TypeScriptCompile Include="scripts\analyticsDataLayer\analyticsDataLayer.ts" />
+    <TypeScriptCompile Include="scripts\analyticsDataLayer\events\events.ts" />
+    <TypeScriptCompile Include="scripts\analyticsDataLayer\pages\pages.ts" />
     <TypeScriptCompile Include="scripts\api-client.g.ts" />
     <TypeScriptCompile Include="scripts\client.ts" />
     <TypeScriptCompile Include="scripts\main.ts" />

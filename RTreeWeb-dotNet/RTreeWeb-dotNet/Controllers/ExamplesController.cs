@@ -8,6 +8,7 @@ namespace RTreeWeb_dotNet.Controllers
 {
     public class ExamplesController : Controller
     {
+        [Route("/Examples")]
         public IActionResult Index()
         {
             return View();

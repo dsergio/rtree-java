@@ -20,6 +20,13 @@
                         <div class="message-body">This R-Tree does not contain any points. Add points below.</div>
                     </article>
 
+                    <article v-if="tree.numDimensions > 3 || tree.numberDimensions == 1" class="message is-info">
+                        <div class="message-header">
+                            Info
+                        </div>
+                        <div class="message-body">This R-Tree cannot be visualized. Only 2D and 3D R-Trees can be visualized. However, it can still hold N-Dimensional data.</div>
+                    </article>
+
                     <h3 v-if="tree.points.length != 0">Points</h3>
                     <div v-if="tree.points.length != 0" style="overflow-y:auto;height:200px;">
                         <ul v-for="i in tree.points">
@@ -45,7 +52,12 @@
                     <div class="field is-grouped">
 
                         <div class="control">
-                            <button id="submit" v-if="isUpdateLoading == false" class="button is-primary" @click.once="save">Submit</button>
+                            <button id="submit" v-if="isUpdateLoading == false"
+                                    class="button is-primary"
+                                    @click.once="save"
+                                    data-telemetry-action v-bind="telemetryActionAttributes()">
+                                Submit
+                            </button>
                         </div>
                         <div class="control">
                             <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
@@ -65,6 +77,15 @@
     import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
     import { RTree, RTreeClient, LocationItem } from '../../api-client.g';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
+
+    import {
+        Telemetry,
+        ITelemetryDataLayer, DataLayerTMSGeneric, DataLayerGTM, DataLayerTealium,
+        ITelemetryPage, ITelemetryEvent,
+        TelemetryEventTMSGeneric,
+        TelemetryPageTMSGeneric, TelemetryPageGTM, TelemetryPageTealium, attachDataLayerObjects
+    } from '../../analyticsDataLayer/analyticsDataLayer';
+
     declare var apiUrl: string;
 
 
@@ -76,6 +97,8 @@
     export default class RTreeComponentDetail extends Vue {
         @Prop()
         tree: RTree;
+        @Prop()
+        telemetry: Telemetry;
         clonedTree: RTree = <RTree>{};
         newItemDimensionArray: Array<number>;
         isUpdateLoading: boolean = false;
@@ -90,13 +113,57 @@
         }
 
         async mounted() {
+
             let event = new CustomEvent("detail-view", {
                 bubbles: true,
                 detail: {
-                    N: () => this.tree.numDimensions
+                    N: () => this.tree.numDimensions,
+                    numberPoints: () => this.tree.points.length
                 }
             });
             document.dispatchEvent(event);
+
+            this.initAnalyticsDataLayer();
+        }
+
+        initAnalyticsDataLayer(): void {
+
+            let pageName = "rtree app detail: " + this.tree.name + " N:" + this.tree.numDimensions;
+            let pageId = 'spa-pageview';
+
+            let pageTMSGeneric: ITelemetryPage = new TelemetryPageTMSGeneric(pageName, pageId, true);
+            let pageGTM: ITelemetryPage = new TelemetryPageGTM(pageName, pageId, true);
+            let pageTealium: ITelemetryPage = new TelemetryPageTealium(pageName, pageId, true);
+
+            this.telemetry.getDataLayer("Generic").setPage(pageTMSGeneric);
+            this.telemetry.getDataLayer("GTM").setPage(pageGTM);
+            this.telemetry.getDataLayer("Tealium").setPage(pageTealium);
+
+            console.log("adding Event: ", this.telemetry.getDataLayer("Generic").getEvent("insert-" + this.tree.name));
+            attachDataLayerObjects(this.telemetry);
+        }
+
+        telemetryActionAttributes(): object {
+
+            let eventInsert: ITelemetryEvent = new TelemetryEventTMSGeneric("insert-" + this.tree.name);
+            eventInsert.addEventAttribute(0, "rtree app detail");
+            eventInsert.addEventAttribute(1, "insert submit");
+            eventInsert.addEventAttribute(2, this.tree.name);
+            this.telemetry.getDataLayer("Generic").addEvent(eventInsert);
+
+            console.log("event... telemetry tree.name: ", this.tree.name);
+            let i: number = 0;
+            let obj: any = {};
+            let id = "insert-" + this.tree.name;
+            console.log("event... id: " + id + " getEvent: ", this.telemetry.getDataLayer("Generic").getEvent(id));
+            if (this.telemetry.getDataLayer("Generic").getEvent(id) != null) {
+                for (i = 0; i < this.telemetry.getDataLayer("Generic").getEvent(id).getTelementryEventAttributeCount(); i++) {
+                    let str: string = "data-telemetry-attribute-" + i;
+                    obj[str] = this.telemetry.getDataLayer("Generic").getEvent(id).getTelemetryEventAttribute(i);
+                }
+            }
+            
+            return obj;
         }
 
         @Emit('rtree-saved')
@@ -130,7 +197,8 @@
             let event = new CustomEvent("detail-close", {
                 bubbles: true,
                 detail: {
-                    N: () => this.tree.numDimensions
+                    N: () => this.tree.numDimensions,
+                    numberPoints: () => this.tree.points.length
                 }
             });
             document.dispatchEvent(event);
