@@ -5,23 +5,75 @@
 
 <h1>Analytics</h1>
 
+<h3>Analytics Data Layer</h3>
 <p>
     This application uses an analytics data layer written in Typescript.
-    See <a href="https://github.com/dsergio/rtree-java/tree/master/RTreeWeb-dotNet/RTreeWeb-dotNet/scripts/analyticsDataLayer" target="_blank">code here</a>. 
-    The analytics data layer is designed to allow for several implementations. For example, the data layer can be used with GA and Adobe Analytics simultaneously.
+    See <a href="https://github.com/dsergio/rtree-java/tree/master/RTreeWeb-dotNet/RTreeWeb-dotNet/scripts/analyticsDataLayer" target="_blank">code here</a>.
+    The analytics data layer is designed to allow for several implementations. For example, the data layer can be used with GTM and Tealium simultaneously.
+    This application uses 3 implementations (Generic, GTM, and Tealium) for demonstration purposes. I did it this way to show the different options available when
+    developing a data layer. The task of developing a data layer can be very simple, or it can be very complex, depending on the requirements of the system. 
+    This app uses data- attributes for click events (see below screenshot) as well as custom-triggered event tracking for GTM. 
+    There are many things to consider when developing a data layer, such as LOE, complexity/simplicity, conformity (with respect to a TMS or a standard), and performance.
+    This app is just one approach. There are many other approaches to this task. Some organizations may prefer to do more hard-coding,
+    rather than programmatic approaches. The important question is: how to track what matters most in the most efficient and sustainable way.
 </p>
 
 <p>
-    This application uses GTM and GA with pageviews and event tracking. Example event:
-    <ul>
-        <li>Category: rtree app</li>
-        <li>Action: show/edit</li>
-        <li>Label: [treeName]</li>
-    </ul>
+    This application uses GTM and GA with pageviews and event tracking.
 </p>
+
+<h3>Event Tracking</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Event Description</th>
+            <th>Category</th>
+            <th>Action</th>
+            <th>Label</th>
+            <th>Label e.g.</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>Show/Edit Tree</td>
+            <td>rtree app</td>
+            <td>show/edit</td>
+            <td>[treeName]</td>
+            <td>4D_Tree1</td>
+        </tr>
+        <tr>
+            <td>Insert Into Tree</td>
+            <td>rtree app detail</td>
+            <td>insert submit</td>
+            <td>[treeName]</td>
+            <td>4D_Tree1</td>
+        </tr>
+        <tr>
+            <td>Create New Tree</td>
+            <td>rtree app create</td>
+            <td>create submit</td>
+            <td>[treeName] N:[number of dimensions] max children: [number of children] max items: [max items]</td>
+            <td>4D_Tree2 N:4 max children: 4 max items: 4</td>
+        </tr>
+    </tbody>
+</table>
+
+<h3>Page Tracking</h3>
+<ul>
+    <li>rtree app detail</li>
+    <li>rtree app create tree</li>
+    <li>rtree app home</li>
+    <li>https://dsergio-rtree-app.azurewebsites.net/Examples</li>
+</ul>
+<h3>Custom dimensions/metrics</h3>
+<ul>
+    <li>Custom Dimension 1: pageName, defaults to URL if not set. This can be useful in single page applications, such as this one.</li>
+</ul>
+
 
 <img src="~/img/gtm-config.png" />
 
-<br /><br />
+<br />
+<br />
 
 <img src="~/img/analytics-datalayer-attributes.png" />

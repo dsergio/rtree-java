@@ -8,7 +8,6 @@ namespace RTreeWeb_dotNet.Controllers
 {
     public class DescriptionController : Controller
     {
-        [Route("/Description")]
         public IActionResult Index()
         {
             return View();

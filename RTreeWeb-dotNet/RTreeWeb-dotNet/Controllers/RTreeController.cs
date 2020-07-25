@@ -8,10 +8,7 @@ namespace RTreeWeb_dotNet.Controllers
 {
     public class RTreeController : Controller
     {
-        [Route("RTree")]
-        [Route("RTree/Index")]
-        [Route("RTree/{id?}")]
-        public IActionResult Index(int? id)
+        public IActionResult Index()
         {
             return View();
         }

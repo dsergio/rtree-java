@@ -45,8 +45,8 @@ namespace RTreeWeb_dotNet
 
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapDefaultControllerRoute();
-                endpoints.MapControllers();
+                endpoints.MapDefaultControllerRoute();
+                //endpoints.MapControllers();
             });
 
             
