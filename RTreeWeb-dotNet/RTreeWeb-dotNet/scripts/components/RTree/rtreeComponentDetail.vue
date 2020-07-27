@@ -44,9 +44,19 @@
                     <div v-for="i in tree.numDimensions" :key="i" class="field">
                         <label class="label">Dimension {{i - 1}}</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="newItemDimensionArray[i - 1]" />
+                            <input class="input" type="text" v-model="newItemDimensionArray[i - 1]" v-on:keyup="validate" />
                         </div>
                     </div>
+
+                    <div v-if="errors.length" class="notification is-danger">
+                        <p>
+                            <b>Please correct the following error(s):</b>
+                            <ul>
+                                <li v-for="error in errors">{{ error }}</li>
+                            </ul>
+                        </p>
+                    </div>
+
                     <spinner v-if="isUpdateLoading == true"></spinner>
 
                     <div class="field is-grouped">
@@ -102,6 +112,7 @@
         clonedTree: RTree = <RTree>{};
         newItemDimensionArray: Array<number>;
         isUpdateLoading: boolean = false;
+        errors: any = [];
 
         constructor() {
             super();
@@ -166,31 +177,52 @@
             return obj;
         }
 
+        validate() {
+
+            let reValidNumber = /^\-?[0-9]+/;
+
+            this.errors = [];
+
+            for (var i = 0; i < this.tree.numDimensions; i++) {
+                if (!reValidNumber.test("" + this.newItemDimensionArray[i]) || this.newItemDimensionArray[i] < -10000 || this.newItemDimensionArray[i] > 10000) {
+
+                    this.errors.push("Dimension " + i + " must be an integer between -10000 and 10000.");
+                }
+            }
+            
+        }
+
         @Emit('rtree-saved')
         async save() {
-            this.isUpdateLoading = true;
-            let client = new RTreeClient(apiUrl);
-            let item = new LocationItem();
-            item.dimensionArray = new Array<number>();
-            let i = 0;
-            for (i; i < this.tree.numDimensions; i++) {
-                item.dimensionArray.push(this.newItemDimensionArray[i]);
-            }
-            item.numberDimensions = this.tree.numDimensions;
-            console.log("newItemDimensionArray: ", this.newItemDimensionArray);
-            await client.insert(item, this.tree.name);
 
+            this.validate();
 
-            let event = new CustomEvent("detail-close", {
-                bubbles: true,
-                detail: {
-                    N: () => this.tree.numDimensions,
-                    numberPoints: () => this.tree.points.length
+            if (this.errors.length == 0) {
+
+                this.isUpdateLoading = true;
+                let client = new RTreeClient(apiUrl);
+                let item = new LocationItem();
+                item.dimensionArray = new Array<number>();
+                let i = 0;
+                for (i; i < this.tree.numDimensions; i++) {
+                    item.dimensionArray.push(this.newItemDimensionArray[i]);
                 }
-            });
-            document.dispatchEvent(event);
+                item.numberDimensions = this.tree.numDimensions;
+                console.log("newItemDimensionArray: ", this.newItemDimensionArray);
+                await client.insert(item, this.tree.name);
 
-            this.isUpdateLoading = false;
+
+                let event = new CustomEvent("detail-close", {
+                    bubbles: true,
+                    detail: {
+                        N: () => this.tree.numDimensions,
+                        numberPoints: () => this.tree.points.length
+                    }
+                });
+                document.dispatchEvent(event);
+
+                this.isUpdateLoading = false;
+            }
         }
 
         @Emit('rtree-closed')
