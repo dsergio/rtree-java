@@ -104,7 +104,7 @@ $(document).ready(function () {
 
 function clear3DRTree() {
 	var myNode = document.getElementById("threejsCanvas");
-	while (myNode.firstChild) {
+	while (myNode && myNode.firstChild) {
 		myNode.removeChild(myNode.firstChild);
 	}
 }

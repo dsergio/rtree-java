@@ -184,7 +184,8 @@
             let event = new CustomEvent("detail-close", {
                 bubbles: true,
                 detail: {
-                    N: () => this.tree.numDimensions
+                    N: () => this.tree.numDimensions,
+                    numberPoints: () => this.tree.points.length
                 }
             });
             document.dispatchEvent(event);

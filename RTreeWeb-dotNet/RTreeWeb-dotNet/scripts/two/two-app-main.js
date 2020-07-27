@@ -4,7 +4,7 @@ import * as $ from 'jquery';
 $(document).ready(function () {
 	$(document).on("detail-view", function (e) {
 		console.log("we're showing the detail view N: " + e.detail.N(), e);
-		if (e.detail.N() == 2) {
+		if (e.detail.N() == 2 && e.detail.numberPoints() !== 0) {
 
 			var canvas = document.createElement('canvas');
 			canvas.id = 'canvas';
@@ -18,8 +18,21 @@ $(document).ready(function () {
 			drawTree(c, ctx, null);
 		}
 	});
+
+	$(document).on("detail-close", function (e) {
+		console.log("detail view close N: " + e.detail.N(), e);
+		if (e.detail.N() == 2 && e.detail.numberPoints() !== 0) {
+			clear2DRTree();
+		}
+	});
 });
 
+function clear2DRTree() {
+	var myNode = document.getElementById("canvasContainer2D");
+	while (myNode && myNode.firstChild) {
+		myNode.removeChild(myNode.firstChild);
+	}
+}
 
 $(document).on("click", ".rectangle", function () {
 
