@@ -1,4 +1,9 @@
 ﻿
+import * as $ from 'jquery';
+import * as THREE from 'three';
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+
+
 var scene;
 var camera;
 var renderer;
@@ -67,7 +72,7 @@ function init() {
 	cubes = [];
 	points = [];
 
-	controls = new THREE.OrbitControls(camera, renderer.domElement);
+	controls = new OrbitControls(camera, renderer.domElement);
 
 	clock = new THREE.Clock();
 
@@ -194,23 +199,30 @@ function render3DRTree() {
 		scene.add(point);
 	});
 
+	var material = new THREE.LineBasicMaterial({ color: 0x0000ff });
 
-	var line = new THREE.Geometry();
-	line.vertices.push(new THREE.Vector3(0, 0, 0));
-	line.vertices.push(new THREE.Vector3(800, 0, 0));
-	makeLine(line, 3);
+	var lineGeo = new THREE.Geometry();
+	lineGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+	lineGeo.vertices.push(new THREE.Vector3(800, 0, 0));
+	
+	var line = new THREE.Line(lineGeo, material);
+	scene.add(line);
 
-	var line = new THREE.Geometry();
-	line.vertices.push(new THREE.Vector3(0, 0, 0));
-	line.vertices.push(new THREE.Vector3(0, 800, 0));
-	makeLine(line, 3);
+	var lineGeo = new THREE.Geometry();
+	lineGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+	lineGeo.vertices.push(new THREE.Vector3(0, 800, 0));
 
-	var line = new THREE.Geometry();
-	line.vertices.push(new THREE.Vector3(0, 0, 0));
-	line.vertices.push(new THREE.Vector3(0, 0, 800));
-	makeLine(line, 3);
+	var line = new THREE.Line(lineGeo, material);
+	scene.add(line);
 
-	scene.add(graph);
+	var lineGeo = new THREE.Geometry();
+	lineGeo.vertices.push(new THREE.Vector3(0, 0, 0));
+	lineGeo.vertices.push(new THREE.Vector3(0, 0, 800));
+
+	var line = new THREE.Line(lineGeo, material);
+	scene.add(line);
+
+	//scene.add(graph);
 
 
 	camera.position.z = 500;
@@ -236,26 +248,4 @@ function render3DRTree() {
 	animate();
 
 };
-
-
-function makeLine(geo, c) {
-
-	var g = new MeshLine();
-	g.setGeometry(geo);
-
-	var material = new MeshLineMaterial({
-		useMap: false,
-		color: new THREE.Color(colors[c]),
-		opacity: 1,
-		resolution: resolution,
-		sizeAttenuation: !false,
-		lineWidth: 2,
-		near: camera.near,
-		far: camera.far
-	});
-	var mesh = new THREE.Mesh(g.geometry, material);
-	graph.add(mesh);
-
-}
-
 

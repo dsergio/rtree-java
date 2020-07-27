@@ -1,4 +1,5 @@
 ﻿
+import * as $ from 'jquery';
 
 $(document).ready(function () {
 	$(document).on("detail-view", function (e) {

@@ -36,8 +36,6 @@
 
 
 
-
-
     <section>
         <div>
             <nav class="navbar is-light">
@@ -46,11 +44,6 @@
                         <a class="navbar-item" asp-controller="Home" asp-action="Index">
                             <img src="~/img/logo.png" alt="Logo">
                         </a>
-                        @*<span class="navbar-burger burger" data-target="navbarMenuHero10">
-                                <span></span>
-                                <span></span>
-                                <span></span>
-                            </span>*@
                         <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenuHero10">
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
@@ -167,48 +160,11 @@
     </section>
 
 
-
-
-
-    @*<nav class="navbar" role="navigation" aria-label="main navigation">
-            <div class="navbar-brand">
-                <a class="navbar-item" asp-controller="Home" asp-action="Index">
-                    RTree
-                </a>
-                <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarRTree">
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
-            </div>
-            <div id="navbarRTree" class="navbar-menu">
-                <div class="navbar-start">
-                    <a class="navbar-item" asp-controller="Home" asp-action="Index">Home</a>
-                    <a class="navbar-item" asp-controller="RTree" asp-action="Index">RTree List</a>
-                </div>
-            </div>
-        </nav>*@
-
-
-
-
-
-
-
-
-
     <section class="section">
         <div class="content">
             @RenderBody()
         </div>
     </section>
-
-
-
-
-
-
-
 
 
 
@@ -219,6 +175,8 @@
     <% for (var chunk in htmlWebpackPlugin.files.chunks) { %>
     <script src="~<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
     <% } %>
+
+    
     <!-- End Scripts -->
 
     @RenderSection("scripts", required: false)

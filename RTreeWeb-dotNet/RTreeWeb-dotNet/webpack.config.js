@@ -22,7 +22,9 @@ module.exports = (env, argv) => {
 
     return {
         entry: {
-            main: './scripts/main.ts'
+            main: './scripts/main.ts',
+            threemain: './scripts/three/three-app-main.js',
+            twomain: './scripts/two/two-app-main.js'
         },
         output: {
             filename: 'js/[name].[hash].js',
@@ -86,17 +88,18 @@ module.exports = (env, argv) => {
             new CleanWebpackPlugin(),
             new VueLoaderPlugin(),
 
-            // copy src images to wwwroot
+            // copy files to wwwroot
             new CopyWebpackPlugin(
                 [
                     // {from: 'favicon', to: distPath},
                     // {from: 'icons', to: iconDistPath},
                     { from: 'images', to: imgDistPath },
-                    { from: 'scripts/two', to: staticDistPath },
-                    { from: 'scripts/three', to: staticDistPath }
+                    //{ from: 'scripts/two', to: staticDistPath },
+                    //{ from: 'scripts/three', to: staticDistPath + '/[name].[hash].[ext]' }
                 ],
                 {
                     context: srcPath,
+                    //copyUnmodified: true,
                     ignore: ['*.DS_Store']
                 }),
 
