@@ -50,7 +50,7 @@
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
-    import { RTree, RTreeClient } from '../../api-client.g';
+    import { RTree, RTreeClient, RTreeCreate } from '../../api-client.g';
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
     import rtreeComponentCreate from './rtreeComponentCreate.vue';
 
@@ -82,7 +82,7 @@
     export default class RTreeComponentList extends Vue {
         trees: RTree[] = null;
         selectedTree: RTree = null;
-        newTree: RTree = null;
+        newTree: RTreeCreate = null;
         rtreeClient: RTreeClient;
         isLoading: boolean = false;
         telemetry: Telemetry;
@@ -161,7 +161,10 @@
         }
 
         create() {
-            this.newTree = <RTree>{};
+            this.newTree = <RTreeCreate>{};
+            this.newTree.numDimensions = 3;
+            this.newTree.maxChildren = 4;
+            this.newTree.maxItems = 4;
         }
 
         async edit(tree: RTree) {
@@ -189,7 +192,7 @@
             this.trees = await this.rtreeClient.getAll();
             this.initAnalyticsDataLayer();
 
-            this.selectedTree = await this.rtreeClient.get(tempTree.name);
+            this.selectedTree = await this.rtreeClient.get(tempTree.treeName);
             this.isLoading = false;
             tempTree = null;
         }

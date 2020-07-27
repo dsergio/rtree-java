@@ -62,7 +62,7 @@
                     <div class="field is-grouped">
 
                         <div class="control">
-                            <button id="submit" v-if="isUpdateLoading == false"
+                            <button id="submit" v-if="isUpdateLoading == false && errors.length == 0"
                                     class="button is-primary"
                                     @click.once="save"
                                     data-telemetry-action v-bind="telemetryActionAttributes()">

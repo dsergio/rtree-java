@@ -12,7 +12,7 @@
                     <div class="field">
                         <label class="label">Tree Name</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="clonedTree.treeName" v-on:keyup="validate" />
+                            <input class="input" type="text" v-model="clonedTree.treeName" placeholder="TreeName" v-on:keyup="validate" />
                         </div>
                     </div>
                     <div class="field">
@@ -48,7 +48,7 @@
 
                     <div class="field is-grouped">
                         <div class="control">
-                            <button id="submit" v-if="isUpdateLoading == false"
+                            <button id="submit" v-if="isUpdateLoading == false && errors.length == 0 && clonedTree.treeName != null"
                                     class="button is-primary"
                                     @click.once="save"
                                     data-telemetry-action v-bind="telemetryActionAttributes()">
@@ -87,7 +87,7 @@
     })
     export default class RTreeComponentCreate extends Vue {
         @Prop()
-        tree: RTree;
+        tree: RTreeCreate;
         @Prop()
         telemetry: Telemetry;
         @Prop()
@@ -98,10 +98,14 @@
 
         constructor() {
             super();
+            this.clonedTree.numDimensions = this.tree.numDimensions;
+            this.clonedTree.maxItems = this.tree.maxItems;
+            this.clonedTree.maxChildren = this.tree.maxChildren;
         }
 
         async mounted() {
             this.initAnalyticsDataLayer();
+            
         }
 
         initAnalyticsDataLayer(): void {
@@ -194,7 +198,7 @@
                 let client = new RTreeClient(apiUrl);
 
                 await client.newTree(this.clonedTree);
-                this.tree.name = this.clonedTree.treeName;
+                this.tree.treeName = this.clonedTree.treeName;
                 this.isUpdateLoading = false;
             }
             
