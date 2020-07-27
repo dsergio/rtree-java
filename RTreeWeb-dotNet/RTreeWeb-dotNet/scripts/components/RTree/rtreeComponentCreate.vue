@@ -36,7 +36,7 @@
 
                     <spinner v-if="isUpdateLoading == true"></spinner>
 
-                    
+
                     <div v-if="errors.length" class="notification is-danger">
                         <p>
                             <b>Please correct the following error(s):</b>
@@ -46,21 +46,24 @@
                         </p>
                     </div>
 
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button id="submit" v-if="isUpdateLoading == false && errors.length == 0 && clonedTree.treeName != null"
-                                    class="button is-primary"
-                                    @click.once="save"
-                                    data-telemetry-action v-bind="telemetryActionAttributes()">
-                                Submit
-                            </button>
-                        </div>
-                        <div class="control">
-                            <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
-                        </div>
-                    </div>
+                    
                 </div>
             </section>
+            <footer class="modal-card-foot">
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button id="submit" v-if="isUpdateLoading == false && errors.length == 0 && clonedTree.treeName != null"
+                                class="button is-primary"
+                                @click.once="save"
+                                data-telemetry-action v-bind="telemetryActionAttributes()">
+                            Submit
+                        </button>
+                    </div>
+                    <div class="control">
+                        <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 </template>

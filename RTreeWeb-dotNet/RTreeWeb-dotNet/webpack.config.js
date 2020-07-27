@@ -99,7 +99,7 @@ module.exports = (env, argv) => {
                 ],
                 {
                     context: srcPath,
-                    //copyUnmodified: true,
+                    copyUnmodified: true,
                     ignore: ['*.DS_Store']
                 }),
 
