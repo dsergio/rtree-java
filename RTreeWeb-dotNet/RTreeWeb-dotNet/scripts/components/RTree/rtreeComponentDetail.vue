@@ -175,7 +175,7 @@
 
         validate() {
 
-            let reValidNumber = /^\-?[0-9]+/;
+            let reValidNumber = /^\-?[0-9]+$/;
 
             this.errors = [];
 
