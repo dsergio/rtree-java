@@ -12,37 +12,48 @@
                     <div class="field">
                         <label class="label">Tree Name</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="clonedTree.treeName" />
+                            <input class="input" type="text" v-model="clonedTree.treeName" v-on:keyup="validate" />
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">N</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="clonedTree.numDimensions" />
+                            <input class="input" type="text" v-model="clonedTree.numDimensions" v-on:keyup="validate" />
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Max Children</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="clonedTree.maxChildren" />
+                            <input class="input" type="text" v-model="clonedTree.maxChildren" v-on:keyup="validate" />
                         </div>
                     </div>
                     <div class="field">
                         <label class="label">Max Items</label>
                         <div class="control">
-                            <input class="input" type="text" v-model="clonedTree.maxItems" />
+                            <input class="input" type="text" v-model="clonedTree.maxItems" v-on:keyup="validate" />
                         </div>
                     </div>
 
                     <spinner v-if="isUpdateLoading == true"></spinner>
 
+                    
+                    <div v-if="errors.length" class="notification is-danger">
+                        <p>
+                            <b>Please correct the following error(s):</b>
+                            <ul>
+                                <li v-for="error in errors">{{ error }}</li>
+                            </ul>
+                        </p>
+                    </div>
+
                     <div class="field is-grouped">
                         <div class="control">
-                            <button id="submit" v-if="isUpdateLoading == false" 
-                                    class="button is-primary" 
+                            <button id="submit" v-if="isUpdateLoading == false"
+                                    class="button is-primary"
                                     @click.once="save"
-                                    data-telemetry-action v-bind="telemetryActionAttributes()"
-                                    >Submit</button>
+                                    data-telemetry-action v-bind="telemetryActionAttributes()">
+                                Submit
+                            </button>
                         </div>
                         <div class="control">
                             <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
@@ -79,8 +90,11 @@
         tree: RTree;
         @Prop()
         telemetry: Telemetry;
+        @Prop()
+        treeNames: string[];
         clonedTree: RTreeCreate = <RTreeCreate>{};
         isUpdateLoading: boolean = false;
+        errors: any = [];
 
         constructor() {
             super();
@@ -130,14 +144,60 @@
             return obj;
         }
 
+        validate() {
+
+            let reValidNumber = /[0-9]+/;
+            let reValidName = /[a-zA-Z_0-9]+/;
+
+            this.errors = [];
+
+            if (!reValidNumber.test("" + this.clonedTree.maxItems)) {
+                this.errors.push("maxItems must be an integer between 2 and 10.");
+            }
+            if (!reValidNumber.test("" + this.clonedTree.maxChildren)) {
+                this.errors.push("maxChildren must be an integer between 2 and 10.");
+            }
+
+            if (!reValidNumber.test("" + this.clonedTree.numDimensions)) {
+                this.errors.push("numDimensions must be an integer between 1 and 20.");
+            }
+
+            if (!reValidName.test("" + this.clonedTree.treeName)) {
+                this.errors.push("Tree Name must be an an alphanumeric string [a-zA-Z_0-9]");
+            }
+
+
+            if (this.clonedTree.maxItems < 2 || this.clonedTree.maxItems > 10) {
+                this.errors.push("maxItems should be between 2 and 10.");
+            }
+
+            if (this.clonedTree.maxChildren < 2 || this.clonedTree.maxChildren > 10) {
+                this.errors.push("maxChildren should be between 2 and 10.");
+            }
+
+            if (this.clonedTree.numDimensions < 1 || this.clonedTree.numDimensions > 20) {
+                this.errors.push("N should be between 1 and 20.");
+            }
+
+            if (this.treeNames.indexOf(this.clonedTree.treeName) != -1) {
+                this.errors.push(this.clonedTree.treeName + " is already taken.");
+            }
+        }
+
         @Emit('rtree-created')
         async save() {
-            this.isUpdateLoading = true;
-            let client = new RTreeClient(apiUrl);
 
-            await client.newTree(this.clonedTree);
-            this.tree.name = this.clonedTree.treeName;
-            this.isUpdateLoading = false;
+            this.validate();
+
+            if (this.errors.length == 0) {
+                this.isUpdateLoading = true;
+                let client = new RTreeClient(apiUrl);
+
+                await client.newTree(this.clonedTree);
+                this.tree.name = this.clonedTree.treeName;
+                this.isUpdateLoading = false;
+            }
+            
         }
 
         @Emit('rtree-closed')

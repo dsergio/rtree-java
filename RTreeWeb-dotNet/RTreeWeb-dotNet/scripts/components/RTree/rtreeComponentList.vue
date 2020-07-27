@@ -42,6 +42,7 @@
         <rtreeComponentCreate v-if="newTree != null"
                               :tree="newTree"
                               :telemetry="telemetry"
+                              :treeNames="treeNames"
                               @rtree-created="refreshCreated()"
                               @rtree-closed="close()"></rtreeComponentCreate>
     </div>
@@ -86,6 +87,7 @@
         isLoading: boolean = false;
         telemetry: Telemetry;
         searchQuery: string;
+        treeNames: string[] = [];
 
         constructor() {
             super();
@@ -96,6 +98,10 @@
         async mounted() {
 
             this.trees = await this.rtreeClient.getAll();
+
+            for (var i in this.trees) {
+                this.treeNames.push(this.trees[i].name);
+            }
 
             let dataLayerTMSGeneric: ITelemetryDataLayer = new DataLayerTMSGeneric("Generic");
             let dataLayerGTM: ITelemetryDataLayer = new DataLayerGTM("GTM");
