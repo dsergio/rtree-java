@@ -68,11 +68,15 @@
                                 class="button is-primary"
                                 @click.once="save"
                                 data-telemetry-action v-bind="telemetryActionAttributes()">
+                            <font-awesome-icon icon="check-circle" /> &nbsp;
                             Submit
                         </button>
                     </div>
                     <div class="control">
-                        <a v-if="isUpdateLoading == false" class="button" @click="cancel">Cancel</a>
+                        <a v-if="isUpdateLoading == false" class="button" @click="cancel">
+                            <font-awesome-icon icon="window-close" /> &nbsp;
+                            Cancel
+                        </a>
                     </div>
                 </div>
             </footer>
@@ -83,6 +87,7 @@
     import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
     import { RTree, RTreeClient, LocationItem } from '../../api-client.g';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
+
 
     import {
         Telemetry,
