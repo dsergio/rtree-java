@@ -12,7 +12,10 @@
         </button>
         <br /><br />
         <div class="field">
-            <label v-if="isLoading == false && trees != null" class="label">Search</label>
+            <label v-if="isLoading == false && trees != null" class="label">
+                <font-awesome-icon icon="search" /> &nbsp;
+                Search
+            </label>
             <div class="control">
                 <input v-if="isLoading == false && trees != null" class="input" type="text" v-model="searchQuery" placeholder="Search" />
             </div>
