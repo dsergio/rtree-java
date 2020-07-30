@@ -4,7 +4,12 @@
 
         <spinner v-if="isLoading == true || trees == null"></spinner>
 
-        <button v-if="isLoading == false && trees != null" class="button is-secondary" @click="create()">Create New RTree</button>
+        <button v-if="isLoading == false && trees != null"
+                class="button is-secondary"
+                @click="create()">
+            <font-awesome-icon icon="folder-plus" /> &nbsp;
+            Create New RTree
+        </button>
         <br /><br />
         <div class="field">
             <label v-if="isLoading == false && trees != null" class="label">Search</label>
@@ -26,7 +31,14 @@
                     <td>{{t.name}}</td>
                     <td>{{t.numDimensions}}</td>
                     <td>
-                        <button v-if="isLoading == false" data-telemetry-action :data-telemetry-action-id="t.name" v-bind="telemetryActionAttributes(t)" class="button is-primary" @click="edit(t)">Show/Edit</button>
+                        <button v-if="isLoading == false"
+                                data-telemetry-action
+                                :data-telemetry-action-id="t.name"
+                                v-bind="telemetryActionAttributes(t)"
+                                class="button is-primary" @click="edit(t)">
+                            <font-awesome-icon icon="tree" /> &nbsp;
+                            Show/Edit
+                        </button>
                         <!--<button class="button" @click="deleteTree(t)">Delete</button>-->
 
                     </td>
