@@ -39,7 +39,7 @@
                                 :data-telemetry-action-id="t.name"
                                 v-bind="telemetryActionAttributes(t)"
                                 class="button is-primary" @click="edit(t)">
-                            <font-awesome-icon icon="tree" /> &nbsp;
+                            <font-awesome-icon icon="cubes" /> &nbsp;
                             Show/Edit
                         </button>
                         <!--<button class="button" @click="deleteTree(t)">Delete</button>-->

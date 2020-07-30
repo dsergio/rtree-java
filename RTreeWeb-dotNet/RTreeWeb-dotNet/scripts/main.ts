@@ -7,6 +7,7 @@ import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faWindowClose } from '@fortawesome/free-solid-svg-icons';
 import { faFolderPlus } from '@fortawesome/free-solid-svg-icons';
 import { faTree } from '@fortawesome/free-solid-svg-icons';
+import { faCubes } from '@fortawesome/free-solid-svg-icons';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
@@ -15,6 +16,7 @@ library.add(faCheckCircle);
 library.add(faWindowClose);
 library.add(faFolderPlus);
 library.add(faTree);
+library.add(faCubes);
 library.add(faSearch);
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
