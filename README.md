@@ -36,8 +36,19 @@ Properties of RTree:
 ### MySQL
 Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory, or environment variables.
 
+```
+MYSQL.user
+MYSQL.password
+MYSQL.host
+MYSQL.database
+```
+
 ### Sqlite
 Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
+
+```
+SQLITE.dir = C:\\Path\\to\\Sqlite\\Directory
+```
 
 ### AWS DynamoDB
 The ProfileCredentialsProvider will return your [default] credential profile by reading from the credentials file located at `~/.aws/credentials` for Linux and Mac machines.
