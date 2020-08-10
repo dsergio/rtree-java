@@ -1,9 +1,9 @@
-package rtree.item;
+package rtree.item.generic;
 
 public class RType<T> {
-	
-	protected final T data;
-	
+
+	protected T data;
+
 	public RType(T data) {
 		this.data = data;
 	}
@@ -11,5 +11,5 @@ public class RType<T> {
 	public T getData() {
 		return data;
 	}
-	
+
 }

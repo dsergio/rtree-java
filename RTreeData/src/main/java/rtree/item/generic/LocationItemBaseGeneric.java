@@ -1,12 +1,16 @@
-package rtree.item;
+package rtree.item.generic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+
+import rtree.item.BoundingBox;
+import rtree.item.LocationItem2D;
 
 public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements ILocationItemGeneric<T> {
 
@@ -14,13 +18,19 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 	protected int numberDimensions;
 	protected Object data;
 	protected String type;
+	protected final String id;
 	
-	public LocationItemBaseGeneric(int numberDimensions) {
+	public LocationItemBaseGeneric(int numberDimensions, String id) {
 		this.numberDimensions = numberDimensions;
+		this.id = id;
 		dimensionArray = new ArrayList<T>();
 		while (dimensionArray.size() < numberDimensions) {
 			dimensionArray.add(null);
 		}
+	}
+	
+	public LocationItemBaseGeneric(int numberDimensions) {
+		this(numberDimensions, UUID.randomUUID().toString());
 	}
 	
 	public List<T> getDimensionArray() {
@@ -43,6 +53,10 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions + " you entered dim: " + dim);
 		}
 		return dimensionArray.get(dim);
+	}
+	
+	public String getId() {
+		return id;
 	}
 	
 	public String getType() {
@@ -110,16 +124,16 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 				for (int i = 0; i < item.getNumberDimensions(); i++) {
 					switch (i) {
 						case 0: 
-							obj.put("x", item.getDim(i));
+							obj.put("x", item.getDim(i).getData().toString());
 							break;
 						case 1:
-							obj.put("y", item.getDim(i));
+							obj.put("y", item.getDim(i).getData().toString());
 							break;
 						case 2:
-							obj.put("z", item.getDim(i));
+							obj.put("z", item.getDim(i).getData().toString());
 							break;
 						default:
-							obj.put("" + i, item.getDim(i));
+							obj.put("" + i, item.getDim(i).getData().toString());
 							break;
 					}
 					obj.put("type", item.getType());

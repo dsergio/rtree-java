@@ -8,11 +8,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.BoundingBox;
-import rtree.item.ILocationItemGeneric;
-import rtree.item.LocationItemBaseGeneric;
-import rtree.item.LocationItemNDGeneric;
-import rtree.item.RBoolean;
-import rtree.item.RInteger;
+import rtree.item.generic.ILocationItemGeneric;
+import rtree.item.generic.LocationItemBaseGeneric;
+import rtree.item.generic.LocationItemNDGeneric;
+import rtree.item.generic.RBoolean;
+import rtree.item.generic.RInteger;
 
 class LocationItemGenericTests {
 
