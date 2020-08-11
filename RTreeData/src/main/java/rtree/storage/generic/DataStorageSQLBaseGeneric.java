@@ -583,6 +583,100 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		return maxItems;
 	}
 	
+	@Override
+	public List<T> getMin(String treeName) {
+
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		List<T> minimums = new ArrayList<T>();
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			stmt.setString(1, treeName);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				String minimumsStr = resultSet.getString("minimums");
+				
+				JSONParser parser = new JSONParser();
+				JSONArray arr;
+				
+				try {
+					arr = (JSONArray) parser.parse(minimumsStr);
+					
+					for (int i = 0; i < arr.size(); i++) {
+						T obj = getInstanceOf();
+						obj.setData(arr.get(i).toString());
+						minimums.add(obj);
+					}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return minimums;
+	}
+	
+	@Override
+	public List<T> getMax(String treeName) {
+
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		List<T> maximums = new ArrayList<T>();
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			stmt.setString(1, treeName);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				String maximumsStr = resultSet.getString("maximums");
+				
+				JSONParser parser = new JSONParser();
+				JSONArray arr;
+				
+				try {
+					arr = (JSONArray) parser.parse(maximumsStr);
+					
+					for (int i = 0; i < arr.size(); i++) {
+						T obj = getInstanceOf();
+						obj.setData(arr.get(i).toString());
+						maximums.add(obj);
+					}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return maximums;
+	}
+	
 
 	@Override
 	@Deprecated

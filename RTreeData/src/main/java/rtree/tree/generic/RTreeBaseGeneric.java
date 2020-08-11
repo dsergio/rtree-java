@@ -247,6 +247,16 @@ public abstract class RTreeBaseGeneric<T extends IRType<T>> implements IRTreeGen
 		return cache.getDBAccess().getMaxItems(treeName);
 	}
 	
+	@Override
+	public List<T> getMin() {
+		return cache.getDBAccess().getMin(treeName);
+	}
+	
+	@Override
+	public List<T> getMax() {
+		return cache.getDBAccess().getMax(treeName);
+	}
+	
 	/**
 	 * Get node with given nodeId
 	 * 

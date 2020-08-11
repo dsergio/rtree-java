@@ -246,8 +246,8 @@ public abstract class HyperRectangleBaseGeneric<T extends IRType<T>> implements 
 						min.set(i, r.getDim1(i));
 					}
 					
-					if (r.getDim1(i).compareTo(min.get(i)) > 0) {
-						max.set(i, r.getDim1(i));
+					if (r.getDim2(i).compareTo(max.get(i)) > 0) {
+						max.set(i, r.getDim2(i));
 					}
 					
 				}

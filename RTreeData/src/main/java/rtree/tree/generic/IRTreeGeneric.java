@@ -41,5 +41,7 @@ public interface IRTreeGeneric<T extends IRType<T>> {
 	 long getReadTime();
 	 long getUpdateTime();
 	 int getNumDimensions();
+	 List<T> getMin();
+	 List<T> getMax();
 	 
 }

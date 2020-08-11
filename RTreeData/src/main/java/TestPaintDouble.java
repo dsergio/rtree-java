@@ -76,7 +76,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 	private int maxX = paintInitialWidth;
 	private int maxY = paintInitialHeight;
 	
-	private double scaleFactor = 10000;
+	private double scaleFactor = 1000;
 	
 	public TestPaintDouble(IRTreeGeneric<RDouble> tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
 		this.showTreeOn = showTreeOn;

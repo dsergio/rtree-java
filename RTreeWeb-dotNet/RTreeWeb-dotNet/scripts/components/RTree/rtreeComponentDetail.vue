@@ -24,7 +24,7 @@
                         <div class="message-header">
                             Info
                         </div>
-                        <div class="message-body">This R-Tree cannot be visualized. Only 2D and 3D R-Trees can be visualized. However, it can still hold N-Dimensional data.</div>
+                        <div class="message-body">This R-Tree cannot be visualized. Only 2D and 3D R-Trees can be visualized. However, it can still hold {{tree.numDimensions}}-Dimensional data.</div>
                     </article>
 
                     <h3 v-if="tree.points.length != 0">Points</h3>

@@ -322,4 +322,18 @@ public class DataStorageInMemoryGeneric<T extends IRType<T>> extends DataStorage
 		
 	}
 
+
+	@Override
+	public List<T> getMin(String treeName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<T> getMax(String treeName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
