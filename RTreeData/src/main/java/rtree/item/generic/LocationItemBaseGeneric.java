@@ -1,7 +1,9 @@
 package rtree.item.generic;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.json.simple.JSONArray;
@@ -16,7 +18,7 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 
 	protected List<T> dimensionArray;
 	protected int numberDimensions;
-	protected Object data;
+	protected Map<String, String> itemProperties;
 	protected String type;
 	protected final String id;
 	
@@ -27,6 +29,7 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 		while (dimensionArray.size() < numberDimensions) {
 			dimensionArray.add(null);
 		}
+		itemProperties = new HashMap<String, String>();
 	}
 	
 	public LocationItemBaseGeneric(int numberDimensions) {
@@ -69,6 +72,49 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 
 	public abstract JSONObject getJson();
 	
+	@Override
+	public String getProperty(String propertyName) {
+		if (propertyName == null) {
+			throw new IllegalArgumentException("Property Name must not be null.");
+		}
+		if (itemProperties.containsKey(propertyName)) {
+			return itemProperties.get(propertyName);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public void setProperty(String propertyName, String propertyValue) {
+		if (propertyName == null) {
+			throw new IllegalArgumentException("Property Name must not be null.");
+		}
+		if (propertyValue == null) {
+			throw new IllegalArgumentException("Property Value must not be null.");
+		}
+		itemProperties.put(propertyName, propertyValue);
+	}
+
+	@Override
+	public boolean containsProperty(String propertyName) {
+		if (propertyName == null) {
+			throw new IllegalArgumentException("Property Name must not be null.");
+		}
+		return itemProperties.containsKey(propertyName);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public JSONObject getPropertiesJson() {
+		
+		JSONObject ret = new JSONObject();
+		for (String k : itemProperties.keySet()) {
+			ret.put(k, itemProperties.get(k));
+		}
+		
+		return ret;
+	}
+
 	public static <T extends IRType<T>> Double space(ILocationItemGeneric<T> e1, ILocationItemGeneric<T> e2) {
 		
 		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
@@ -137,6 +183,9 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 							break;
 					}
 					obj.put("type", item.getType());
+					
+					obj.put("properties", item.getPropertiesJson());
+					
 
 				}
 				arr.add(obj);
@@ -145,6 +194,7 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 		return arr;
 	}
 	
+	@Deprecated
 	public static List<LocationItem2D> getLocationItemListFromJson2D(String items) {
 		
 		JSONParser parser = new JSONParser();

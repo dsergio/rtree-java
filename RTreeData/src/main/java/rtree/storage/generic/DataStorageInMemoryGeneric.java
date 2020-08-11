@@ -317,7 +317,7 @@ public class DataStorageInMemoryGeneric<T extends IRType<T>> extends DataStorage
 
 
 	@Override
-	public void addItem(String Id, int N, String location, String type) {
+	public void addItem(String Id, int N, String location, String type, String properties) {
 		// TODO Auto-generated method stub
 		
 	}

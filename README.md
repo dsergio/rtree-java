@@ -47,7 +47,7 @@ MYSQL.database
 Configuration: `config.properties` configuration file in the `RTreeData/src/main/resources` directory.
 
 ```
-SQLITE.dir = C:\\Path\\to\\Sqlite\\Directory
+SQLITE.dir = C:\\path\\to\\sqlite\\database
 ```
 
 ### AWS DynamoDB

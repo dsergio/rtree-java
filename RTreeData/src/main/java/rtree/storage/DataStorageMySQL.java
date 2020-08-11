@@ -57,7 +57,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 			}
 		}
 
-		String url = "jdbc:mysql://" + host + ":3306/" + database;
+		String url = "jdbc:mysql://" + host + ":3306/" + database + "?serverTimezone=UTC";
 		
 		
 

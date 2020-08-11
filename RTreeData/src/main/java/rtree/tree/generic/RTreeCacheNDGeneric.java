@@ -170,6 +170,14 @@ public class RTreeCacheNDGeneric<T extends IRType<T>> extends RTreeCacheBaseGene
 						}
 
 						itemND.setType(row.get("type").toString());
+						
+						JSONObject props = (JSONObject) row.get("properties");
+						if (props != null) {
+							for (Object propsKey : props.keySet()) {
+								Object propsVal = props.get(propsKey);
+								itemND.setProperty((String) propsKey, (String) propsVal);
+							}
+						}
 
 						n.getLocationItems().add(itemND);
 

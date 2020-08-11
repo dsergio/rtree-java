@@ -59,7 +59,7 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 			}
 		}
 
-		String url = "jdbc:mysql://" + host + ":3306/" + database;
+		String url = "jdbc:mysql://" + host + ":3306/" + database + "?serverTimezone=UTC";
 		
 		
 
@@ -89,7 +89,6 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 
 		String sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT "
 				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
-				+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL " 
 				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
 				+ ")";
 		logger.log("create table: \n" + sql);
@@ -122,6 +121,7 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 					+ " N INT NOT NULL, " 
 					+ " location TEXT NULL, " 
 					+ " type VARCHAR(255) NULL, "
+					+ " properties TEXT NULL, " 
 					+ " PRIMARY KEY ( id ) "
 					+ ")";
 			

@@ -220,6 +220,14 @@ public class RTreeNodeNDGeneric<T extends IRType<T>> extends RTreeNodeBaseGeneri
 						}
 						item.setDim(i2, val);
 						item.setType(row.get("type").toString());
+						
+						JSONObject props = (JSONObject) row.get("properties");
+						if (props != null) {
+							for (Object propsKey : props.keySet()) {
+								Object propsVal = props.get(propsKey);
+								item.setProperty((String) propsKey, (String) propsVal);
+							}
+						}
 					}
 					
 					this.locationItems.add(item);

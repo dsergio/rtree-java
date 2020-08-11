@@ -211,9 +211,9 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 
 	@Override
-	public void addItem(String Id, int N, String location, String type) {
-		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`) "
-				+ "VALUES (?, ?, ?, ?);";
+	public void addItem(String Id, int N, String location, String type, String properties) {
+		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `properties`) "
+				+ "VALUES (?, ?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -226,6 +226,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 			stmt.setInt(c++, N);
 			stmt.setString(c++, location);
 			stmt.setString(c++, type);
+			stmt.setString(c++, properties);
 
 			logger.log("[QUERY]: " + stmt.toString());
 
@@ -584,6 +585,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 
 	@Override
+	@Deprecated
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
 		
 		String update = "UPDATE `" + tablePrefix + "_metadata` ";
@@ -620,8 +622,8 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		JSONArray arrMin = new JSONArray();
 		JSONArray arrMax = new JSONArray();
 		for (int i = 0; i < minimums.size(); i++) {
-			arrMin.add(minimums.get(i));
-			arrMax.add(maximums.get(i));
+			arrMin.add(minimums.get(i).getData());
+			arrMax.add(maximums.get(i).getData());
 		}
 		
 		String update = "UPDATE `" + tablePrefix + "_metadata` ";

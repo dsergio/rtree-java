@@ -27,4 +27,9 @@ public interface ILocationItemGeneric<T extends IRType<T>> {
 	T getDim(int dim);
 	List<T> getDimensionArray();
 	JSONObject getLocationJson();
+	
+	String getProperty(String propertyName);
+	void setProperty(String propertyName, String propertyValue);
+	boolean containsProperty(String propertyName);
+	JSONObject getPropertiesJson();
 }

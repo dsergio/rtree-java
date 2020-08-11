@@ -35,9 +35,6 @@ public abstract class RTreeCacheBaseGeneric<T extends IRType<T>> implements IRTr
 		dbAccess.initializeStorage();
 	}
 	
-//	public abstract void updateNode2D(String nodeId, String children, String parent, String items, String rectangle);
-//	public abstract void updateNodeNDimensional(String nodeId, String children, String parent, String items, String rectangle);
-	
 	public abstract void updateNode(String nodeId, String children, String parent, String items, String rectangle);
 	
 	public int getNumDimensions() {

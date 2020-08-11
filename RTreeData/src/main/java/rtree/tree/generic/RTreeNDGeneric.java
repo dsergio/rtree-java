@@ -106,7 +106,7 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 	public void insertType(ILocationItemGeneric<T> locationItem) throws IOException {
 		
 		logger.log("~~INSERT: " + "GOING TO INSERT: " + locationItem);
-		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
+		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType(), locationItem.getPropertiesJson().toJSONString());
 		insertNDimensional(locationItem, getNode(treeName));
 //		printTree();
 	}
@@ -133,7 +133,7 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 //		leafNodeSplit = false;
 //		branchSplit = false;
 		logger.log("~~INSERT: N:" + numDimensions + " START");
-		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType());
+		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType(), locationItem.getPropertiesJson().toJSONString());
 		insertNDimensional(locationItem, getNode(treeName));
 		logger.log("**************************************************************************************************************************");
 //		printTree();

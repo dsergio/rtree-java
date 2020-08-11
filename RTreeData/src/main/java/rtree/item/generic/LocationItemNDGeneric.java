@@ -55,6 +55,12 @@ public class LocationItemNDGeneric<T extends IRType<T>> extends LocationItemBase
 		}
 		obj.put("type", type);
 		obj.put("id", id);
+		
+		JSONObject properties = new JSONObject();
+		for (String s : itemProperties.keySet()) {
+			properties.put(s, itemProperties.get(s));
+		}
+		obj.put("properties", properties);
 		return obj;
 	}
 	

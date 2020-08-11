@@ -32,7 +32,7 @@ public interface IDataStorageGeneric<T extends IRType<T>> {
 	 void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
 	 IRTreeNodeGeneric<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCacheGeneric<T> cache);
 	
-	 void addItem(String Id, int N, String location, String type);
+	 void addItem(String Id, int N, String location, String type, String properties);
 	
 	// use these for performance analysis
 	 int getNumAdds();
