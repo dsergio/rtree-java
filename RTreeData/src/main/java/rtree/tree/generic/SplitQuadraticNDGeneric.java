@@ -38,7 +38,7 @@ public class SplitQuadraticNDGeneric<T extends IRType<T>> extends SplitBehaviorB
 		// full leaf node, so split leaf node
 		logger.log("#SPLIT-LEAF: " + " We're full, splitting leaf node: " + node.getNodeId() + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
 		for (ILocationItemGeneric<T> item : node.getPoints()) {
-			System.out.print(item + " ***** ");
+			logger.log(item + " ***** ");
 		}
 		logger.log();
 		
@@ -183,9 +183,6 @@ public class SplitQuadraticNDGeneric<T extends IRType<T>> extends SplitBehaviorB
 
 	@SuppressWarnings("unchecked")
 	public void splitBranchNode(IRTreeNodeGeneric<T> node) {
-		
-		LogLevel temp = logger.getLogLevel();
-		logger.setLogLevel(LogLevel.DEV2);
 		
 		if (node == null) {
 			return;
@@ -379,7 +376,6 @@ public class SplitQuadraticNDGeneric<T extends IRType<T>> extends SplitBehaviorB
 				splitBranchNode(nodesParent);
 			}
 		}
-		logger.setLogLevel(temp);
 	}
 
 	

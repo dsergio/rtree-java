@@ -61,7 +61,7 @@ public class RTreeNodeNDGeneric<T extends IRType<T>> extends RTreeNodeBaseGeneri
 	
 	@Override
 	public void updateRectangle(boolean goUp) {
-		System.out.println(rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		logger.log(rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
 		
 		List<T> minimums = new ArrayList<T>();
 		List<T> maximums = new ArrayList<T>();

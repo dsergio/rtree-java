@@ -3,29 +3,19 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Random;
 
-import rtree.item.LocationItem2D;
 import rtree.item.generic.ILocationItemGeneric;
 import rtree.item.generic.LocationItemNDGeneric;
 import rtree.item.generic.RDouble;
 import rtree.log.ILogger;
-import rtree.log.ILoggerPaint;
 import rtree.log.LogLevel;
-import rtree.log.LoggerPaint;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageInMemory;
-import rtree.storage.DataStorageMySQL;
-import rtree.storage.DataStorageSqlite;
-import rtree.storage.IDataStorage;
 import rtree.storage.generic.DataStorageInMemoryGeneric;
 import rtree.storage.generic.DataStorageMySQLGeneric;
 import rtree.storage.generic.DataStorageSqliteGeneric;
 import rtree.storage.generic.IDataStorageGeneric;
-import rtree.tree.IRTree;
-import rtree.tree.RTreeND;
 import rtree.tree.generic.IRTreeGeneric;
 import rtree.tree.generic.RTreeNDGeneric;
 
@@ -43,7 +33,7 @@ public class DataImport {
 		List<ILocationItemGeneric<RDouble>> citiesToInsert = new ArrayList<ILocationItemGeneric<RDouble>>();
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
 		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
 
 		if (args.length < 5) {
@@ -60,6 +50,8 @@ public class DataImport {
 		try (BufferedReader br = new BufferedReader(new FileReader(inputFile))) {
 			
 			String line = br.readLine(); // header
+			System.out.println("Reading from file...");
+			int c = 0;
 			
 			while ((line = br.readLine()) != null) {
 				line = line.trim();
@@ -83,6 +75,11 @@ public class DataImport {
 					locationItem.setDim(1, new RDouble(Double.parseDouble(latitude)));
 					
 					citiesToInsert.add(locationItem);
+					
+					c++;
+					if (c % 1000 == 0) {
+						System.out.println(c + " records read from CSV...");
+					}
 
 				}
 
@@ -164,17 +161,27 @@ public class DataImport {
 		}
 		
 		System.out.println("numInserts: " + numInserts);
+		Random r = new Random();
 
 		try {
 
 			int insertCount = 0;
-			for (ILocationItemGeneric<RDouble> item : citiesToInsert) {
+			int insertSuccessCount = 0;
 
-				if (insertCount < numInserts && tree != null) {
-					insertCount++;
-
+			while (insertCount < numInserts && tree != null) {
+				
+				insertCount++;
+				
+				int itemIndex = r.nextInt(size);
+				
+				if (citiesToInsert.get(itemIndex) != null) {
+					insertSuccessCount++;
+					ILocationItemGeneric<RDouble> item = citiesToInsert.get(itemIndex);
 					tree.insertType(item);
+					System.out.println("Inserted " + insertSuccessCount + " random records of a possible max of " + numInserts);
+					citiesToInsert.set(itemIndex, null);
 				}
+				
 			}
 
 		} catch (IOException e) {

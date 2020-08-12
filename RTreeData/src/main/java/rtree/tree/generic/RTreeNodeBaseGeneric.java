@@ -137,7 +137,7 @@ public abstract class RTreeNodeBaseGeneric<T extends IRType<T>> implements IRTre
 	public void addItem(ILocationItemGeneric<T> locationItem) throws IOException {
 		
 		logger.log("CloudRTreeNode.addItem");
-		System.out.println("Rectangle: " + this.rectangle);
+		logger.log("Rectangle: " + this.rectangle);
 		locationItems.add(locationItem);
 		updateRectangle();
 		
