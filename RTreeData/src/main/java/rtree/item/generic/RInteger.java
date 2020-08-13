@@ -25,8 +25,24 @@ public class RInteger extends RType<Integer> implements IRType<RInteger> {
 		return data.compareTo(o.data);
 	}
 
+	@Override
+	public boolean hasValueRange() {
+		return true;
+	}
 
-	
-	
+	@Override
+	public RInteger getValueMin() {
+		return new RInteger(Integer.MIN_VALUE);
+	}
+
+	@Override
+	public RInteger getValueMax() {
+		return new RInteger(Integer.MAX_VALUE);
+	}
+
+	@Override
+	public boolean hasDiscreteValues() {
+		return false;
+	}
 
 }

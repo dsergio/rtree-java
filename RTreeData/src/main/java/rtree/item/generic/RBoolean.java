@@ -28,8 +28,29 @@ public class RBoolean extends RType<Boolean> implements IRType<RBoolean>  {
 
 	@Override
 	public int compareTo(RBoolean o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return data.compareTo(o.data);
 	}
+
+	@Override
+	public boolean hasValueRange() {
+		return false;
+	}
+
+	@Override
+	public RBoolean getValueMin() {
+		return null;
+	}
+
+	@Override
+	public RBoolean getValueMax() {
+		return null;
+	}
+
+	@Override
+	public boolean hasDiscreteValues() {
+		return true;
+	}
+	
+	
 
 }

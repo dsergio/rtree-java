@@ -1,6 +1,6 @@
 package rtree.item.generic;
 
-public class RType<T> {
+public abstract class RType<T> {
 
 	protected T data;
 
@@ -11,5 +11,8 @@ public class RType<T> {
 	public T getData() {
 		return data;
 	}
+	
+	public abstract void setData(String s);
+	
 
 }

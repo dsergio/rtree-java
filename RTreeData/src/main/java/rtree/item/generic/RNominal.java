@@ -1,12 +1,9 @@
 package rtree.item.generic;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class RNominal extends RType<List<String>> implements IRType<RNominal> {
+public abstract class RNominal extends RTypeDiscrete<String> {
 
 	public RNominal(Object data) {
-		super((List<String>)data);
+		super((String)data);
 	}
 	
 	public RNominal() {
@@ -15,23 +12,10 @@ public class RNominal extends RType<List<String>> implements IRType<RNominal> {
 	
 	@Override
 	public void setData(String s) {
-		data = new ArrayList<String>();
+		System.out.println("in setData... s: " + s + " values.contains(s): " + values.contains(s) + " values: " + values);
+		if (values.contains(s)) {
+			data = s;
+		}
 	}
-
-	@Override
-	public double distanceTo(RNominal o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public int compareTo(RNominal o) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
-	
-	
 
 }

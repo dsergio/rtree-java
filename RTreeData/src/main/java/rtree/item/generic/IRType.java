@@ -7,4 +7,11 @@ public interface IRType<T> {
 	double distanceTo(T o);
 	int compareTo(T o);
 	
+	boolean hasValueRange();
+	T getValueMin();
+	T getValueMax();
+	
+	boolean hasDiscreteValues();
+	
+	
 }
