@@ -71,18 +71,19 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 	public Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> search(String treeName, IHyperRectangleGeneric<T> searchRectangleInput) {
 		
 		IRTreeGeneric<T> t = dbContext.treeSetMap.get(treeName);
-		IHyperRectangleGeneric<T> searchR = new RectangleNDGeneric<T>(searchRectangleInput.getNumberDimensions());
-		for (int i = 0; i < searchRectangleInput.getNumberDimensions(); i++) {
-			
-			T dim1 = getInstanceOf();
-			T dim2 = getInstanceOf();
-			dim1.setData("" + searchRectangleInput.getDim1(i));
-			dim2.setData("" + searchRectangleInput.getDim2(i));
-			
-			searchR.setDim1(i, dim1);
-			searchR.setDim2(i, dim2);
-		}
-		Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> results = t.search(searchR);
+		
+//		IHyperRectangleGeneric<T> searchR = new RectangleNDGeneric<T>(searchRectangleInput.getNumberDimensions());
+//		for (int i = 0; i < searchRectangleInput.getNumberDimensions(); i++) {
+//			
+//			T dim1 = getInstanceOf();
+//			T dim2 = getInstanceOf();
+//			dim1.setData("" + searchRectangleInput.getDim1(i));
+//			dim2.setData("" + searchRectangleInput.getDim2(i));
+//			
+//			searchR.setDim1(i, dim1);
+//			searchR.setDim2(i, dim2);
+//		}
+		Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> results = t.search(searchRectangleInput);
 		
 		return results;
 	}

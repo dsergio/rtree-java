@@ -166,6 +166,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 					i.id = item.getId();
 					i.itemProperties = item.getProperties();
 					i.numberDimensions = item.getNumberDimensions();
+					i.dimensionArray = new ArrayList<Double>();
 					for (RDouble rd : item.getDimensionArray()) {
 						i.dimensionArray.add(rd.getData());
 					};

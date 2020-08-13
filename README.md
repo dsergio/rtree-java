@@ -56,13 +56,13 @@ The ProfileCredentialsProvider will return your [default] credential profile by 
 ### Metadata Table
 Example `rtree_metadata` table: 
 
-|id|treeName|maxChildren|maxItems|minX|maxX|minY|maxY|N|minimums|maximums
-|--|----------|----------|----------|-----|-----|-----|-----|-----|----------|----------
-|63|3D_TestTree_1|4|4|NULL|NULL|NULL|NULL|3|[14,13,6]|[82,93,89]
-|64|TestTree_ND|4|4|NULL|NULL|NULL|NULL|3|[5,10,15]|[5,10,15]
-|65|4D_TestTree_1|4|4|NULL|NULL|NULL|NULL|4|[8,0,32,4]|[57,97,90,97]
-|66|8D_TestTree_1|4|4|NULL|NULL|NULL|NULL|8|[6,36,7,1,0,17,24,1]|[59,90,64,90,81,85,87,94]
-|67|1D_TestTree_1|4|4|NULL|NULL|NULL|NULL|1|[2]|[93]
+|id|treeName|maxChildren|maxItems|treeType|N|minimums|maximums
+|--|----------|----------|----------|-----|-----|----------|----------
+|63|3D_TestTree_1|4|4|RInteger|3|[14,13,6]|[82,93,89]
+|64|TestTree_3D|4|4|RDouble|3|[1.2,10.0,1.5]|[5.5,100.0,15.2]
+|65|4D_TestTree_1|4|4|RInteger|4|[8,0,32,4]|[57,97,90,97]
+|66|8D_TestTree_1|4|4|RInteger|8|[6,36,7,1,0,17,24,1]|[59,90,64,90,81,85,87,94]
+|67|1D_TestTree_1|4|4|RInteger|1|[2]|[93]
 
 ### Data Table
 Example `rtree_data` table: 
@@ -78,9 +78,9 @@ Example `rtree_data` table:
 ### Items Table
 Example `rtree_items` table: 
 
-|Id|N|location|type
-|----------|----------|----------|----------
-|e4fc87d7-0e97-43fe-9727-e6cfcd57c7e9|2|{"x":199,"y":334}|Hedgehog
+|Id|N|location|type|treeType|properties
+|----------|----------|----------|----------|----------|----------
+|e4fc87d7-0e97-43fe-9727-e6cfcd57c7e9|2|{"x":199,"y":334}|Hedgehog|RInteger|{"property1": "propertyvalue1"}
 
 ## RTreeData GUI Usage (2D Java Swing Implementation)
 
