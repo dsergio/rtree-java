@@ -78,8 +78,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 		try {
 			
 			sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INTEGER PRIMARY KEY AUTOINCREMENT "
-					+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
-					+ " , minX INT NULL " + " , maxX INT NULL " + " , minY INT NULL " + " , maxY INT NULL "
+					+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL " + " , treeType VARCHAR(255) NOT NULL "
 					+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
 					+ ")";
 			logger.log("create table: \n" + sql);
@@ -114,6 +113,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 					+ " N INT NOT NULL, " 
 					+ " location TEXT NULL, " 
 					+ " type VARCHAR(255) NULL, "
+					+ " treeType VARCHAR(255) NOT NULL, "
 					+ " PRIMARY KEY ( id ) "
 					+ ")";
 			

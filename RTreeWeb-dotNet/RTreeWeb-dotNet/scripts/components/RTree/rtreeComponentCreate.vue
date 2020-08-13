@@ -73,7 +73,7 @@
 </template>
 <script lang="ts">
     import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-    import { RTree, RTreeClient, RTreeCreate } from '../../api-client.g';
+    import { RTree, RTreeIntegerClient, RTreeCreate } from '../../api-client.g';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
 
     import {
@@ -202,7 +202,7 @@
 
             if (this.errors.length == 0) {
                 this.isUpdateLoading = true;
-                let client = new RTreeClient(apiUrl);
+                let client = new RTreeIntegerClient(apiUrl);
 
                 await client.newTree(this.clonedTree);
                 this.tree.treeName = this.clonedTree.treeName;

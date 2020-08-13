@@ -85,7 +85,7 @@
 </template>
 <script lang="ts">
     import { Vue, Component, Prop, Emit } from 'vue-property-decorator'
-    import { RTree, RTreeClient, LocationItem } from '../../api-client.g';
+    import { RTreeInteger, RTreeIntegerClient, LocationItemInteger } from '../../api-client.g';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
 
 
@@ -107,10 +107,10 @@
     })
     export default class RTreeComponentDetail extends Vue {
         @Prop()
-        tree: RTree;
+        tree: RTreeInteger;
         @Prop()
         telemetry: Telemetry;
-        clonedTree: RTree = <RTree>{};
+        clonedTree: RTreeInteger = <RTreeInteger>{};
         newItemDimensionArray: Array<number>;
         isUpdateLoading: boolean = false;
         errors: any = [];
@@ -122,6 +122,7 @@
             for (i; i < this.tree.numDimensions; i++) {
                 this.newItemDimensionArray.push(0);
             }
+            
         }
 
         async mounted() {
@@ -201,8 +202,8 @@
             if (this.errors.length == 0) {
 
                 this.isUpdateLoading = true;
-                let client = new RTreeClient(apiUrl);
-                let item = new LocationItem();
+                let client = new RTreeIntegerClient(apiUrl);
+                let item = new LocationItemInteger();
                 item.dimensionArray = new Array<number>();
                 let i = 0;
                 for (i; i < this.tree.numDimensions; i++) {

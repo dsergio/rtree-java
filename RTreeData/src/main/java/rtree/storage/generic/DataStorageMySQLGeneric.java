@@ -65,7 +65,7 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
 			logger.log(e);
@@ -88,7 +88,7 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 		Statement stmt = null;
 
 		String sql = " CREATE TABLE IF NOT EXISTS " + tablePrefix + "_metadata" + " (id INT PRIMARY KEY AUTO_INCREMENT "
-				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL "
+				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL " + " , treeType VARCHAR(255) NOT NULL "
 				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
 				+ ")";
 		logger.log("create table: \n" + sql);
@@ -121,6 +121,7 @@ public class DataStorageMySQLGeneric<T extends IRType<T>> extends DataStorageSQL
 					+ " N INT NOT NULL, " 
 					+ " location TEXT NULL, " 
 					+ " type VARCHAR(255) NULL, "
+					+ " treeType VARCHAR(255) NOT NULL, "
 					+ " properties TEXT NULL, " 
 					+ " PRIMARY KEY ( id ) "
 					+ ")";

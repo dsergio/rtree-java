@@ -65,7 +65,7 @@
 <script lang="ts">
     import { Vue, Component } from 'vue-property-decorator';
     import Spinner from 'vue-spinner-component/src/Spinner.vue';
-    import { RTree, RTreeClient, RTreeCreate } from '../../api-client.g';
+    import { RTreeInteger, RTreeIntegerClient, RTreeCreate } from '../../api-client.g';
     import rtreeComponentDetail from './rtreeComponentDetail.vue';
     import rtreeComponentCreate from './rtreeComponentCreate.vue';
 
@@ -95,10 +95,10 @@
         }
     })
     export default class RTreeComponentList extends Vue {
-        trees: RTree[] = null;
-        selectedTree: RTree = null;
+        trees: RTreeInteger[] = null;
+        selectedTree: RTreeInteger = null;
         newTree: RTreeCreate = null;
-        rtreeClient: RTreeClient;
+        rtreeClient: RTreeIntegerClient;
         isLoading: boolean = false;
         telemetry: Telemetry;
         searchQuery: string;
@@ -106,7 +106,7 @@
 
         constructor() {
             super();
-            this.rtreeClient = new RTreeClient(apiUrl);
+            this.rtreeClient = new RTreeIntegerClient(apiUrl);
             this.searchQuery = "";
         }
 
@@ -159,7 +159,7 @@
             attachDataLayerObjects(this.telemetry);
         }
 
-        telemetryActionAttributes(t: RTree): object {
+        telemetryActionAttributes(t: RTreeInteger): object {
             //console.log("event... telemetry attr: ", t);
             let i: number = 0;
             let obj: any = {};
@@ -182,7 +182,7 @@
             this.newTree.maxItems = 4;
         }
 
-        async edit(tree: RTree) {
+        async edit(tree: RTreeInteger) {
             this.isLoading = true;
             tree = await this.rtreeClient.get(tree.name);
             this.selectedTree = tree;

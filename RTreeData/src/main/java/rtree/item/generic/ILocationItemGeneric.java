@@ -1,6 +1,7 @@
 package rtree.item.generic;
 
 import java.util.List;
+import java.util.Map;
 
 import org.json.simple.JSONObject;
 
@@ -32,4 +33,5 @@ public interface ILocationItemGeneric<T extends IRType<T>> {
 	void setProperty(String propertyName, String propertyValue);
 	boolean containsProperty(String propertyName);
 	JSONObject getPropertiesJson();
+	Map<String, String> getProperties();
 }

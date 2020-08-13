@@ -151,6 +151,13 @@ function render3DRTree() {
 		//}
 		console.log("rendering ", obj, " color: ", material.color);
 
+		obj["x1"] = parseInt(obj["x1"]);
+		obj["x2"] = parseInt(obj["x2"]);
+		obj["y1"] = parseInt(obj["y1"]);
+		obj["y2"] = parseInt(obj["y2"]);
+		obj["z1"] = parseInt(obj["z1"]);
+		obj["z2"] = parseInt(obj["z2"]);
+
 		var width = Math.abs(obj["x2"] - obj["x1"]);
 		var height = Math.abs(obj["y2"] - obj["y1"]);
 		var depth = Math.abs(obj["z2"] - obj["z1"]);

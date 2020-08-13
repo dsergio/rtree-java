@@ -103,6 +103,11 @@ public abstract class LocationItemBaseGeneric<T extends IRType<T>> implements IL
 		return itemProperties.containsKey(propertyName);
 	}
 	
+	@Override
+	public Map<String, String> getProperties() {
+		return itemProperties;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getPropertiesJson() {

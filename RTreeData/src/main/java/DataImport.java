@@ -33,7 +33,7 @@ public class DataImport {
 		List<ILocationItemGeneric<RDouble>> citiesToInsert = new ArrayList<ILocationItemGeneric<RDouble>>();
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
 
 		if (args.length < 5) {

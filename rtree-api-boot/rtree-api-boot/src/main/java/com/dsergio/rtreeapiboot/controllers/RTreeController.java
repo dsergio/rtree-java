@@ -1,4 +1,4 @@
-package com.dsergio.rtreeapiboot;
+package com.dsergio.rtreeapiboot.controllers;
 
 import java.util.ArrayList;
 import java.util.List;

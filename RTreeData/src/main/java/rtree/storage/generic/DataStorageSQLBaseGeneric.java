@@ -212,8 +212,8 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 
 	@Override
 	public void addItem(String Id, int N, String location, String type, String properties) {
-		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `properties`) "
-				+ "VALUES (?, ?, ?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `treeType`, `properties`) "
+				+ "VALUES (?, ?, ?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -226,6 +226,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 			stmt.setInt(c++, N);
 			stmt.setString(c++, location);
 			stmt.setString(c++, type);
+			stmt.setString(c++, clazz.getSimpleName());
 			stmt.setString(c++, properties);
 
 			logger.log("[QUERY]: " + stmt.toString());
@@ -457,8 +458,9 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	}
 
 	@Override
+	@Deprecated
 	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
-		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`) " + "VALUES (?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `treeType`) " + "VALUES (?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -469,6 +471,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 			stmt.setString(c++, treeName);
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
+			stmt.setString(c++, clazz.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -480,7 +483,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 	@Override
 	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
-		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`) " + "VALUES (?, ?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`, `treeType`) " + "VALUES (?, ?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -492,6 +495,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
 			stmt.setInt(c++, N);
+			stmt.setString(c++, clazz.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -782,11 +786,16 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		List<IRTreeGeneric<T>> trees = new ArrayList<IRTreeGeneric<T>>();
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
-		String query = select;
+		String where = " WHERE `treeType` = ? ";
+		String query = select + where;
+		
+		int c = 1;
 
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(query);
+			
+			stmt.setString(c++, clazz.getSimpleName());
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -820,12 +829,17 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		List<ILocationItemGeneric<T>> items = new ArrayList<ILocationItemGeneric<T>>();
 
 		String select = " SELECT * FROM `" + tablePrefix + "_items` ";
-		String query = select;
+		String where = " WHERE `treeType` = ? ";
+		String query = select + where;
+		
+		int c = 1;
 
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(query);
 
+			stmt.setString(c++, clazz.getSimpleName());
+			
 			ResultSet resultSet = stmt.executeQuery();
 
 			while (resultSet.next()) {
@@ -844,28 +858,28 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 										
 					for (int j = 0; j < N; j++) {
 
-						T value;
+						T val = getInstanceOf();
 
 						switch (j) {
 						case 0:
-							value = (T) (obj.get("x"));
+							val.setData(obj.get("x").toString());
 
 							break;
 						case 1:
-							value = (T) (obj.get("y"));
+							val.setData(obj.get("y").toString());
 
 							break;
 						case 2:
-							value = (T) (obj.get("z"));
+							val.setData(obj.get("z").toString());
 
 							break;
 						default:
-							value = (T) (obj.get(j + ""));
+							val.setData(obj.get(j + "").toString());
 
 							break;
 						}
 
-						item.setDim(j, value);
+						item.setDim(j, val);
 					}
 					
 					item.setType(type);

@@ -15,21 +15,24 @@ import rtree.rectangle.RectangleND;
 import rtree.tree.IRTree;
 import rtree.tree.RTreeND;
 
+/**
+ * TODO Generics
+ * 
+ * @author David Sergio
+ *
+ */
 public class RTreeService extends EntityService {
 	
 	public List<IRTree> fetchAll() {
-		
 		List<IRTree> list = new ArrayList<IRTree>(dbContext.treeSetMap.values());
 		return list;
 	}
 	
-	public IRTree fetchByTreeName(String treeName) {
-		
+	public IRTree fetchByTreeName(String treeName) {	
 		return dbContext.treeSetMap.get(treeName);
 	}
 	
 	public IRTree create(RTreeCreate rtreeCreate) {
-		
 		
 		IRTree t = null;
 		try {

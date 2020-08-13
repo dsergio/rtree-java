@@ -22,8 +22,7 @@ public class RInteger extends RType<Integer> implements IRType<RInteger> {
 
 	@Override
 	public int compareTo(RInteger o) {
-		// TODO Auto-generated method stub
-		return 0;
+		return data.compareTo(o.data);
 	}
 
 
