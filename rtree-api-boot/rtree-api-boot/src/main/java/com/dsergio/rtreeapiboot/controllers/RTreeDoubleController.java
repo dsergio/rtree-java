@@ -101,6 +101,8 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		if (tree != null) {
 			
 			RTreeDouble treeRet = new RTreeDouble();
+			treeRet.rectangles = new ArrayList<>();
+			treeRet.points = new ArrayList<>();
 			
 			for (IHyperRectangleGeneric<RDouble> r : tree.getRectangles()) {
 				RectangleDouble rectDouble = new RectangleDouble();
@@ -138,7 +140,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	@ApiOperation(value="RTreeDouble_search", notes = "Search RTree<Double> structure by rectangle", nickname = "RTreeDouble_search")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/search/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public @ResponseBody ResponseEntity<Map<RectangleDouble, List<LocationItemDouble>>> search(
+	public @ResponseBody ResponseEntity<List<LocationItemDouble>> search(
 			@PathVariable String treeName, @RequestBody RectangleDouble searchRectangleInput) {
 		
 		IHyperRectangleGeneric<RDouble> searchRectangle = new RectangleNDGeneric<RDouble>(searchRectangleInput.numberDimensions);
@@ -151,7 +153,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		
 		Map<IHyperRectangleGeneric<RDouble>, List<ILocationItemGeneric<RDouble>>> results = rtreeService.search(treeName, searchRectangle);
 		
-		Map<RectangleDouble, List<LocationItemDouble>> searchResults = new HashMap<RectangleDouble, List<LocationItemDouble>>();
+		List<LocationItemDouble> searchResults = new ArrayList<LocationItemDouble>();
 		
 		if (results != null) {
 			
@@ -159,7 +161,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 				List<ILocationItemGeneric<RDouble>> items = results.get(r);
 				
 				RectangleDouble eachR = new RectangleDouble();
-				searchResults.put(eachR, new ArrayList<LocationItemDouble>());
+
 				for (ILocationItemGeneric<RDouble> item : items) {
 					LocationItemDouble i = new LocationItemDouble();
 					i.type = item.getType();
@@ -170,7 +172,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 					for (RDouble rd : item.getDimensionArray()) {
 						i.dimensionArray.add(rd.getData());
 					};
-					searchResults.get(eachR).add(i);
+					searchResults.add(i);
 				}
 				
 			}

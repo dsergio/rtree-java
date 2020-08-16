@@ -7,6 +7,8 @@
 //----------------------
 // ReSharper disable InconsistentNaming
 
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+
 export interface IRTreeClient {
     /**
      * RTree_getAll
@@ -42,12 +44,12 @@ export interface IRTreeClient {
 }
 
 export class RTreeClient implements IRTreeClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private instance: AxiosInstance;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : <any>window;
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
         this.baseUrl = baseUrl ? baseUrl : "localhost:8080/";
     }
 
@@ -59,48 +61,51 @@ export class RTreeClient implements IRTreeClient {
         let url_ = this.baseUrl + "/api/RTree/";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGetAll(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<RTree[]> {
+    protected processGetAll(response: AxiosResponse): Promise<RTree[]> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(RTree.fromJS(item));
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RTree.fromJS(item));
+            }
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTree[]>(<any>null);
     }
@@ -116,50 +121,52 @@ export class RTreeClient implements IRTreeClient {
 
         const content_ = JSON.stringify(rtreeCreate);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processNewTree(_response);
         });
     }
 
-    protected processNewTree(response: Response): Promise<RTree> {
+    protected processNewTree(response: AxiosResponse): Promise<RTree> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTree.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTree.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTree>(<any>null);
     }
@@ -179,56 +186,58 @@ export class RTreeClient implements IRTreeClient {
 
         const content_ = JSON.stringify(searchRectangle);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processSearch(_response);
         });
     }
 
-    protected processSearch(response: Response): Promise<{ [key: string]: ILocationItem[]; }> {
+    protected processSearch(response: AxiosResponse): Promise<{ [key: string]: ILocationItem[]; }> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (resultData200) {
-                    result200 = {} as any;
-                    for (let key in resultData200) {
-                        if (resultData200.hasOwnProperty(key))
-                            result200![key] = resultData200[key] ? resultData200[key].map((i: any) => ILocationItem.fromJS(i)) : [];
-                    }
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        result200![key] = resultData200[key] ? resultData200[key].map((i: any) => ILocationItem.fromJS(i)) : [];
+                }
+            }
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<{ [key: string]: ILocationItem[]; }>(<any>null);
     }
@@ -245,44 +254,47 @@ export class RTreeClient implements IRTreeClient {
         url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<RTree> {
+    protected processGet(response: AxiosResponse): Promise<RTree> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTree.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTree.fromJS(resultData200);
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTree>(<any>null);
     }
@@ -302,50 +314,52 @@ export class RTreeClient implements IRTreeClient {
 
         const content_ = JSON.stringify(item);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processInsert(_response);
         });
     }
 
-    protected processInsert(response: Response): Promise<RTree> {
+    protected processInsert(response: AxiosResponse): Promise<RTree> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTree.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTree.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTree>(<any>null);
     }
@@ -369,7 +383,7 @@ export interface IRTreeDoubleClient {
      * @param treeName treeName
      * @return OK
      */
-    search(searchRectangleInput: RectangleDouble, treeName: string): Promise<{ [key: string]: LocationItemDouble[]; }>;
+    search(searchRectangleInput: RectangleDouble, treeName: string): Promise<LocationItemDouble[]>;
     /**
      * RTreeDouble_get
      * @param treeName treeName
@@ -386,12 +400,12 @@ export interface IRTreeDoubleClient {
 }
 
 export class RTreeDoubleClient implements IRTreeDoubleClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private instance: AxiosInstance;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : <any>window;
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
         this.baseUrl = baseUrl ? baseUrl : "localhost:8080/";
     }
 
@@ -403,48 +417,51 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
         let url_ = this.baseUrl + "/api/RTreeDouble/";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGetAll(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<RTreeDouble[]> {
+    protected processGetAll(response: AxiosResponse): Promise<RTreeDouble[]> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(RTreeDouble.fromJS(item));
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RTreeDouble.fromJS(item));
+            }
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeDouble[]>(<any>null);
     }
@@ -460,50 +477,52 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
 
         const content_ = JSON.stringify(rtreeCreate);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processNewTree(_response);
         });
     }
 
-    protected processNewTree(response: Response): Promise<RTreeDouble> {
+    protected processNewTree(response: AxiosResponse): Promise<RTreeDouble> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeDouble.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeDouble.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeDouble>(<any>null);
     }
@@ -514,7 +533,7 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
      * @param treeName treeName
      * @return OK
      */
-    search(searchRectangleInput: RectangleDouble, treeName: string): Promise<{ [key: string]: LocationItemDouble[]; }> {
+    search(searchRectangleInput: RectangleDouble, treeName: string): Promise<LocationItemDouble[]> {
         let url_ = this.baseUrl + "/api/RTreeDouble/search/{treeName}";
         if (treeName === undefined || treeName === null)
             throw new Error("The parameter 'treeName' must be defined.");
@@ -523,58 +542,58 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
 
         const content_ = JSON.stringify(searchRectangleInput);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processSearch(_response);
         });
     }
 
-    protected processSearch(response: Response): Promise<{ [key: string]: LocationItemDouble[]; }> {
+    protected processSearch(response: AxiosResponse): Promise<LocationItemDouble[]> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (resultData200) {
-                    result200 = {} as any;
-                    for (let key in resultData200) {
-                        if (resultData200.hasOwnProperty(key))
-                            result200![key] = resultData200[key] ? resultData200[key].map((i: any) => LocationItemDouble.fromJS(i)) : [];
-                    }
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
-        } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
-        } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
-        } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
-        } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
-        } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            }
         }
-        return Promise.resolve<{ [key: string]: LocationItemDouble[]; }>(<any>null);
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(LocationItemDouble.fromJS(item));
+            }
+            return result200;
+        } else if (status === 201) {
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
+        } else if (status === 401) {
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
+        } else if (status === 403) {
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
+        } else if (status === 404) {
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<LocationItemDouble[]>(<any>null);
     }
 
     /**
@@ -589,44 +608,47 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
         url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<RTreeDouble> {
+    protected processGet(response: AxiosResponse): Promise<RTreeDouble> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeDouble.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeDouble.fromJS(resultData200);
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeDouble>(<any>null);
     }
@@ -646,50 +668,52 @@ export class RTreeDoubleClient implements IRTreeDoubleClient {
 
         const content_ = JSON.stringify(itemToInsert);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processInsert(_response);
         });
     }
 
-    protected processInsert(response: Response): Promise<RTreeDouble> {
+    protected processInsert(response: AxiosResponse): Promise<RTreeDouble> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeDouble.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeDouble.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeDouble>(<any>null);
     }
@@ -730,12 +754,12 @@ export interface IRTreeIntegerClient {
 }
 
 export class RTreeIntegerClient implements IRTreeIntegerClient {
-    private http: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> };
+    private instance: AxiosInstance;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
 
-    constructor(baseUrl?: string, http?: { fetch(url: RequestInfo, init?: RequestInit): Promise<Response> }) {
-        this.http = http ? http : <any>window;
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
         this.baseUrl = baseUrl ? baseUrl : "localhost:8080/";
     }
 
@@ -747,48 +771,51 @@ export class RTreeIntegerClient implements IRTreeIntegerClient {
         let url_ = this.baseUrl + "/api/RTreeInteger/";
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGetAll(_response);
         });
     }
 
-    protected processGetAll(response: Response): Promise<RTreeInteger[]> {
+    protected processGetAll(response: AxiosResponse): Promise<RTreeInteger[]> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (Array.isArray(resultData200)) {
-                    result200 = [] as any;
-                    for (let item of resultData200)
-                        result200!.push(RTreeInteger.fromJS(item));
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(RTreeInteger.fromJS(item));
+            }
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeInteger[]>(<any>null);
     }
@@ -804,50 +831,52 @@ export class RTreeIntegerClient implements IRTreeIntegerClient {
 
         const content_ = JSON.stringify(rtreeCreate);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processNewTree(_response);
         });
     }
 
-    protected processNewTree(response: Response): Promise<RTreeInteger> {
+    protected processNewTree(response: AxiosResponse): Promise<RTreeInteger> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeInteger.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeInteger.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeInteger>(<any>null);
     }
@@ -867,56 +896,58 @@ export class RTreeIntegerClient implements IRTreeIntegerClient {
 
         const content_ = JSON.stringify(searchRectangleInput);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processSearch(_response);
         });
     }
 
-    protected processSearch(response: Response): Promise<{ [key: string]: LocationItemInteger[]; }> {
+    protected processSearch(response: AxiosResponse): Promise<{ [key: string]: LocationItemInteger[]; }> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
-        if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                if (resultData200) {
-                    result200 = {} as any;
-                    for (let key in resultData200) {
-                        if (resultData200.hasOwnProperty(key))
-                            result200![key] = resultData200[key] ? resultData200[key].map((i: any) => LocationItemInteger.fromJS(i)) : [];
-                    }
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
                 }
-                return result200;
-            });
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            if (resultData200) {
+                result200 = {} as any;
+                for (let key in resultData200) {
+                    if (resultData200.hasOwnProperty(key))
+                        result200![key] = resultData200[key] ? resultData200[key].map((i: any) => LocationItemInteger.fromJS(i)) : [];
+                }
+            }
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<{ [key: string]: LocationItemInteger[]; }>(<any>null);
     }
@@ -933,44 +964,47 @@ export class RTreeIntegerClient implements IRTreeIntegerClient {
         url_ = url_.replace("{treeName}", encodeURIComponent("" + treeName));
         url_ = url_.replace(/[?&]$/, "");
 
-        let options_ = <RequestInit>{
+        let options_ = <AxiosRequestConfig>{
             method: "GET",
+            url: url_,
             headers: {
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processGet(_response);
         });
     }
 
-    protected processGet(response: Response): Promise<RTreeInteger> {
+    protected processGet(response: AxiosResponse): Promise<RTreeInteger> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeInteger.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeInteger.fromJS(resultData200);
+            return result200;
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeInteger>(<any>null);
     }
@@ -990,50 +1024,52 @@ export class RTreeIntegerClient implements IRTreeIntegerClient {
 
         const content_ = JSON.stringify(itemToInsert);
 
-        let options_ = <RequestInit>{
-            body: content_,
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
             method: "POST",
+            url: url_,
             headers: {
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
         };
 
-        return this.http.fetch(url_, options_).then((_response: Response) => {
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
             return this.processInsert(_response);
         });
     }
 
-    protected processInsert(response: Response): Promise<RTreeInteger> {
+    protected processInsert(response: AxiosResponse): Promise<RTreeInteger> {
         const status = response.status;
-        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
         if (status === 200) {
-            return response.text().then((_responseText) => {
-                let result200: any = null;
-                let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-                result200 = RTreeInteger.fromJS(resultData200);
-                return result200;
-            });
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200 = _responseText;
+            result200 = RTreeInteger.fromJS(resultData200);
+            return result200;
         } else if (status === 201) {
-            return response.text().then((_responseText) => {
-                return throwException("Created", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Created", status, _responseText, _headers);
         } else if (status === 401) {
-            return response.text().then((_responseText) => {
-                return throwException("Unauthorized", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Unauthorized", status, _responseText, _headers);
         } else if (status === 403) {
-            return response.text().then((_responseText) => {
-                return throwException("Forbidden", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Forbidden", status, _responseText, _headers);
         } else if (status === 404) {
-            return response.text().then((_responseText) => {
-                return throwException("Not Found", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("Not Found", status, _responseText, _headers);
         } else if (status !== 200 && status !== 204) {
-            return response.text().then((_responseText) => {
-                return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-            });
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<RTreeInteger>(<any>null);
     }

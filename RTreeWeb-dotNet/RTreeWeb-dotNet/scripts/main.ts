@@ -27,6 +27,7 @@ Vue.component('font-awesome-icon', FontAwesomeIcon);
 //const Home = { template: '<div>This is Home</div>' }
 
 import RTreeComponentList from './components/RTree/rtreeComponentList.vue';
+import MapComponent from './components/Map/mapComponent.vue';
 
 //const router = new VueRouter({
 //    mode: 'history',
@@ -43,6 +44,13 @@ document.addEventListener("DOMContentLoaded", async () => {
             //router,
             render: h => h(RTreeComponentList)
         }).$mount('#rtreeList');
+    }
+
+    if (document.getElementById('map')) {
+        new Vue({
+            //router,
+            render: h => h(MapComponent)
+        }).$mount('#map');
     }
 });
 

@@ -26,6 +26,9 @@ import rtree.storage.generic.IDataStorageGeneric;
  */
 public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 
+	private int resultCount = 0;
+	private int maxResults = 50;
+
 	/**
 	 * @param dataStorage
 	 * @param logger
@@ -299,8 +302,11 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 		int curUpdates = numUpdates();
 		int curReads = numReads();
 		
+		logger.log("\n\n\nSearching....\n\n\n");
+		
 		long time = System.currentTimeMillis();
 		Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> result = new HashMap<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>>();
+		resultCount  = 0;
 		searchNDimensional(searchRectangle, getNode(treeName), result, 0);
 		
 		
@@ -309,9 +315,15 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 		return result;
 	}
 
-	private void searchNDimensional(IHyperRectangleGeneric<T> searchRectangle, IRTreeNodeGeneric<T> node, Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> result, int depth) {
+	private void searchNDimensional(
+			IHyperRectangleGeneric<T> searchRectangle, 
+			IRTreeNodeGeneric<T> node, 
+			Map<IHyperRectangleGeneric<T>, 
+			List<ILocationItemGeneric<T>>> result, 
+			int depth
+			) {
 		
-		if (node == null) {
+		if (node == null || resultCount >= maxResults) {
 			return;
 		}
 		
@@ -332,7 +344,7 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 				
 				if (searchRectangleContains) {
 					logger.log("Merry Christmas " + item + " nodeId: " + node.getNodeId());
-					
+					resultCount++;
 					if (result.containsKey(searchRectangle)) {
 						if (!result.get(searchRectangle).contains(item)) {
 							result.get(searchRectangle).add(item);
@@ -349,14 +361,16 @@ public class RTreeNDGeneric<T extends IRType<T>> extends RTreeBaseGeneric<T> {
 				
 				for (String child : node.getChildren()) {
 					
-					IHyperRectangleGeneric<T> r = getNode(child).getRectangle();
-					
-					if (HyperRectangleBaseGeneric.rectanglesOverlapNDimensional(r, searchRectangle)) {
-						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
-						result.put(r, new ArrayList<ILocationItemGeneric<T>>());
-						searchNDimensional(searchRectangle, getNode(child), result, depth + 1);
-					} else {
-						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
+					if (getNode(child) != null) {
+						IHyperRectangleGeneric<T> r = getNode(child).getRectangle();
+						
+						if (HyperRectangleBaseGeneric.rectanglesOverlapNDimensional(r, searchRectangle)) {
+	//						logger.log("Rectangles overlap: r: " + r + " searchRectangle: " + searchRectangle);
+							result.put(r, new ArrayList<ILocationItemGeneric<T>>());
+							searchNDimensional(searchRectangle, getNode(child), result, depth + 1);
+						} else {
+	//						logger.log("NO overlap: r: " + r + " searchRectangle: " + searchRectangle);
+						}
 					}
 				}
 			}

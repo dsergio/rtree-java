@@ -33,8 +33,8 @@ public class DataImport {
 		List<ILocationItemGeneric<RDouble>> citiesToInsert = new ArrayList<ILocationItemGeneric<RDouble>>();
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
+		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		rtree.storage.StorageType cloudType = rtree.storage.StorageType.MYSQL;
 
 		if (args.length < 5) {
 			logger.log("Usage: java DataImport [treeName] [inputFile] [number of inserts] [maxChildren] [maxItems]");
