@@ -82,12 +82,29 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		}
 
 	}
+	
+	@Override
+	public boolean isDbConnected() {
+	    final String CHECK_SQL_QUERY = "SELECT 1";
+	    boolean isConnected = false;
+	    try {
+	        final PreparedStatement statement = conn.prepareStatement(CHECK_SQL_QUERY);
+	        isConnected = true;
+	    } catch (SQLException | NullPointerException e) {
+	        return false;
+	    }
+	    return isConnected;
+	}
 
 	@Override
 	public abstract void initializeStorage();
 
 	@Override
 	public int getNumDimensions(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		int N = 2; // default to 2
 
@@ -120,6 +137,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	public IRTreeNodeGeneric<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, IRTreeCacheGeneric<T> cache) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 
@@ -215,6 +236,11 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `treeType`, `properties`) "
 				+ "VALUES (?, ?, ?, ?, ?, ?);";
 
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		PreparedStatement stmt = null;
 		int c = 1;
 
@@ -244,6 +270,11 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		
 		String update = "UPDATE `" + tablePrefix + "_data` ";
@@ -304,6 +335,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	@Override
 	public IRTreeNodeGeneric<T> getCloudRTreeNode(String tableName, String nodeId, IRTreeCacheGeneric<T> cache) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		
 		String select = " SELECT * FROM " + tablePrefix + "_data ";
@@ -485,6 +520,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
 		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`, `treeType`) " + "VALUES (?, ?, ?, ?, ?);";
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		PreparedStatement stmt = null;
 		int c = 1;
 
@@ -508,6 +547,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	@Override
 	public boolean metaDataExists(String treeName) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
@@ -533,6 +576,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	@Override
 	public int getMaxChildren(String treeName) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		int maxChildren = 4; // default to 4
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
@@ -561,6 +608,11 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 
 	@Override
 	public int getMaxItems(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		int maxItems = 4; // default to 4
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
@@ -589,6 +641,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 	@Override
 	public List<T> getMin(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
@@ -636,6 +692,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 	@Override
 	public List<T> getMax(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
@@ -717,6 +777,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	@Override
 	public void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName) {
 		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		JSONArray arrMin = new JSONArray();
 		JSONArray arrMax = new JSONArray();
 		for (int i = 0; i < minimums.size(); i++) {
@@ -752,6 +816,9 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	@Override
 	public void clearData() {
 		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		String deleteData = "DELETE FROM " + tablePrefix + "_data WHERE 1; ";
 		
@@ -782,6 +849,10 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 	@Override
 	public List<IRTreeGeneric<T>> getAllTrees() {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		List<IRTreeGeneric<T>> trees = new ArrayList<IRTreeGeneric<T>>();
 
@@ -826,6 +897,11 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	
 	@Override
 	public List<ILocationItemGeneric<T>> getAllLocationItems() {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		List<ILocationItemGeneric<T>> items = new ArrayList<ILocationItemGeneric<T>>();
 
 		String select = " SELECT * FROM `" + tablePrefix + "_items` ";

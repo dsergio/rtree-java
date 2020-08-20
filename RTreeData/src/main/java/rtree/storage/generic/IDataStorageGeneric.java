@@ -57,5 +57,7 @@ public interface IDataStorageGeneric<T extends IRType<T>> {
 	 
 	 List<T> getMin(String treeName);
 	 List<T> getMax(String treeName);
+	 
+	 boolean isDbConnected();
 	
 }

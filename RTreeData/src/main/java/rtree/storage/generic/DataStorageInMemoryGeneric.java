@@ -336,4 +336,11 @@ public class DataStorageInMemoryGeneric<T extends IRType<T>> extends DataStorage
 		return null;
 	}
 
+
+	@Override
+	public boolean isDbConnected() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }
