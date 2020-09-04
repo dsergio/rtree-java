@@ -336,6 +336,7 @@ public abstract class DataStorageSQLBaseGeneric<T extends IRType<T>> extends Dat
 	public IRTreeNodeGeneric<T> getCloudRTreeNode(String tableName, String nodeId, IRTreeCacheGeneric<T> cache) {
 
 		if (!isDbConnected()) {
+			System.out.println("re-initializing db connection...");
 			init();
 		}
 		

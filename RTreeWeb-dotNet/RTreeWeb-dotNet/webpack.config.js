@@ -90,17 +90,20 @@ module.exports = (env, argv) => {
 
             // copy files to wwwroot
             new CopyWebpackPlugin(
-                [
-                    // {from: 'favicon', to: distPath},
-                    // {from: 'icons', to: iconDistPath},
-                    { from: 'images', to: imgDistPath },
-                    //{ from: 'scripts/two', to: staticDistPath },
-                    //{ from: 'scripts/three', to: staticDistPath + '/[name].[hash].[ext]' }
-                ],
                 {
-                    context: srcPath,
-                    copyUnmodified: true,
-                    ignore: ['*.DS_Store']
+                    patterns: [
+                        // {from: 'favicon', to: distPath},
+                        // {from: 'icons', to: iconDistPath},
+                        { from: 'images', to: imgDistPath },
+                        //{ from: 'scripts/two', to: staticDistPath },
+                        //{ from: 'scripts/three', to: staticDistPath + '/[name].[hash].[ext]' }
+                    ]
+                    //,
+                    //options: {
+                    //    context: srcPath,
+                    //    copyUnmodified: true,
+                    //    ignore: ['*.DS_Store'] 
+                    //}
                 }),
 
             new MiniCssExtractPlugin({
