@@ -179,7 +179,7 @@
     <script src="~<%= htmlWebpackPlugin.files.chunks[chunk].entry %>"></script>
     <% } %>
 
-    
+
     <!-- End Scripts -->
 
     @RenderSection("scripts", required: false)
@@ -211,6 +211,17 @@
 
         });
     </script>
+
+    <!-- Global site tag (gtag.js) - Google Ads: 433058455 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-433058455"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'AW-433058455');
+    </script>
+
 
 </body>
 </html>

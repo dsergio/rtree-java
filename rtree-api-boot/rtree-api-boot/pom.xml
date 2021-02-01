@@ -81,7 +81,7 @@
 					<schemaVersion>V2</schemaVersion>
 					<resourceGroup>ResourceGroup1</resourceGroup>
 					<appName>dsergio-rtree-api-boot</appName>
-					<pricingTier>F1</pricingTier>
+					<pricingTier>B1</pricingTier>
 					<region>West US 2</region>
 					<runtime>
 						<os>linux</os>
