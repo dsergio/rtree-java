@@ -7,17 +7,21 @@
 
 <h3>Front-end</h3>
 
-<p>This app uses .NET Core with VueJS, TypeScript, and Webpack for bundling. 2D structures are rendered with HTML canvas, 3D structures with ThreeJS. 
-    Other dimensional R-Trees can't be visualized in the same way. This app use Bulma with Bulmaswatch for SCSS theming.</p>
+<p>
+    This app uses .NET Core with VueJS, TypeScript, and Webpack for bundling. 2D structures are rendered with HTML canvas, 3D structures with ThreeJS.
+    Other dimensional R-Trees can't be visualized in the same way. This app use Bulma with Bulmaswatch for SCSS theming.
+</p>
 
 <h3>Data Structure</h3>
 
-<p>I designed the data structure initially for a acadamic project, but when I finished it I decided to keep working on it and expanding it. 
+<p>
+    I designed the data structure initially for a acadamic project, but when I finished it I decided to keep working on it and expanding it.
     The data structure was refactored to allow for configurable storage implementations and configurable split (insertion) algorithms.
-    I've also started working on generics and configurable data types. 
-    The data structure is written in Java and is located in the <a href = "https://github.com/dsergio/rtree-java/tree/master/RTreeData" target="_blank">RTreeData</a> project.</p>
+    I've also started working on generics and configurable data types.
+    The data structure is written in Java and is located in the <a href="https://github.com/dsergio/rtree-java/tree/master/RTreeData" target="_blank">RTreeData</a> project.
+</p>
 
-<p>UML (In progress): <a href="https://dsergio.co/portfolio/site/rtreeUML.pdf" target="_blank">rtreeUML.pdf</a></p>
+<p>UML (In progress): <a href="https://dsergio.co/portfolio/site/rtreeUML.pdf" target="_blank" onclick="gtag_report_conversion();">rtreeUML.pdf</a></p>
 
 <img src="https://dsergio.co/portfolio/site/images/CSCD467_FinalProject_Diagrams.png" />
 
@@ -28,3 +32,20 @@
 <h3>Deployment</h3>
 
 <p>This app uses Azure Web Apps with Azure DevOps CI/CD and github for source control.</p>
+
+<!-- Event snippet for Custom Conversion conversion page
+In your html page, add the snippet and call gtag_report_conversion when someone clicks on the chosen link or button. -->
+<script>
+function gtag_report_conversion(url) {
+  var callback = function () {
+    if (typeof(url) != 'undefined') {
+      window.location = url;
+    }
+  };
+  gtag('event', 'conversion', {
+      'send_to': 'AW-433058455/979rCLek3fMBEJflv84B',
+      'event_callback': callback
+  });
+  return false;
+}
+</script>
