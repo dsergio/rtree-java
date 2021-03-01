@@ -16,7 +16,7 @@
     "bulma-switch": "^2.0.0",
     "bulmaswatch": "^0.8.1",
     "jquery": "^3.5.1",
-    "three": "^0.118.3",
+    "three": "^0.125.0",
     "three.meshline": "^1.2.0",
     "vue": "2.6.11",
     "vue-class-component": "7.2.3",
