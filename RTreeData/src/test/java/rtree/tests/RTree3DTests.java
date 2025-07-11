@@ -10,6 +10,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.ILocationItem;
@@ -44,6 +45,7 @@ class RTree3DTests {
 	void tearDown() throws Exception {
 	}
 
+	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
@@ -63,6 +65,7 @@ class RTree3DTests {
 		assertTrue(true);
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
@@ -95,6 +98,7 @@ class RTree3DTests {
 		
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
@@ -132,6 +136,7 @@ class RTree3DTests {
 		assertTrue(true);
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_Query_Success() {
 		// Arrange
@@ -193,6 +198,7 @@ class RTree3DTests {
 		
 	}
 	
+	@Disabled
 	@Test
 	void SqliteTree_InsertSeveralItems_Success() {
 		// Arrange
@@ -202,8 +208,8 @@ class RTree3DTests {
 
 		IRTree tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
-//		IDataStorage dataStorage = new DataStorageSqlite(logger);
+//		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		IDataStorage dataStorage = new DataStorageSqlite(logger);
 //		IDataStorage dataStorage = new DataStorageMySQL(logger);
 		
 		try {

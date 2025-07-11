@@ -40,6 +40,7 @@ public class TesterDouble {
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEV);
 		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
+		cloudType = rtree.storage.StorageType.MYSQL;
 
 		if (args.length < 1) {
 			logger.log("Usage: java TesterDouble [treeName] [optional maxChildren] [optional maxItems]");

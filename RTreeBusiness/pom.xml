@@ -11,8 +11,6 @@
 
 	<name>RTreeBusiness</name>
 	<description>RTreeBusiness</description>
-	<!-- FIXME change it to the project's website -->
-	<url>http://www.example.com</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -27,7 +25,6 @@
 			<version>3.8.1</version>
 		</dependency>
 
-		<!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
 		<dependency>
 			<groupId>dsergio</groupId>
 			<artifactId>rtree</artifactId>

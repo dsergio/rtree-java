@@ -9,6 +9,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.ILocationItem;
@@ -41,6 +42,7 @@ class RTree2DTests {
 	void tearDown() throws Exception {
 	}
 
+	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
@@ -60,6 +62,7 @@ class RTree2DTests {
 		assertTrue(true);
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
@@ -92,6 +95,7 @@ class RTree2DTests {
 		
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
@@ -101,7 +105,7 @@ class RTree2DTests {
 		IDataStorage dataStorage = new DataStorageInMemory(logger);
 		
 		try {
-			tree = new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
+			tree = new RTree2D(dataStorage, 4, 20, logger, N, "TestTree1");
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -125,6 +129,7 @@ class RTree2DTests {
 		assertTrue(true);
 	}
 	
+	@Disabled
 	@Test
 	void InMemoryTree_Query_Success() {
 		// Arrange

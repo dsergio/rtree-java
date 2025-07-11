@@ -49,3 +49,12 @@ RTreeData/src/main/resources/config.properties
 
 # DB files
 *.db
+RTreeWeb/node_modules/
+
+RTreeData/bin/
+
+rtree-api-boot/rtree-api-boot/bin/
+
+RTreeWeb/.vscode/
+
+RTreeWeb/dist/

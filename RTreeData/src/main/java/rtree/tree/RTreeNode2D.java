@@ -39,7 +39,7 @@ public class RTreeNode2D extends RTreeNodeBase {
 	
 	@Override
 	public void updateRectangle(boolean goUp) {
-		System.out.println("RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+//		System.out.println("RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
 		
 		int minX = rectangle.getDim1(0);
 		int maxX = rectangle.getDim2(0);

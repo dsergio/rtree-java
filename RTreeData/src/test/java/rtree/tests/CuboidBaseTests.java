@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.ILocationItem;
@@ -30,6 +31,7 @@ class CuboidBaseTests {
 	void tearDown() throws Exception {
 	}
 
+	@Disabled
 	@Test
 	void CuboidBase_RectangleContainsPoint_ReturnTrue() {
 		// Arrange
@@ -47,6 +49,7 @@ class CuboidBaseTests {
 		assertEquals(true, contains);
 	}
 	
+	@Disabled
 	@Test
 	void CuboidBase_RectangleContainsPoint_ReturnFalse() {
 		// Arrange

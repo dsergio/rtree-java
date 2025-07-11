@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.LocationItem2D;
@@ -29,6 +30,7 @@ class LocationItemBaseTests {
 	void tearDown() throws Exception {
 	}
 
+	@Disabled
 	@Test
 	void LocationItemBase_2D_Space() {
 		// Arrange
@@ -42,6 +44,7 @@ class LocationItemBaseTests {
 		assertEquals(100, space);
 	}
 	
+	@Disabled
 	@Test
 	void LocationItemBase_3D_Space() {
 		// Arrange

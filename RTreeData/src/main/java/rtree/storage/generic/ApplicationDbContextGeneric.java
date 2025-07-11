@@ -27,8 +27,10 @@ public class ApplicationDbContextGeneric<T extends IRType<T>> {
 	public ApplicationDbContextGeneric(Class<T> clazz) {
 		
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		
 //		dataStorage = new DataStorageSqliteGeneric<T>(logger, clazz);
 		dataStorage = new DataStorageMySQLGeneric<T>(logger, clazz);
+		
 		List<IRTreeGeneric<T>> treeSet = dataStorage.getAllTrees();
 		List<ILocationItemGeneric<T>> locationItemSet = dataStorage.getAllLocationItems();
 		treeSetMap = new HashMap<String, IRTreeGeneric<T>>();

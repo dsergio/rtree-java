@@ -132,7 +132,7 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 	public void addItem(ILocationItem locationItem) throws IOException {
 		
 		logger.log("CloudRTreeNode.addItem");
-		System.out.println("Rectangle: " + this.rectangle);
+//		System.out.println("Rectangle: " + this.rectangle);
 		locationItems.add(locationItem);
 		updateRectangle();
 		

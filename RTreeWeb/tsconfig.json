@@ -1,0 +1,19 @@
+// client/tsconfig.json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/generated/TypeScriptClient/index.ts", "src/**/*.vue", "src/shims-vue.d.ts", "src/two/**/*.js", "src/types"],
+  "exclude": ["node_modules"]
+}

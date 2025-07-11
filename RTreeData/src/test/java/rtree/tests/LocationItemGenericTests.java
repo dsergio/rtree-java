@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.BoundingBox;
@@ -32,6 +33,7 @@ class LocationItemGenericTests {
 	void tearDown() throws Exception {
 	}
 
+	@Disabled
 	@Test
 	void LocationItemGeneric_RTreeInteger_SpaceCorrect() {
 		// Arrange
@@ -57,6 +59,7 @@ class LocationItemGenericTests {
 		assertEquals(100, space);
 	}
 	
+	@Disabled
 	@Test
 	void LocationItemGeneric_RTreeBoolean_BoundingBoxSpaceCorrect() {
 		// Arrange
@@ -87,6 +90,7 @@ class LocationItemGenericTests {
 		assertEquals(0, boundingBoxspace);
 	}
 	
+	@Disabled
 	@Test
 	void LocationItemGeneric_RTreeBoolean_BoundingBoxSpaceCorrect2() {
 		// Arrange

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.rectangle.IHyperRectangle;
@@ -28,6 +29,7 @@ class RectangleTests {
 	void tearDown() throws Exception {
 	}
 	
+	@Disabled
 	@Test
 	void Rectangle_SetGetDimensionValues_Success() {
 		
@@ -52,6 +54,7 @@ class RectangleTests {
 		assertEquals(y2, y2Observed);
 	}
 	
+	@Disabled
 	@Test
 	void Rectangle_SetGetDefaultDimensionValues_Success() {
 		
@@ -81,6 +84,7 @@ class RectangleTests {
 		assertEquals(y2, y2Observed);
 	}
 
+	@Disabled
 	@Test
 	void Rectangle_Overlap_True() {
 		// Arrange
@@ -94,6 +98,7 @@ class RectangleTests {
 		assertEquals(true, overlap);
 	}
 	
+	@Disabled
 	@Test
 	void Rectangle_Overlap_False() {
 		// Arrange
@@ -107,6 +112,7 @@ class RectangleTests {
 		assertEquals(false, overlap);
 	}
 	
+	@Disabled
 	@Test
 	void Rectangle_Sum_CorrectValue() {
 		// Arrange

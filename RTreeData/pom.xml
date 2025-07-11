@@ -8,26 +8,6 @@
 	<version>1.0.2</version>
 	
 	
-	
-	<repositories>
-		<repository>
-		  <id>rtree-java-feed</id>
-		  <url>https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1</url>
-		  <releases>
-		    <enabled>true</enabled>
-		  </releases>
-		  <snapshots>
-		    <enabled>true</enabled>
-		  </snapshots>
-		</repository>
-	</repositories>
-	
-	<distributionManagement>
-		<repository>
-		  <id>rtree-java-feed</id>
-		  <url>https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1</url>
-		</repository>
-	</distributionManagement>
 
 	<dependencies>
 
