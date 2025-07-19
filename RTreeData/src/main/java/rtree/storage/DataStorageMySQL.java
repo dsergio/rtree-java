@@ -47,7 +47,7 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 	
 				Configuration config = configs.properties(new File("resources/config.properties"));
 				username = config.getString("MYSQL.user");
-				password = "";
+				password = config.getString("MYSQL.password");
 				host = config.getString("MYSQL.host");
 				database = config.getString("MYSQL.database");
 	

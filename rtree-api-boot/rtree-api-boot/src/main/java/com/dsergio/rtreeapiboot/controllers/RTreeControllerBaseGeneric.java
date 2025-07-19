@@ -1,15 +1,15 @@
 package com.dsergio.rtreeapiboot.controllers;
 
-import co.dsergio.rtree.business.services.generic.RTreeServiceBaseGeneric;
+import co.dsergio.rtree.business.services.RTreeServiceBase;
 import rtree.item.IRType;
 import springfox.documentation.annotations.ApiIgnore;
 
 @ApiIgnore
 public abstract class RTreeControllerBaseGeneric<T extends IRType<T>> {
 	
-	protected RTreeServiceBaseGeneric<T> rtreeService;
+	protected RTreeServiceBase<T> rtreeService;
 	
-	public RTreeControllerBaseGeneric(RTreeServiceBaseGeneric<T> rtreeService) {
+	public RTreeControllerBaseGeneric(RTreeServiceBase<T> rtreeService) {
 		this.rtreeService = rtreeService;
 	}
 	

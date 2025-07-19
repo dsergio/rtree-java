@@ -1,14 +1,14 @@
-package co.dsergio.rtree.business.services.generic;
+package co.dsergio.rtree.business.services;
 
 import rtree.item.IRType;
 import rtree.storage.ApplicationDbContext;
 
-public abstract class EntityServiceBaseGeneric<T extends IRType<T>> {
+public abstract class EntityServiceBase<T extends IRType<T>> {
 	
 	protected Class<T> clazz;
 	protected ApplicationDbContext<T> dbContext;
 	
-	public EntityServiceBaseGeneric(Class<T> clazz) {
+	public EntityServiceBase(Class<T> clazz) {
 		dbContext = new ApplicationDbContext<T>(clazz);
 		this.clazz = clazz;
 	}

@@ -1,4 +1,4 @@
-package co.dsergio.rtree.business.services.generic;
+package co.dsergio.rtree.business.services;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -22,10 +22,10 @@ import rtree.tree.RTree;
  * @author David Sergio
  *
  */
-public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceBaseGeneric<T> {
+public class RTreeServiceBase<T extends IRType<T>> extends EntityServiceBase<T> {
 	
 	
-	public RTreeServiceBaseGeneric(Class<T> clazz) {
+	public RTreeServiceBase(Class<T> clazz) {
 		super(clazz);
 	}
 	
