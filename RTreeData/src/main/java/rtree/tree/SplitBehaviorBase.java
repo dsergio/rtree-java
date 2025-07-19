@@ -1,6 +1,7 @@
 package rtree.tree;
 
 import rtree.item.ILocationItem;
+import rtree.item.IRType;
 import rtree.log.ILogger;
 
 /**
@@ -8,9 +9,9 @@ import rtree.log.ILogger;
  * @author David Sergio
  *
  */
-public abstract class SplitBehaviorBase implements ISplitBehavior {
+public abstract class SplitBehaviorBase<T extends IRType<T>> implements ISplitBehavior<T> {
 	
-	protected IRTreeCache cache;
+	protected IRTreeCache<T> cache;
 	protected int maxChildren;
 	protected boolean branchSplit;
 	protected String treeName;
@@ -22,15 +23,15 @@ public abstract class SplitBehaviorBase implements ISplitBehavior {
 	}
 	
 	@Override
-	public IRTreeNode getNode(String nodeId) {
+	public IRTreeNode<T> getNode(String nodeId) {
 		return cache.getNode(nodeId);
 	}
 	
 	
 	@Override
-	public abstract void splitLeafNode(IRTreeNode node, ILocationItem locationItem);
+	public abstract void splitLeafNode(IRTreeNode<T> node, ILocationItem<T> locationItem);
 	@Override
-	public abstract void splitBranchNode(IRTreeNode node);
+	public abstract void splitBranchNode(IRTreeNode<T> node);
 	
 	
 	
@@ -38,7 +39,7 @@ public abstract class SplitBehaviorBase implements ISplitBehavior {
 	public abstract String getDescription();
 	
 	@Override
-	public void initialize(int maxChildren, String treeName, IRTreeCache cacheContainer, ILogger logger) {
+	public void initialize(int maxChildren, String treeName, IRTreeCache<T> cacheContainer, ILogger logger) {
 		this.maxChildren = maxChildren;
 		this.treeName = treeName;
 		this.cache = cacheContainer;

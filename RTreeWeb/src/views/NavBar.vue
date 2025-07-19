@@ -26,8 +26,7 @@
 
           <div class="navbar-dropdown">
             <a class="navbar-item" @click="$router.push('/rtree');toggleMenu();toggleSubmenu();">R-Tree</a>
-            <a class="navbar-item">ML 1</a>
-            <a class="navbar-item">ML 2</a>
+            <a class="navbar-item" @click="$router.push('/mlpa');toggleMenu();toggleSubmenu();">MLPA</a>
             <a class="navbar-item" @click="$router.push('/analytics');toggleMenu();toggleSubmenu();">Analytics</a>
             <hr class="navbar-divider" />
             <a class="navbar-item" @click="$router.push('/portfolio');toggleMenu();toggleSubmenu();">All</a>

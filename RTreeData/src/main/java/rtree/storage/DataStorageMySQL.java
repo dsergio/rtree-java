@@ -11,14 +11,14 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
+import rtree.item.IRType;
 import rtree.log.ILogger;
-import rtree.tree.IRTree;
 
-public class DataStorageMySQL extends DataStorageSQLBase {
+public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T> {
 
 //	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
-	public DataStorageMySQL(ILogger logger) {
-		super(StorageType.MYSQL, logger);
+	public DataStorageMySQL(ILogger logger, Class<T> clazz) {
+		super(StorageType.MYSQL, logger, clazz);
 		init();
 	}
 	
@@ -47,7 +47,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 	
 				Configuration config = configs.properties(new File("resources/config.properties"));
 				username = config.getString("MYSQL.user");
-				password = config.getString("MYSQL.password");
+				password = "";
 				host = config.getString("MYSQL.host");
 				database = config.getString("MYSQL.database");
 	
@@ -63,7 +63,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 
 		Connection conn = null;
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
+			Class.forName("com.mysql.cj.jdbc.Driver");
 			conn = DriverManager.getConnection(url, username, password);
 		} catch (SQLException e) {
 			logger.log(e);
@@ -120,6 +120,7 @@ public class DataStorageMySQL extends DataStorageSQLBase {
 					+ " location TEXT NULL, " 
 					+ " type VARCHAR(255) NULL, "
 					+ " treeType VARCHAR(255) NOT NULL, "
+					+ " properties TEXT NULL, " 
 					+ " PRIMARY KEY ( id ) "
 					+ ")";
 			

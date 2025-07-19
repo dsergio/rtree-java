@@ -31,18 +31,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.text.DefaultCaret;
 
 import rtree.item.ILocationItem;
-import rtree.item.LocationItem2D;
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.LocationItemNDGeneric;
-import rtree.item.generic.RDouble;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
-import rtree.rectangle.generic.IHyperRectangleGeneric;
-import rtree.rectangle.generic.RectangleNDGeneric;
+import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTree;
-import rtree.tree.generic.IRTreeGeneric;
 
 public class TestPaintDouble extends JFrame implements KeyListener, ActionListener {
 
@@ -51,16 +46,16 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 	 */
 	private static final long serialVersionUID = 2136767310271470973L;
 	final PaintPanel paintPan;
-	IRTreeGeneric<RDouble> tree;
-	List<ILocationItemGeneric<RDouble>> points;
+	IRTree<RDouble> tree;
+	List<ILocationItem<RDouble>> points;
 	private JTextField output;
-	private IHyperRectangleGeneric<RDouble> searchRectangle = null;
+	private IHyperRectangle<RDouble> searchRectangle = null;
 	JButton searchButton = new JButton("Search");
 	JButton showTree = new JButton("Show Tree");
 	JButton showTreeStructure = new JButton("Show Tree Structure");
 	boolean showTreeOn = false;
 	JTextArea info = new JTextArea();
-	Map<IHyperRectangleGeneric<RDouble>, List<ILocationItemGeneric<RDouble>>> searchResults;
+	Map<IHyperRectangle<RDouble>, List<ILocationItem<RDouble>>> searchResults;
 	JList<String> list;
 	double searchRange = 60;
 	private ILogger logger;
@@ -78,7 +73,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 	
 	private double scaleFactor = 1000;
 	
-	public TestPaintDouble(IRTreeGeneric<RDouble> tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
+	public TestPaintDouble(IRTree<RDouble> tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger) {
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
@@ -149,7 +144,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 
 	}
 	
-	public TestPaintDouble(IRTreeGeneric<RDouble> tree, ILogger logger, ILoggerPaint paintLogger) {
+	public TestPaintDouble(IRTree<RDouble> tree, ILogger logger, ILoggerPaint paintLogger) {
 		this(tree, false, logger, paintLogger);
 	}
 	
@@ -214,7 +209,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				list.repaint();
 				paintPan.repaint();
 				repaint();
-				searchRectangle = new RectangleNDGeneric<RDouble>(2);
+				searchRectangle = new HyperRectangle<RDouble>(2);
 				
 				double x1 = e.getX() - list.getWidth() - searchRange;
 				double x2 = e.getX() - list.getWidth() + searchRange;
@@ -227,9 +222,9 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				searchRectangle.setDim2(1, new RDouble(y2 / scaleFactor));
 				
 				searchResults = tree.search(searchRectangle);
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					
@@ -292,11 +287,11 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 			setBackground(Color.LIGHT_GRAY);
 		}
 
-		public void setPoints(List<ILocationItemGeneric<RDouble>> pointsToAdd) {
+		public void setPoints(List<ILocationItem<RDouble>> pointsToAdd) {
 			points = pointsToAdd;
 		}
 
-		public void addPoint(LocationItemNDGeneric<RDouble> item) {
+		public void addPoint(LocationItem<RDouble> item) {
 			points.add(item);
 		}
 		
@@ -337,7 +332,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 			}
 			
 			if (showTreeOn) {
-				for (ILocationItemGeneric<RDouble> item : tree.getPoints()) {
+				for (ILocationItem<RDouble> item : tree.getAllPoints()) {
 					
 					RDouble Rx = item.getDim(0);
 					RDouble Ry = item.getDim(1);
@@ -367,9 +362,9 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 						
 					}
 				}
-				List<IHyperRectangleGeneric<RDouble>> rectangles = new ArrayList<IHyperRectangleGeneric<RDouble>>();
-				rectangles = tree.getRectangles();
-				for (IHyperRectangleGeneric<RDouble> r : rectangles) {
+				List<IHyperRectangle<RDouble>> rectangles = new ArrayList<IHyperRectangle<RDouble>>();
+				rectangles = tree.getAllRectangles();
+				for (IHyperRectangle<RDouble> r : rectangles) {
 					
 					RDouble Rx = r.getDim1(0);
 					RDouble Ry = r.getDim1(1);
@@ -430,8 +425,8 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				drawImage = (Graphics2D) g;
 				color = Color.BLACK;
 				
-				List<ILocationItemGeneric<RDouble>> allItems = new ArrayList<ILocationItemGeneric<RDouble>>();
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				List<ILocationItem<RDouble>> allItems = new ArrayList<ILocationItem<RDouble>>();
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					
 					if (r.getDim1(0) != searchRectangle.getDim1(0) && 
 							r.getDim2(0) != searchRectangle.getDim2(0) && 
@@ -488,7 +483,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 						drawImage.setStroke(existing);
 					}
 					
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						
 						RDouble RItemX = i.getDim(0);
 						RDouble RItemY = i.getDim(1);
@@ -514,7 +509,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 					list.setListData(data);
 				} else {
 					List<String> dataStrings = new ArrayList<String>();
-					for (ILocationItemGeneric<RDouble> i : allItems) {
+					for (ILocationItem<RDouble> i : allItems) {
 						dataStrings.add(i.toString());
 					}
 					list.setListData(dataStrings.toArray(new String[0]));
@@ -550,7 +545,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 		public void updateGraphics(int x, int y) throws IOException {
 			color = Color.BLACK;
 
-			LocationItemNDGeneric<RDouble> item = new LocationItemNDGeneric<RDouble>(2);
+			LocationItem<RDouble> item = new LocationItem<RDouble>(2);
 			
 			RDouble Rx = new RDouble((double) x / scaleFactor);
 			RDouble Ry = new RDouble((double) y / scaleFactor);
@@ -559,7 +554,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 			item.setDim(1, Ry);
 			
 			// addPoint(item);
-			tree.insert(item);
+			tree.insertRandomAnimal(item);
 			tree.updateRoot();
 			repaint();
 		}
@@ -592,7 +587,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range);
 				String[] data = {"Searching..."};
 				list.setListData(data);
-				searchRectangle = new RectangleNDGeneric<RDouble>(2);
+				searchRectangle = new HyperRectangle<RDouble>(2);
 				
 				
 				searchRectangle.setDim1(0, new RDouble(x));
@@ -601,9 +596,9 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				searchRectangle.setDim2(1, new RDouble(y + range));
 				
 				searchResults = tree.search(searchRectangle);
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					
@@ -620,7 +615,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 
 				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
 
-				ILocationItemGeneric<RDouble> toDelete = new LocationItemNDGeneric<RDouble>(2);
+				ILocationItem<RDouble> toDelete = new LocationItem<RDouble>(2);
 				toDelete.setDim(0, new RDouble(x));
 				toDelete.setDim(1, new RDouble(y));
 				toDelete.setType(type);

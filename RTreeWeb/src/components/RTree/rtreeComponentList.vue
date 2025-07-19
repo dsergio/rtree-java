@@ -4,7 +4,9 @@
         <div class="column">
             <div class="rtree-component-list">
                 <h2 class="title">R-Tree datasets</h2>
-                <BaseButton @click="createRTree()">Add New R-Tree dataset</BaseButton>
+                <input type = "text" placeholder="New Tree Name" v-model="newTreeName" />
+                <br /><br />
+                <BaseButton @click="createRTree(newTreeName)">Add New R-Tree dataset</BaseButton>
                 <br /><br />
                 <table class="table is-striped">
                 <thead>
@@ -20,7 +22,7 @@
                         <td>{{ component.item.numDimensions }}</td>
                         <td>
                             <BaseButton @click="setActiveComponent(component)">View/Edit</BaseButton> &nbsp;
-                            <BaseButton @click="deleteComponent(component)">Delete</BaseButton>
+                            <BaseButton @click="deleteComponent(component.item.name)">Delete</BaseButton>
                         </td>
                     </tr>
                 </tbody>
@@ -48,11 +50,26 @@ const api = new RTreeDoubleApi(
   })
 );
 
-const createRTree = async () => {
+const createRTree = async (name: string) => {
   try {
-    
-    console.log(`Created new R-Tree: `);
 
+    var obj = {
+        rtreeCreate: {
+          maxChildren: 4,
+          maxItems: 4,
+          treeName: name,
+          numDimensions: 2,
+        }
+      };
+
+    console.log("new R-Tree object:", obj);
+    const res = await api.rTreeDoubleNewTree(
+      obj
+    );
+
+    console.log(`Created new R-Tree: ${name}`);
+
+    init_treeList(); // Refresh the list after creating a new R-Tree
   } catch (error) {
     console.error('Failed to create new R-Tree:', error);
   }
@@ -65,11 +82,22 @@ const setActiveComponent = (component: RTreeDouble) => {
   });
 };
 
-const deleteComponent = async (component: RTreeDouble) => {
+const deleteComponent = async (name: string) => {
   try {
-    console.log(`Delete component: ${component.name}`);
+    console.log(`Delete tree: ${name}`);
+
+    api.rTreeDoubleDelete({
+      treeName: name,
+    }).then(() => {
+      console.log(`Deleted tree: ${name}`);
+      // Remove the deleted item from the list
+      rtree_list.value = rtree_list.value.filter(item => item.item.name !== name);
+    }).catch((error) => {
+      console.error(`Error deleting tree: ${name}`, error);
+    });
+
   } catch (error) {
-    console.error(`Failed to delete component: ${component.name}`, error);
+    console.error(`Failed to delete tree: ${name}`, error);
   }
 };
 
@@ -85,8 +113,7 @@ class RTreeDoubleItems {
 
 var rtree_list = ref<RTreeDoubleItems[]>([]);
 
-onMounted(async () => {
-  try {
+async function init_treeList() {
     const res = await api.rTreeDoubleGetAll();
     // console.log('Fetched data:', res);
     rtree_list.value = []; // Clear the list before adding new items
@@ -102,7 +129,11 @@ onMounted(async () => {
     // rtree_list.value.push(...res.map(item => new RTreeDoubleItems(item)));
 
     console.log('RTree List:', rtree_list.value);
+}
 
+onMounted(async () => {
+  try {
+    await init_treeList();
   } catch (err) {
     console.error('Failed to fetch data:', err);
   }

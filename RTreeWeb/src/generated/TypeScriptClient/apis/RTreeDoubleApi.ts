@@ -31,6 +31,10 @@ import {
     RectangleDoubleToJSON,
 } from '../models/index';
 
+export interface RTreeDoubleDeleteRequest {
+    treeName: string;
+}
+
 export interface RTreeDoubleGetRequest {
     treeName: string;
 }
@@ -53,6 +57,56 @@ export interface RTreeDoubleSearchRequest {
  * 
  */
 export class RTreeDoubleApi extends runtime.BaseAPI {
+
+    /**
+     * Delete RTree<Double> by treeName
+     * RTreeDouble_delete
+     */
+    async rTreeDoubleDeleteRaw(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters['treeName'] == null) {
+            throw new runtime.RequiredError(
+                'treeName',
+                'Required parameter "treeName" was null or undefined when calling rTreeDoubleDelete().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+
+        let urlPath = `/api/RTreeDouble/{treeName}`;
+        urlPath = urlPath.replace(`{${"treeName"}}`, encodeURIComponent(String(requestParameters['treeName'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        if (this.isJsonMime(response.headers.get('content-type'))) {
+            return new runtime.JSONApiResponse<string>(response);
+        } else {
+            return new runtime.TextApiResponse(response) as any;
+        }
+    }
+
+    /**
+     * Delete RTree<Double> by treeName
+     * RTreeDouble_delete
+     */
+    async rTreeDoubleDelete(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string | null | undefined > {
+        const response = await this.rTreeDoubleDeleteRaw(requestParameters, initOverrides);
+        switch (response.raw.status) {
+            case 200:
+                return await response.value();
+            case 204:
+                return null;
+            default:
+                return await response.value();
+        }
+    }
 
     /**
      * Get RTree<Double> structure and data by treeName

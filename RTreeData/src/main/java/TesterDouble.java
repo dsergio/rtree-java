@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import rtree.item.LocationItem2D;
-import rtree.item.generic.RDouble;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
 import rtree.log.LogLevel;
@@ -18,15 +17,9 @@ import rtree.storage.DataStorageInMemory;
 import rtree.storage.DataStorageMySQL;
 import rtree.storage.DataStorageSqlite;
 import rtree.storage.IDataStorage;
-import rtree.storage.generic.DataStorageInMemoryGeneric;
-import rtree.storage.generic.DataStorageMySQLGeneric;
-import rtree.storage.generic.DataStorageSqliteGeneric;
-import rtree.storage.generic.IDataStorageGeneric;
+import rtree.storage.StorageType;
 import rtree.tree.IRTree;
-import rtree.tree.RTree2D;
-import rtree.tree.RTreeND;
-import rtree.tree.generic.IRTreeGeneric;
-import rtree.tree.generic.RTreeNDGeneric;
+import rtree.tree.RTree;
 
 public class TesterDouble {
 
@@ -39,8 +32,8 @@ public class TesterDouble {
 		// configurations
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
 		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEV);
-		rtree.storage.StorageType cloudType = rtree.storage.StorageType.SQLITE;
-		cloudType = rtree.storage.StorageType.MYSQL;
+		StorageType cloudType = StorageType.SQLITE;
+		cloudType = StorageType.MYSQL;
 
 		if (args.length < 1) {
 			logger.log("Usage: java TesterDouble [treeName] [optional maxChildren] [optional maxItems]");
@@ -51,36 +44,36 @@ public class TesterDouble {
 		}
 		inputTreeName = args[0];
 
-		IDataStorageGeneric<RDouble> dataStorage = null;
+		IDataStorage<RDouble> dataStorage = null;
 
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dataStorage = new DataStorageMySQLGeneric<RDouble>(logger, RDouble.class);
+				dataStorage = new DataStorageMySQL<RDouble>(logger, RDouble.class);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dataStorage = new DataStorageInMemoryGeneric<RDouble>(logger, RDouble.class);
+			dataStorage = new DataStorageInMemory<RDouble>(logger, RDouble.class);
 			break;
 		case DYNAMODB:
 //			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName, 2); // use a static value for now
 			break;
 		case SQLITE:
-			dataStorage = new DataStorageSqliteGeneric<RDouble>(logger, RDouble.class);
+			dataStorage = new DataStorageSqlite<RDouble>(logger, RDouble.class);
 			break;
 		default:
 			try {
-				dataStorage = new DataStorageMySQLGeneric<RDouble>(logger, RDouble.class);
+				dataStorage = new DataStorageMySQL<RDouble>(logger, RDouble.class);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		IRTreeGeneric<RDouble> tree = null;
+		IRTree<RDouble> tree = null;
 
 		int inputMaxChildrenInt = 0;
 		int inputMaxItemsInt = 0;
@@ -101,12 +94,12 @@ public class TesterDouble {
 							"Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 
-				tree = new RTreeNDGeneric<RDouble>(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2,
+				tree = new RTree<RDouble>(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2,
 						inputTreeName, RDouble.class);
 
 			} else {
 
-				tree = new RTreeNDGeneric<RDouble>(dataStorage, logger, inputTreeName, RDouble.class);
+				tree = new RTree<RDouble>(dataStorage, logger, inputTreeName, RDouble.class);
 			}
 
 		} catch (Exception e) {

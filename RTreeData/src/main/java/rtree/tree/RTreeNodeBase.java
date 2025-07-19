@@ -11,10 +11,11 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import rtree.item.ILocationItem;
+import rtree.item.IRType;
 import rtree.item.LocationItemBase;
 import rtree.log.ILogger;
-import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
+import rtree.rectangle.HyperRectangle;
 
 
 /**
@@ -22,17 +23,17 @@ import rtree.rectangle.IHyperRectangle;
  * @author David Sergio
  *
  */
-public abstract class RTreeNodeBase implements IRTreeNode {
+public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T> {
 
 	protected List<String> children;
 	protected String parent;
-	protected List<ILocationItem> locationItems;
-	protected IHyperRectangle rectangle;
+	protected List<ILocationItem<T>> locationItems;
+	protected IHyperRectangle<T> rectangle;
 	protected String nodeId;
-	protected IRTreeCache cache;
+	protected IRTreeCache<T> cache;
 	protected ILogger logger;
 
-	public RTreeNodeBase(String nodeId, String childrenStr, String parent, IRTreeCache cache, ILogger logger) {
+	public RTreeNodeBase(String nodeId, String childrenStr, String parent, IRTreeCache<T> cache, ILogger logger) {
 		this.cache = cache;
 		this.logger = logger;
 		this.nodeId = nodeId;
@@ -62,14 +63,14 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 		
 		
 		this.parent = parent;
-		this.locationItems = new ArrayList<ILocationItem>();
+		this.locationItems = new ArrayList<ILocationItem<T>>();
 		
 		if (cache != null) {
-			this.rectangle = new RectangleND(cache.getNumDimensions());
+			this.rectangle = new HyperRectangle<T>(cache.getNumDimensions());
 		}
 	}
 	
-	public void setLocationItems(ArrayList<ILocationItem> locationItems) {
+	public void setLocationItems(ArrayList<ILocationItem<T>> locationItems) {
 		this.locationItems = locationItems;
 	}
 	
@@ -123,23 +124,23 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 	}
 
 	@Override
-	public List<ILocationItem> getLocationItems() {
+	public List<ILocationItem<T>> getLocationItems() {
 		return locationItems;
 	}
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public void addItem(ILocationItem locationItem) throws IOException {
+	public void addItem(ILocationItem<T> locationItem) throws IOException {
 		
 		logger.log("CloudRTreeNode.addItem");
-//		System.out.println("Rectangle: " + this.rectangle);
+		logger.log("Rectangle: " + this.rectangle);
 		locationItems.add(locationItem);
 		updateRectangle();
 		
 		StringWriter out;
 		
 		JSONArray jsonArr = new JSONArray();
-		for (ILocationItem item : locationItems) {
+		for (ILocationItem<T> item : locationItems) {
 			jsonArr.add(item.getJson());
 		}
 		
@@ -160,7 +161,7 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 	
 	public abstract void updateRectangle();
 	public abstract void updateRectangle(boolean goUp);
-	public abstract void updateRectangle(IRTreeNode node);
+	public abstract void updateRectangle(IRTreeNode<T> node);
 	
 
 	@Override
@@ -174,12 +175,12 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 	}
 
 	@Override
-	public IHyperRectangle getRectangle() {
+	public IHyperRectangle<T> getRectangle() {
 		return rectangle;
 	}
 
 	@Override
-	public void setRectangle(IHyperRectangle rectangle) {
+	public void setRectangle(IHyperRectangle<T> rectangle) {
 		this.rectangle = rectangle;
 	}
 
@@ -199,7 +200,11 @@ public abstract class RTreeNodeBase implements IRTreeNode {
 	}
 
 	@Override
-	public List<ILocationItem> getPoints() {
+	public List<ILocationItem<T>> getPoints() {
+		logger.log("RTreeNodeBase getPoints called for node: " + this.nodeId + " locationItems size: " + locationItems.size());
+		for (ILocationItem<T> item : locationItems) {
+			logger.log("item: " + item.toString());
+		}
 		return locationItems;
 	}
 

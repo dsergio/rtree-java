@@ -9,13 +9,12 @@ import java.util.Map;
 import co.dsergio.rtree.business.dto.LocationItem;
 import co.dsergio.rtree.business.dto.RTreeCreate;
 import co.dsergio.rtree.business.dto.SearchRectangle;
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.IRType;
-import rtree.item.generic.LocationItemNDGeneric;
-import rtree.rectangle.generic.IHyperRectangleGeneric;
-import rtree.rectangle.generic.RectangleNDGeneric;
-import rtree.tree.generic.IRTreeGeneric;
-import rtree.tree.generic.RTreeNDGeneric;
+import rtree.item.ILocationItem;
+import rtree.item.IRType;
+import rtree.rectangle.IHyperRectangle;
+import rtree.rectangle.HyperRectangle;
+import rtree.tree.IRTree;
+import rtree.tree.RTree;
 
 /**
  * TODO Generics
@@ -44,20 +43,20 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 		return null;
 	}
 	
-	public List<IRTreeGeneric<T>> fetchAll() {
-		List<IRTreeGeneric<T>> list = new ArrayList<IRTreeGeneric<T>>(dbContext.treeSetMap.values());
+	public List<IRTree<T>> fetchAll() {
+		List<IRTree<T>> list = new ArrayList<IRTree<T>>(dbContext.treeSetMap.values());
 		return list;
 	}
 	
-	public IRTreeGeneric<T> fetchByTreeName(String treeName) {	
+	public IRTree<T> fetchByTreeName(String treeName) {	
 		return dbContext.treeSetMap.get(treeName);
 	}
 	
-	public IRTreeGeneric<T> create(RTreeCreate rtreeCreate) {
+	public IRTree<T> create(RTreeCreate rtreeCreate) {
 		
-		IRTreeGeneric<T> t = null;
+		IRTree<T> t = null;
 		try {
-			t = new RTreeNDGeneric<T>(dbContext.getDataStorage(), rtreeCreate.maxChildren, rtreeCreate.maxItems, rtreeCreate.numDimensions, rtreeCreate.treeName, clazz);
+			t = new RTree<T>(dbContext.getDataStorage(), rtreeCreate.maxChildren, rtreeCreate.maxItems, rtreeCreate.numDimensions, rtreeCreate.treeName, clazz);
 			dbContext.treeSetMap.put(rtreeCreate.treeName, t);
 			
 		} catch (Exception e) {
@@ -68,9 +67,9 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 		return t;
 	}
 	
-	public Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> search(String treeName, IHyperRectangleGeneric<T> searchRectangleInput) {
+	public Map<IHyperRectangle<T>, List<ILocationItem<T>>> search(String treeName, IHyperRectangle<T> searchRectangleInput) {
 		
-		IRTreeGeneric<T> t = dbContext.treeSetMap.get(treeName);
+		IRTree<T> t = dbContext.treeSetMap.get(treeName);
 		
 //		IHyperRectangleGeneric<T> searchR = new RectangleNDGeneric<T>(searchRectangleInput.getNumberDimensions());
 //		for (int i = 0; i < searchRectangleInput.getNumberDimensions(); i++) {
@@ -83,14 +82,14 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 //			searchR.setDim1(i, dim1);
 //			searchR.setDim2(i, dim2);
 //		}
-		Map<IHyperRectangleGeneric<T>, List<ILocationItemGeneric<T>>> results = t.search(searchRectangleInput);
+		Map<IHyperRectangle<T>, List<ILocationItem<T>>> results = t.search(searchRectangleInput);
 		
 		return results;
 	}
 	
-	public void insert(String treeName, ILocationItemGeneric<T> item) {
+	public void insert(String treeName, ILocationItem<T> item) {
 		
-		IRTreeGeneric<T> t = dbContext.treeSetMap.get(treeName);
+		IRTree<T> t = dbContext.treeSetMap.get(treeName);
 		
 		
 //		ILocationItemGeneric<T> locationItem = new LocationItemNDGeneric<T>(item.getNumberDimensions());
@@ -102,7 +101,7 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 //		}
 		
 		try {
-			t.insert(item);
+			t.insertRandomAnimal(item);
 			dbContext.treeSetMap.put(treeName, t);
 			
 		} catch (IOException e) {
@@ -110,6 +109,21 @@ public class RTreeServiceBaseGeneric<T extends IRType<T>> extends EntityServiceB
 			e.printStackTrace();
 		}
 		
+	}
+	
+	public void delete(String treeName) {
+		
+		IRTree<T> t = dbContext.treeSetMap.get(treeName);
+		if (t != null) {
+			try {
+				t.delete();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			dbContext.treeSetMap.remove(treeName);
+//			dbContext.getDataStorage().clearData();
+		}
 	}
 
 }

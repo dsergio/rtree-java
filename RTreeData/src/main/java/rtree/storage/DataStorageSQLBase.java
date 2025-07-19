@@ -1,5 +1,6 @@
 package rtree.storage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,17 +15,17 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import rtree.item.ILocationItem;
-import rtree.item.LocationItemND;
+import rtree.item.IRType;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
-import rtree.rectangle.RectangleND;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
-import rtree.tree.IRTree;
+import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTreeCache;
+import rtree.tree.IRTree;
 import rtree.tree.IRTreeNode;
-import rtree.tree.RTreeND;
-import rtree.tree.RTreeNode2D;
-import rtree.tree.RTreeNodeND;
+import rtree.tree.RTree;
+import rtree.tree.RTreeNode;
 
 /**
  * 
@@ -33,13 +34,29 @@ import rtree.tree.RTreeNodeND;
  * @author David Sergio
  *
  */
-public abstract class DataStorageSQLBase extends DataStorageBase {
+public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorageBase<T> {
 
 	protected Connection conn;
+	Class<T> clazz;
 	
 //	public DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
-	public DataStorageSQLBase(StorageType storageType, ILogger logger) {
+	public DataStorageSQLBase(StorageType storageType, ILogger logger, Class<T> clazz) {
 		super(storageType, logger);
+		this.clazz = clazz;
+	}
+	
+	public T getInstanceOf() {
+		
+		try {
+			
+			return clazz.getDeclaredConstructor().newInstance();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 
 	@Override
@@ -53,12 +70,29 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		}
 
 	}
+	
+	@Override
+	public boolean isDbConnected() {
+	    final String CHECK_SQL_QUERY = "SELECT 1";
+	    boolean isConnected = false;
+	    try {
+	        final PreparedStatement statement = conn.prepareStatement(CHECK_SQL_QUERY);
+	        isConnected = true;
+	    } catch (SQLException | NullPointerException e) {
+	        return false;
+	    }
+	    return isConnected;
+	}
 
 	@Override
 	public abstract void initializeStorage();
 
 	@Override
 	public int getNumDimensions(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		int N = 2; // default to 2
 
@@ -86,10 +120,15 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		return N;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, IRTreeCache cache) {
+	public IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, IRTreeCache<T> cache) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 
@@ -120,19 +159,13 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		
 		int numDimensions = getNumDimensions(treeName);
 		
-		IRTreeNode node = null;
-		if (numDimensions == 2) {
-			node = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			node = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
+		IRTreeNode<T> node = null;
+		node = new RTreeNode<T>(nodeId, children, parent, cache, logger, clazz);
 		
-		IHyperRectangle r;
-		if (numDimensions == 2) {
-			r = new Rectangle2D();
-		} else {
-			r = new RectangleND(numDimensions);
-		}
+		
+		IHyperRectangle<T> r;
+		r = new HyperRectangle<T>(numDimensions);
+		
 		
 		if (rectangle != null) {
 			JSONParser parser = new JSONParser();
@@ -140,26 +173,32 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			try {
 				rObj = (JSONObject) parser.parse(rectangle);
 				for (int i = 0; i < numDimensions; i++) {
+					
+					T dim1 = getInstanceOf();
+					T dim2 = getInstanceOf();
+					r.setDim1(i, dim1);
+					r.setDim2(i, dim2);
+					
 					switch (i) {
 					case 0: 
-						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
+						r.getDim1(i).setData(rObj.get("x1").toString());
+						r.getDim2(i).setData(rObj.get("x2").toString());
 						break;
 					case 1:
-						r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
+						r.getDim1(i).setData(rObj.get("y1").toString());
+						r.getDim2(i).setData(rObj.get("y2").toString());
 						break;
 					case 2:
-						r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
+						r.getDim1(i).setData(rObj.get("z1").toString());
+						r.getDim2(i).setData(rObj.get("z2").toString());
 						break;
 					default:
-						r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
+						r.getDim1(i).setData(rObj.get(i + "_1").toString());
+						r.getDim2(i).setData(rObj.get(i + "_2").toString());
 						break;
 					}
 				}
-			} catch (ParseException e) {
+			} catch (ParseException | IllegalArgumentException | SecurityException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
@@ -181,10 +220,15 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 
 	@Override
-	public void addItem(String Id, int N, String location, String type) {
-		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`) "
-				+ "VALUES (?, ?, ?, ?);";
+	public void addItem(String Id, int N, String location, String type, String properties) {
+		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `treeType`, `properties`) "
+				+ "VALUES (?, ?, ?, ?, ?, ?);";
 
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		PreparedStatement stmt = null;
 		int c = 1;
 
@@ -196,6 +240,8 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			stmt.setInt(c++, N);
 			stmt.setString(c++, location);
 			stmt.setString(c++, type);
+			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, properties);
 
 			logger.log("[QUERY]: " + stmt.toString());
 
@@ -212,6 +258,11 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		
 		String update = "UPDATE `" + tablePrefix + "_data` ";
@@ -268,9 +319,15 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		updateTime += (System.currentTimeMillis() - time);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public IRTreeNode getCloudRTreeNode(String tableName, String nodeId, IRTreeCache cache) {
+	public IRTreeNode<T> getCloudRTreeNode(String tableName, String nodeId, IRTreeCache<T> cache) {
 
+		if (!isDbConnected()) {
+			System.out.println("re-initializing db connection...");
+			init();
+		}
+		
 		long time = System.currentTimeMillis();
 		
 		String select = " SELECT * FROM " + tablePrefix + "_data ";
@@ -279,7 +336,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 		String query = select + where;
 
-		IRTreeNode returnNode = null;
+		IRTreeNode<T> returnNode = null;
 
 		PreparedStatement stmt;
 		try {
@@ -298,7 +355,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			
 			int N = cache.getNumDimensions();
 			
-			IHyperRectangle r = new RectangleND(N);
+			IHyperRectangle<T> r = new HyperRectangle<T>(N);
 			
 //			IHyperRectangle r;
 //			if (N == 2) {
@@ -322,33 +379,39 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 						rObj = (JSONObject) parser.parse(rectangle);
 						
 						for (int i = 0; i < N; i++) {
+							
+							T dim1 = getInstanceOf();
+							T dim2 = getInstanceOf();
+							r.setDim1(i, dim1);
+							r.setDim2(i, dim2);
+							
 							switch (i) {
 							case 0: 
-								r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-								r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
+								r.getDim1(i).setData(rObj.get("x1").toString());
+								r.getDim2(i).setData(rObj.get("x2").toString());
 								break;
 							case 1:
-								r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-								r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
+								r.getDim1(i).setData(rObj.get("y1").toString());
+								r.getDim2(i).setData(rObj.get("y2").toString());
 								break;
 							case 2:
-								r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-								r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
+								r.getDim1(i).setData(rObj.get("z1").toString());
+								r.getDim2(i).setData(rObj.get("z2").toString());
 								break;
 							default:
-								r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-								r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
+								r.getDim1(i).setData(rObj.get(i + "_1").toString());
+								r.getDim2(i).setData(rObj.get(i + "_2").toString());
 								break;
 							}
 						}
-					} catch (ParseException e) {
+					} catch (ParseException | IllegalArgumentException | SecurityException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 				
 
-				returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
+				returnNode = new RTreeNode<T>(nodeId, children, parent, cache, logger, clazz);
 				
 //				if (cache.getNumDimensions() == 2) {
 //					returnNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
@@ -419,8 +482,9 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 
 	@Override
+	@Deprecated
 	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
-		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`) " + "VALUES (?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `treeType`) " + "VALUES (?, ?, ?, ?);";
 
 		PreparedStatement stmt = null;
 		int c = 1;
@@ -431,6 +495,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			stmt.setString(c++, treeName);
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
+			stmt.setString(c++, clazz.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -442,8 +507,12 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 	@Override
 	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
-		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`) " + "VALUES (?, ?, ?, ?);";
+		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`, `treeType`) " + "VALUES (?, ?, ?, ?, ?);";
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		PreparedStatement stmt = null;
 		int c = 1;
 
@@ -454,6 +523,7 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
 			stmt.setInt(c++, N);
+			stmt.setString(c++, clazz.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -466,6 +536,10 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	@Override
 	public boolean metaDataExists(String treeName) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
 		String where = " WHERE `treeName` = ? ";
 		String query = select + where;
@@ -491,6 +565,10 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	@Override
 	public int getMaxChildren(String treeName) {
 
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		int maxChildren = 4; // default to 4
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
@@ -519,6 +597,11 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 
 	@Override
 	public int getMaxItems(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
 		int maxItems = 4; // default to 4
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
@@ -545,8 +628,111 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 		return maxItems;
 	}
 	
+	@Override
+	public List<T> getMin(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		List<T> minimums = new ArrayList<T>();
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			stmt.setString(1, treeName);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				String minimumsStr = resultSet.getString("minimums");
+				
+				JSONParser parser = new JSONParser();
+				JSONArray arr;
+				
+				try {
+					arr = (JSONArray) parser.parse(minimumsStr);
+					
+					for (int i = 0; i < arr.size(); i++) {
+						T obj = getInstanceOf();
+						obj.setData(arr.get(i).toString());
+						minimums.add(obj);
+					}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return minimums;
+	}
+	
+	@Override
+	public List<T> getMax(String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+
+		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
+		String where = " WHERE `treeName` = ? ";
+		String query = select + where;
+		
+		List<T> maximums = new ArrayList<T>();
+
+		PreparedStatement stmt;
+		try {
+			stmt = conn.prepareStatement(query);
+
+			stmt.setString(1, treeName);
+
+			ResultSet resultSet = stmt.executeQuery();
+
+			if (resultSet.next()) {
+				String maximumsStr = resultSet.getString("maximums");
+				
+				JSONParser parser = new JSONParser();
+				JSONArray arr;
+				
+				try {
+					arr = (JSONArray) parser.parse(maximumsStr);
+					
+					for (int i = 0; i < arr.size(); i++) {
+						T obj = getInstanceOf();
+						obj.setData(arr.get(i).toString());
+						maximums.add(obj);
+					}
+					
+				} catch (ParseException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+
+		} catch (SQLException e) {
+			logger.log(e);
+			e.printStackTrace();
+		}
+
+		return maximums;
+	}
+	
 
 	@Override
+	@Deprecated
 	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
 		
 		String update = "UPDATE `" + tablePrefix + "_metadata` ";
@@ -578,13 +764,17 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName) {
+	public void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName) {
+		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		JSONArray arrMin = new JSONArray();
 		JSONArray arrMax = new JSONArray();
 		for (int i = 0; i < minimums.size(); i++) {
-			arrMin.add(minimums.get(i));
-			arrMax.add(maximums.get(i));
+			arrMin.add(minimums.get(i).getData());
+			arrMax.add(maximums.get(i).getData());
 		}
 		
 		String update = "UPDATE `" + tablePrefix + "_metadata` ";
@@ -615,6 +805,9 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	@Override
 	public void clearData() {
 		
+		if (!isDbConnected()) {
+			init();
+		}
 		
 		String deleteData = "DELETE FROM " + tablePrefix + "_data WHERE 1; ";
 		
@@ -644,16 +837,25 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 	
 	@Override
-	public List<IRTree> getAllTrees() {
+	public List<IRTree<T>> getAllTrees() {
 		
-		List<IRTree> trees = new ArrayList<IRTree>();
+		if (!isDbConnected()) {
+			init();
+		}
+		
+		List<IRTree<T>> trees = new ArrayList<IRTree<T>>();
 
 		String select = " SELECT * FROM `" + tablePrefix + "_metadata` ";
-		String query = select;
+		String where = " WHERE `treeType` = ? ";
+		String query = select + where;
+		
+		int c = 1;
 
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(query);
+			
+			stmt.setString(c++, clazz.getSimpleName());
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -663,9 +865,9 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 				int maxItems = resultSet.getInt("maxItems");
 				int N = resultSet.getInt("N");
 				
-				IRTree tree;
+				IRTree<T> tree;
 				try {
-					tree = new RTreeND(this, maxChildren, maxItems, logger, N, treeName);
+					tree = new RTree<T>(this, maxChildren, maxItems, logger, N, treeName, clazz);
 					trees.add(tree);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -683,16 +885,26 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 	}
 	
 	@Override
-	public List<ILocationItem> getAllLocationItems() {
-		List<ILocationItem> items = new ArrayList<ILocationItem>();
+	public List<ILocationItem<T>> getAllLocationItems() {
+		
+		if (!isDbConnected()) {
+			init();
+		}
+		
+		List<ILocationItem<T>> items = new ArrayList<ILocationItem<T>>();
 
 		String select = " SELECT * FROM `" + tablePrefix + "_items` ";
-		String query = select;
+		String where = " WHERE `treeType` = ? ";
+		String query = select + where;
+		
+		int c = 1;
 
 		PreparedStatement stmt;
 		try {
 			stmt = conn.prepareStatement(query);
 
+			stmt.setString(c++, clazz.getSimpleName());
+			
 			ResultSet resultSet = stmt.executeQuery();
 
 			while (resultSet.next()) {
@@ -702,37 +914,37 @@ public abstract class DataStorageSQLBase extends DataStorageBase {
 				String location = resultSet.getString("location");
 				String type = resultSet.getString("type");
 				
-				ILocationItem item;
+				ILocationItem<T> item;
 				try {
-					item = new LocationItemND(N, id);
+					item = new LocationItem<T>(N, id);
 					
 					JSONParser parser = new JSONParser();
 					JSONObject obj = (JSONObject) parser.parse(location);
 										
 					for (int j = 0; j < N; j++) {
 
-						int value;
+						T val = getInstanceOf();
 
 						switch (j) {
 						case 0:
-							value = Integer.parseInt(obj.get("x").toString());
+							val.setData(obj.get("x").toString());
 
 							break;
 						case 1:
-							value = Integer.parseInt(obj.get("y").toString());
+							val.setData(obj.get("y").toString());
 
 							break;
 						case 2:
-							value = Integer.parseInt(obj.get("z").toString());
+							val.setData(obj.get("z").toString());
 
 							break;
 						default:
-							value = Integer.parseInt(obj.get(j + "").toString());
+							val.setData(obj.get(j + "").toString());
 
 							break;
 						}
 
-						item.setDim(j, value);
+						item.setDim(j, val);
 					}
 					
 					item.setType(type);

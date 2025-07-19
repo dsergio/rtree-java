@@ -1,5 +1,6 @@
 package rtree.storage;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,15 +10,14 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 import rtree.item.ILocationItem;
+import rtree.item.IRType;
 import rtree.log.ILogger;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
-import rtree.rectangle.RectangleND;
-import rtree.tree.IRTree;
+import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTreeCache;
+import rtree.tree.IRTree;
 import rtree.tree.IRTreeNode;
-import rtree.tree.RTreeNode2D;
-import rtree.tree.RTreeNodeND;
+import rtree.tree.RTreeNode;
 
 /**
  * 
@@ -26,17 +26,19 @@ import rtree.tree.RTreeNodeND;
  * @author David Sergio
  *
  */
-public class DataStorageInMemory extends DataStorageBase {
+public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T> {
 	
 	private int maxItems;
 	private int maxChildren;
-	private Map<String, IRTreeNode> localData;
+	private Map<String, IRTreeNode<T>> localData;
 	private int numDimensions;
+	Class<T> className;
 	
 //	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
-	public DataStorageInMemory(ILogger logger) {
+	public DataStorageInMemory(ILogger logger, Class<T> className) {
 		super(StorageType.INMEMORY, logger);
-		localData = new HashMap<String, IRTreeNode>();
+		localData = new HashMap<String, IRTreeNode<T>>();
+		this.className = className;
 	}
 	
 
@@ -59,8 +61,8 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
-			String treeName, IRTreeCache cache) {
+	public IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+			String treeName, IRTreeCache<T> cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.addCloudRTreeNode with parameters: ");
@@ -74,19 +76,14 @@ public class DataStorageInMemory extends DataStorageBase {
 		
 		int numDimensions = getNumDimensions(treeName);
 		
-		IRTreeNode node = null;
-		if (numDimensions == 2) {
-			node = new RTreeNode2D(nodeId, children, parent, cache, logger);
-		} else {
-			node = new RTreeNodeND(nodeId, children, parent, cache, logger);
-		}
+		IRTreeNode<T> node = null;
+		node = new RTreeNode<T>(nodeId, children, parent, cache, logger, className);
 		
-		IHyperRectangle r;
-		if (numDimensions == 2) {
-			r = new Rectangle2D();
-		} else {
-			r = new RectangleND(numDimensions);
-		}
+		
+		IHyperRectangle<T> r;
+		r = new HyperRectangle<T>(numDimensions);
+		
+		
 		
 		if (rectangle != null) {
 			JSONParser parser = new JSONParser();
@@ -94,27 +91,54 @@ public class DataStorageInMemory extends DataStorageBase {
 			try {
 				rObj = (JSONObject) parser.parse(rectangle);
 				for (int i = 0; i < numDimensions; i++) {
+					
+					
+					String dim1;
+					String dim2;
+					
 					switch (i) {
 					case 0: 
-						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
+						dim1 = "x1";
+						dim2 = "x2";
+//						r.setDim1(i, (T) (rObj.get("x1")));
+//						r.setDim2(i, (T) (rObj.get("x2")));
 						break;
 					case 1:
-						r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
+						dim1 = "y1";
+						dim2 = "y2";
+//						r.setDim1(i, (T) (rObj.get("y1")));
+//						r.setDim2(i, (T) (rObj.get("y2")));
 						break;
 					case 2:
-						r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
+						dim1 = "z1";
+						dim2 = "z2";
+//						r.setDim1(i, (T) (rObj.get("z1")));
+//						r.setDim2(i, (T) (rObj.get("z2")));
 						break;
 					default:
-						r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
+						dim1 = i + "_1";
+						dim2 = i + "_2";
+//						r.setDim1(i, (T) (rObj.get(i + "_1")));
+//						r.setDim2(i, (T) (rObj.get(i + "_2")));
 						break;
 					}
+					
+					try {
+						T t_dim1 = (T) className.getDeclaredConstructor().newInstance();
+						T t_dim2 = (T) className.getDeclaredConstructor().newInstance();
+						t_dim1.setData((String) rObj.get(dim1));
+						t_dim2.setData((String) rObj.get(dim2));
+						r.setDim1(i, t_dim1);
+						r.setDim2(i, t_dim2);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+							| NoSuchMethodException | SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 				}
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
+				logger.log("Error parsing rectangle JSON: " + rectangle);
 				e.printStackTrace();
 			}
 		}
@@ -143,7 +167,7 @@ public class DataStorageInMemory extends DataStorageBase {
 		logger.log("rectangle: " + rectangle);
 		
 		
-		IRTreeNode node = localData.get(nodeId);
+		IRTreeNode<T> node = localData.get(nodeId);
 		
 		if (children != null) {
 			node.setChildren(children);
@@ -153,12 +177,9 @@ public class DataStorageInMemory extends DataStorageBase {
 		
 		int numDimensions = getNumDimensions(treeName);
 		
-		IHyperRectangle r;
-		if (numDimensions == 2) {
-			r = new Rectangle2D();
-		} else {
-			r = new RectangleND(numDimensions);
-		}
+		IHyperRectangle<T> r;
+		r = new HyperRectangle<T>(numDimensions);
+		
 		
 		if (rectangle != null) {
 			JSONParser parser = new JSONParser();
@@ -166,23 +187,48 @@ public class DataStorageInMemory extends DataStorageBase {
 			try {
 				rObj = (JSONObject) parser.parse(rectangle);
 				for (int i = 0; i < numDimensions; i++) {
+					
+					String dim1;
+					String dim2;
+					
 					switch (i) {
 					case 0: 
-						r.setDim1(i, Integer.parseInt(rObj.get("x1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("x2").toString()));
+						dim1 = "x1";
+						dim2 = "x2";
+//						r.setDim1(i, (T) (rObj.get("x1")));
+//						r.setDim2(i, (T) (rObj.get("x2")));
 						break;
 					case 1:
-						r.setDim1(i, Integer.parseInt(rObj.get("y1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("y2").toString()));
+						dim1 = "y1";
+						dim2 = "y2";
+//						r.setDim1(i, (T) (rObj.get("y1")));
+//						r.setDim2(i, (T) (rObj.get("y2")));
 						break;
 					case 2:
-						r.setDim1(i, Integer.parseInt(rObj.get("z1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get("z2").toString()));
+						dim1 = "z1";
+						dim2 = "z2";
+//						r.setDim1(i, (T) (rObj.get("z1")));
+//						r.setDim2(i, (T) (rObj.get("z2")));
 						break;
 					default:
-						r.setDim1(i, Integer.parseInt(rObj.get(i + "_1").toString()));
-						r.setDim2(i, Integer.parseInt(rObj.get(i + "_2").toString()));
+						dim1 = i + "_1";
+						dim2 = i + "_2";
+//						r.setDim1(i, (T) (rObj.get(i + "_1")));
+//						r.setDim2(i, (T) (rObj.get(i + "_2")));
 						break;
+					}
+					
+					try {
+						T t_dim1 = (T) className.getDeclaredConstructor().newInstance();
+						T t_dim2 = (T) className.getDeclaredConstructor().newInstance();
+						t_dim1.setData((String) rObj.get(dim1));
+						t_dim2.setData((String) rObj.get(dim2));
+						r.setDim1(i, t_dim1);
+						r.setDim2(i, t_dim2);
+					} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+							| NoSuchMethodException | SecurityException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 				}
 			} catch (ParseException e) {
@@ -202,7 +248,7 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache) {
+	public IRTreeNode<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
@@ -273,7 +319,7 @@ public class DataStorageInMemory extends DataStorageBase {
 	}
 
 	@Override
-	public void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName) {
+	public void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -301,23 +347,44 @@ public class DataStorageInMemory extends DataStorageBase {
 
 
 	@Override
-	public List<IRTree> getAllTrees() {
+	public List<IRTree<T>> getAllTrees() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public List<ILocationItem> getAllLocationItems() {
+	public List<ILocationItem<T>> getAllLocationItems() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public void addItem(String Id, int N, String location, String type) {
+	public void addItem(String Id, int N, String location, String type, String properties) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public List<T> getMin(String treeName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<T> getMax(String treeName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public boolean isDbConnected() {
+		// TODO Auto-generated method stub
+		return true;
 	}
 
 }

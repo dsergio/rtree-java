@@ -1,6 +1,9 @@
 package rtree.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -8,8 +11,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import rtree.item.RInteger;
+import rtree.rectangle.HyperRectangle;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
+
 
 class RectangleTests {
 
@@ -29,7 +34,7 @@ class RectangleTests {
 	void tearDown() throws Exception {
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void Rectangle_SetGetDimensionValues_Success() {
 		
@@ -38,14 +43,19 @@ class RectangleTests {
 		Integer x2 = 10;
 		Integer y1 = 0;
 		Integer y2 = 10;
-		IHyperRectangle r = new Rectangle2D(x1, x2, y1, y2);
+		IHyperRectangle<RInteger> r = new HyperRectangle<>(2);
+		
+		r.setDim1(0, new RInteger(x1));
+		r.setDim2(0, new RInteger(x2));
+		r.setDim1(1, new RInteger(y1));
+		r.setDim2(1, new RInteger(y2));
 		
 		
 		// Act
-		Integer x1Observed = r.getDim1(0);
-		Integer x2Observed = r.getDim2(0);
-		Integer y1Observed = r.getDim1(1);
-		Integer y2Observed = r.getDim2(1);
+		Integer x1Observed = r.getDim1(0).getData();
+		Integer x2Observed = r.getDim2(0).getData();
+		Integer y1Observed = r.getDim1(1).getData();
+		Integer y2Observed = r.getDim2(1).getData();
 				
 		// Assert
 		assertEquals(x1, x1Observed);
@@ -54,7 +64,7 @@ class RectangleTests {
 		assertEquals(y2, y2Observed);
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void Rectangle_SetGetDefaultDimensionValues_Success() {
 		
@@ -63,14 +73,19 @@ class RectangleTests {
 		Integer x2 = 0;
 		Integer y1 = 0;
 		Integer y2 = 0;
-		IHyperRectangle r = new Rectangle2D();
+		IHyperRectangle<RInteger> r = new HyperRectangle<>(2);
+		
+		r.setDim1(0, new RInteger(x1));
+		r.setDim2(0, new RInteger(x2));
+		r.setDim1(1, new RInteger(y1));
+		r.setDim2(1, new RInteger(y2));
 		
 		
 		// Act
-		Integer x1Observed = r.getDim1(0);
-		Integer x2Observed = r.getDim2(0);
-		Integer y1Observed = r.getDim1(1);
-		Integer y2Observed = r.getDim2(1);
+		Integer x1Observed = r.getDim1(0).getData();
+		Integer x2Observed = r.getDim2(0).getData();
+		Integer y1Observed = r.getDim1(1).getData();
+		Integer y2Observed = r.getDim2(1).getData();
 		
 		System.out.println("x1Observed: " + x1Observed);
 		System.out.println("x2Observed: " + x2Observed);
@@ -84,43 +99,80 @@ class RectangleTests {
 		assertEquals(y2, y2Observed);
 	}
 
-	@Disabled
+//	@Disabled
 	@Test
 	void Rectangle_Overlap_True() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle2D(5, 15, 5, 15);
+		
+		IHyperRectangle<RInteger> r1 = new HyperRectangle<>(2);
+		IHyperRectangle<RInteger> r2 = new HyperRectangle<>(2);
+		
+		r1.setDim1(0, new RInteger(0));
+		r1.setDim1(1, new RInteger(0));
+		r1.setDim2(0, new RInteger(10));
+		r1.setDim2(1, new RInteger(10));
+		
+		r2.setDim1(0, new RInteger(5));
+		r2.setDim1(1, new RInteger(5));
+		r2.setDim2(0, new RInteger(15));
+		r2.setDim2(1, new RInteger(15));
+		
 		
 		// Act
-		boolean overlap = Rectangle2D.rectanglesOverlap2D(r1, r2);
+		boolean overlap = HyperRectangle.rectanglesOverlap(r1, r2);
 				
 		// Assert
 		assertEquals(true, overlap);
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void Rectangle_Overlap_False() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle2D(20, 30, 20, 30);
+		
+		IHyperRectangle<RInteger> r1 = new HyperRectangle<>(2);
+		IHyperRectangle<RInteger> r2 = new HyperRectangle<>(2);
+		
+		r1.setDim1(0, new RInteger(0));
+		r1.setDim1(1, new RInteger(0));
+		r1.setDim2(0, new RInteger(10));
+		r1.setDim2(1, new RInteger(10));
+		
+		r2.setDim1(0, new RInteger(20));
+		r2.setDim1(1, new RInteger(20));
+		r2.setDim2(0, new RInteger(30));
+		r2.setDim2(1, new RInteger(30));
+		
 		
 		// Act
-		boolean overlap = Rectangle2D.rectanglesOverlap2D(r1, r2);
+		boolean overlap = HyperRectangle.rectanglesOverlap(r1, r2);
 				
 		// Assert
 		assertEquals(false, overlap);
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void Rectangle_Sum_CorrectValue() {
 		// Arrange
-		IHyperRectangle r1 = new Rectangle2D(0, 10, 0, 10);
-		IHyperRectangle r2 = new Rectangle2D(20, 30, 20, 30);
+		IHyperRectangle<RInteger> r1 = new HyperRectangle<>(2);
+		
+		r1.setDim1(0, new RInteger(0));
+		r1.setDim1(1, new RInteger(0));
+		r1.setDim2(0, new RInteger(10));
+		r1.setDim2(1, new RInteger(10));
+		IHyperRectangle<RInteger> r2 = new HyperRectangle<>(2);
+		r2.setDim1(0, new RInteger(20));
+		r2.setDim1(1, new RInteger(20));
+		r2.setDim2(0, new RInteger(30));
+		r2.setDim2(1, new RInteger(30));
+		
+		List<IHyperRectangle<RInteger>> rectangles = new ArrayList<>();
+		rectangles.add(r1);
+		rectangles.add(r2);
 		
 		// Act
-		IHyperRectangle sum = Rectangle2D.sumRectangles2D(r1, r2);
+		IHyperRectangle<RInteger> sum = HyperRectangle.sumRectangles(rectangles);
 				
 		// Assert
 		assertEquals(900, sum.getSpace());

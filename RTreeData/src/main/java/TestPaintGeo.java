@@ -32,18 +32,13 @@ import javax.swing.ListSelectionModel;
 import javax.swing.text.DefaultCaret;
 
 import rtree.item.ILocationItem;
-import rtree.item.LocationItem2D;
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.LocationItemNDGeneric;
-import rtree.item.generic.RDouble;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
-import rtree.rectangle.generic.IHyperRectangleGeneric;
-import rtree.rectangle.generic.RectangleNDGeneric;
+import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTree;
-import rtree.tree.generic.IRTreeGeneric;
 
 public class TestPaintGeo extends JFrame implements KeyListener, ActionListener {
 
@@ -53,10 +48,10 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 	private static final long serialVersionUID = 2136767310271470973L;
 	private final PaintPanel paintPan;
 	
-	private IRTreeGeneric<RDouble> tree;
-	private List<ILocationItemGeneric<RDouble>> points;
-	private Map<IHyperRectangleGeneric<RDouble>, List<ILocationItemGeneric<RDouble>>> searchResults;
-	private IHyperRectangleGeneric<RDouble> searchRectangle = null;
+	private IRTree<RDouble> tree;
+	private List<ILocationItem<RDouble>> points;
+	private Map<IHyperRectangle<RDouble>, List<ILocationItem<RDouble>>> searchResults;
+	private IHyperRectangle<RDouble> searchRectangle = null;
 	
 	private JTextField output;
 	private JTextArea info = new JTextArea();
@@ -87,7 +82,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 	private Double longitudeWidth = null;
 	private Double latitudeHeight = null;
 	
-	public TestPaintGeo(IRTreeGeneric<RDouble> tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger,
+	public TestPaintGeo(IRTree<RDouble> tree, boolean showTreeOn, ILogger logger, ILoggerPaint paintLogger,
 			Double longitudeMin, Double longitudeMax, Double latitudeMin, Double latitudeMax) {
 		
 		this.longitudeMin = longitudeMin;
@@ -165,7 +160,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 
 	}
 	
-	public TestPaintGeo(IRTreeGeneric<RDouble> tree, ILogger logger, ILoggerPaint paintLogger,
+	public TestPaintGeo(IRTree<RDouble> tree, ILogger logger, ILoggerPaint paintLogger,
 			Double longitudeMin, Double longitudeMax, Double latitudeMin, Double latitudeMax) {
 		this(tree, false, logger, paintLogger, longitudeMin, longitudeMax, latitudeMin, latitudeMax);
 	}
@@ -193,7 +188,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 				list.repaint();
 				paintPan.repaint();
 				repaint();
-				searchRectangle = new RectangleNDGeneric<RDouble>(2);
+				searchRectangle = new HyperRectangle<RDouble>(2);
 				
 				double x1 = e.getX() - list.getWidth() - searchRange;
 				double x2 = e.getX() - list.getWidth() + searchRange;
@@ -236,9 +231,9 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 				searchRectangle.setDim2(1, new RDouble(latitudeSearch2));
 				
 				searchResults = tree.search(searchRectangle);
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					
@@ -301,11 +296,11 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 			setBackground(Color.LIGHT_GRAY);
 		}
 
-		public void setPoints(List<ILocationItemGeneric<RDouble>> pointsToAdd) {
+		public void setPoints(List<ILocationItem<RDouble>> pointsToAdd) {
 			points = pointsToAdd;
 		}
 
-		public void addPoint(LocationItemNDGeneric<RDouble> item) {
+		public void addPoint(LocationItem<RDouble> item) {
 			points.add(item);
 		}
 		
@@ -351,7 +346,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 			}
 			
 			if (showTreeOn) {
-				for (ILocationItemGeneric<RDouble> item : tree.getPoints()) {
+				for (ILocationItem<RDouble> item : tree.getAllPoints()) {
 					
 					RDouble Rx = item.getDim(0);
 					RDouble Ry = item.getDim(1);
@@ -374,9 +369,9 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 						
 					}
 				}
-				List<IHyperRectangleGeneric<RDouble>> rectangles = new ArrayList<IHyperRectangleGeneric<RDouble>>();
-				rectangles = tree.getRectangles();
-				for (IHyperRectangleGeneric<RDouble> r : rectangles) {
+				List<IHyperRectangle<RDouble>> rectangles = new ArrayList<IHyperRectangle<RDouble>>();
+				rectangles = tree.getAllRectangles();
+				for (IHyperRectangle<RDouble> r : rectangles) {
 					
 					RDouble Rx = r.getDim1(0);
 					RDouble Ry = r.getDim1(1);
@@ -447,8 +442,8 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 				drawImage = (Graphics2D) g;
 				color = Color.BLACK;
 				
-				List<ILocationItemGeneric<RDouble>> allItems = new ArrayList<ILocationItemGeneric<RDouble>>();
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				List<ILocationItem<RDouble>> allItems = new ArrayList<ILocationItem<RDouble>>();
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					
 					if (r.getDim1(0) != searchRectangle.getDim1(0) && 
 							r.getDim2(0) != searchRectangle.getDim2(0) && 
@@ -516,7 +511,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 						drawImage.setStroke(existing);
 					}
 					
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						
 						RDouble Rx = i.getDim(0);
 						RDouble Ry = i.getDim(1);
@@ -549,7 +544,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 					list.setListData(data);
 				} else {
 					List<String> dataStrings = new ArrayList<String>();
-					for (ILocationItemGeneric<RDouble> i : allItems) {
+					for (ILocationItem<RDouble> i : allItems) {
 						
 						DecimalFormat df = new DecimalFormat("#.##");      
 						Double longitude = Double.parseDouble(df.format(i.getDim(0).getData()));
@@ -644,7 +639,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range);
 				String[] data = {"Searching..."};
 				list.setListData(data);
-				searchRectangle = new RectangleNDGeneric<RDouble>(2);
+				searchRectangle = new HyperRectangle<RDouble>(2);
 				
 				
 				searchRectangle.setDim1(0, new RDouble(x));
@@ -653,9 +648,9 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 				searchRectangle.setDim2(1, new RDouble(y + range));
 				
 				searchResults = tree.search(searchRectangle);
-				for (IHyperRectangleGeneric<RDouble> r : searchResults.keySet()) {
+				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
 					logger.log("search results: " + r);
-					for (ILocationItemGeneric<RDouble> i : searchResults.get(r)) {
+					for (ILocationItem<RDouble> i : searchResults.get(r)) {
 						logger.log("..." + i);
 					}
 					
@@ -672,7 +667,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 
 				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
 
-				ILocationItemGeneric<RDouble> toDelete = new LocationItemNDGeneric<RDouble>(2);
+				ILocationItem<RDouble> toDelete = new LocationItem<RDouble>(2);
 				toDelete.setDim(0, new RDouble(x));
 				toDelete.setDim(1, new RDouble(y));
 				toDelete.setType(type);

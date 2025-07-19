@@ -1,7 +1,7 @@
 <template
     lang="html">
     <div class="box">
-        <h1 class="title">R-Tree Detail</h1>
+        <h1 class="title">{{ props.treeName }} Detail</h1>
         <p>Tree Name: [{{ props.treeName }}], numDimensions: {{ props.numDimensions }}</p>
 
         Canvas: <div id = "canvasContainer2D"></div>
@@ -25,8 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, defineProps, defineComponent } from 'vue';
 
+import { ref, onMounted, defineProps, defineComponent } from 'vue';
 import { Configuration, RTreeDoubleApi } from '@/generated/TypeScriptClient';
 
 import * as $ from 'jquery';
@@ -38,7 +38,7 @@ const props = defineProps<{
   numDimensions?: number;
 }>();
 
-props.treeName = 'tree2';
+props.treeName = 'tree1';
 
 
 
@@ -66,11 +66,8 @@ const rtreeDetail = ref<RTreeComponentDetail | null>(null);
 const pointsRef = ref<Object[]>([]);
 const rectanglesRef = ref<Object[]>([]);
 
-onMounted(async () => {
-
-    try {
-
-        console.log('Fetching RTree details for:', props.treeName);
+async function init_tree() {
+    console.log('Fetching RTree details for:', props.treeName);
         const res = await api.rTreeDoubleGet(props);
 
         console.log(props.treeName + ' details:', res);
@@ -121,7 +118,46 @@ onMounted(async () => {
             rtreeDetail.value = null; // Reset if no data is returned
             return;
         }
+};
 
+onMounted(async () => {
+
+    try {
+
+        init_tree();
+
+        $(document).on('click', '#canvasContainer2D', (event: MouseEvent) => {
+            const x = event.pageX - $('#canvasContainer2D').offset().left;
+            const y = event.pageY - $('#canvasContainer2D').offset().top;
+
+            const x_normalized = x / $('#canvasContainer2D').width();
+            const y_normalized = y / $('#canvasContainer2D').height();
+
+            console.log(`Clicked at: (${x}, ${y})`);
+            console.log(`Normalized coordinates: (${x_normalized}, ${y_normalized})`);
+
+
+            const res = api.rTreeDoubleInsert({
+                treeName: props.treeName,
+                itemToInsert:{
+                    dimensionArray: [x_normalized, y_normalized],
+                    id: 'point-' + Date.now(), // Unique ID for the point
+                    type: 'web-insert',
+                    numberDimensions: props.numDimensions as number,
+                    itemProperties: {}
+
+                }
+            });
+
+            if (res instanceof Promise) {
+                init_tree();
+            } else {
+                console.error('Insert operation did not return a Promise');
+            }
+
+            console.log('Insert response:', res);
+            
+        });
 
     } catch (error) {
         console.error('Failed to create API instance:', error);

@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.LocationItemNDGeneric;
-import rtree.item.generic.RDouble;
+import rtree.item.ILocationItem;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.storage.generic.DataStorageInMemoryGeneric;
-import rtree.storage.generic.DataStorageMySQLGeneric;
-import rtree.storage.generic.DataStorageSqliteGeneric;
-import rtree.storage.generic.IDataStorageGeneric;
-import rtree.tree.generic.IRTreeGeneric;
-import rtree.tree.generic.RTreeNDGeneric;
+import rtree.storage.DataStorageInMemory;
+import rtree.storage.DataStorageMySQL;
+import rtree.storage.DataStorageSqlite;
+import rtree.storage.IDataStorage;
+import rtree.storage.StorageType;
+import rtree.tree.IRTree;
+import rtree.tree.RTree;
 
 public class DataImport {
 
@@ -30,11 +31,11 @@ public class DataImport {
 		
 		int numInserts = 0; // default to the whole list
 
-		List<ILocationItemGeneric<RDouble>> citiesToInsert = new ArrayList<ILocationItemGeneric<RDouble>>();
+		List<ILocationItem<RDouble>> citiesToInsert = new ArrayList<ILocationItem<RDouble>>();
 
 		// configurations
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		rtree.storage.StorageType cloudType = rtree.storage.StorageType.MYSQL;
+		StorageType cloudType = StorageType.MYSQL;
 
 		if (args.length < 5) {
 			logger.log("Usage: java DataImport [treeName] [inputFile] [number of inserts] [maxChildren] [maxItems]");
@@ -66,7 +67,7 @@ public class DataImport {
 					String latitude = arr[5];
 					String longitude = arr[6];
 					
-					ILocationItemGeneric<RDouble> locationItem = new LocationItemNDGeneric<RDouble>(2);
+					ILocationItem<RDouble> locationItem = new LocationItem<RDouble>(2);
 					locationItem.setType(type);
 					locationItem.setProperty("country", country);
 					locationItem.setProperty("city", city);
@@ -92,36 +93,36 @@ public class DataImport {
 			e.printStackTrace();
 		}
 
-		IDataStorageGeneric<RDouble> dataStorage = null;
+		IDataStorage<RDouble> dataStorage = null;
 
 		switch (cloudType) {
 		case MYSQL:
 			try {
-				dataStorage = new DataStorageMySQLGeneric<RDouble>(logger, RDouble.class);
+				dataStorage = new DataStorageMySQL<RDouble>(logger, RDouble.class);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			break;
 		case INMEMORY:
-			dataStorage = new DataStorageInMemoryGeneric<RDouble>(logger, RDouble.class);
+			dataStorage = new DataStorageInMemory<RDouble>(logger, RDouble.class);
 			break;
 		case DYNAMODB:
 //			dataStorage = new DataStorageDynamoDB("us-west-2", logger, inputTreeName, 2); // use a static value for now
 			break;
 		case SQLITE:
-			dataStorage = new DataStorageSqliteGeneric<RDouble>(logger, RDouble.class);
+			dataStorage = new DataStorageSqlite<RDouble>(logger, RDouble.class);
 			break;
 		default:
 			try {
-				dataStorage = new DataStorageMySQLGeneric<RDouble>(logger, RDouble.class);
+				dataStorage = new DataStorageMySQL<RDouble>(logger, RDouble.class);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 
-		IRTreeGeneric<RDouble> tree = null;
+		IRTree<RDouble> tree = null;
 
 		int inputMaxChildrenInt = 0;
 		int inputMaxItemsInt = 0;
@@ -142,11 +143,11 @@ public class DataImport {
 							"Invalid max items input. Value must be between 2 and 10 inclusive.");
 				}
 
-				tree = new RTreeNDGeneric<RDouble>(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2, inputTreeName, RDouble.class);
+				tree = new RTree<RDouble>(dataStorage, inputMaxChildrenInt, inputMaxItemsInt, logger, 2, inputTreeName, RDouble.class);
 
 			} else {
 
-				tree = new RTreeNDGeneric<RDouble>(dataStorage, logger, inputTreeName, RDouble.class);
+				tree = new RTree<RDouble>(dataStorage, logger, inputTreeName, RDouble.class);
 
 			}
 
@@ -176,8 +177,8 @@ public class DataImport {
 				
 				if (citiesToInsert.get(itemIndex) != null) {
 					insertSuccessCount++;
-					ILocationItemGeneric<RDouble> item = citiesToInsert.get(itemIndex);
-					tree.insertType(item);
+					ILocationItem<RDouble> item = citiesToInsert.get(itemIndex);
+					tree.insert(item);
 					System.out.println("Inserted " + insertSuccessCount + " random records of a possible max of " + numInserts);
 					citiesToInsert.set(itemIndex, null);
 				}

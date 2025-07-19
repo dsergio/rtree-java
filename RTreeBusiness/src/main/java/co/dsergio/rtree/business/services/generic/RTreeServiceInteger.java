@@ -1,6 +1,6 @@
 package co.dsergio.rtree.business.services.generic;
 
-import rtree.item.generic.RInteger;
+import rtree.item.RInteger;
 
 /**
  * TODO Generics

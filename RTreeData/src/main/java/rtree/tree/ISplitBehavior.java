@@ -1,6 +1,7 @@
 package rtree.tree;
 
 import rtree.item.ILocationItem;
+import rtree.item.IRType;
 import rtree.log.ILogger;
 
 /**
@@ -8,15 +9,15 @@ import rtree.log.ILogger;
  * @author David Sergio
  *
  */
-public interface ISplitBehavior {
+public interface ISplitBehavior<T extends IRType<T>> {
 
 	 boolean didBranchSplit();
-	 IRTreeNode getNode(String nodeId);
+	 IRTreeNode<T> getNode(String nodeId);
 	
-	 void splitLeafNode(IRTreeNode node, ILocationItem locationItem);
-	 void splitBranchNode(IRTreeNode node);
+	 void splitLeafNode(IRTreeNode<T> node, ILocationItem<T> locationItem);
+	 void splitBranchNode(IRTreeNode<T> node);
 	
 	 String getDescription();
-	 void initialize(int maxChildren, String treeName, IRTreeCache cacheContainer, ILogger logger);
+	 void initialize(int maxChildren, String treeName, IRTreeCache<T> cacheContainer, ILogger logger);
 
 }

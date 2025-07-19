@@ -6,16 +6,37 @@
 	<groupId>dsergio</groupId>
 	<artifactId>rtree</artifactId>
 	<version>1.0.2</version>
-	
+	<properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 	
 
 	<dependencies>
 
 		<dependency>
-			<groupId>org.junit.jupiter</groupId>
-			<artifactId>junit-jupiter</artifactId>
-			<version>5.6.0-RC1</version>
-		</dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.8.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.maven.doxia</groupId>
+            <artifactId>doxia-sink-api</artifactId>
+            <version>2.0.0</version> <!-- Use the latest version available -->
+        </dependency>
 
 		<dependency>
 			<groupId>org.apache.clerezza.ext</groupId>
@@ -63,12 +84,12 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.8.0</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>21</source>
+                    <target>21</target>
+                </configuration>
 			</plugin>
 
 			<plugin>
@@ -87,13 +108,67 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                	<argLine>-Xss50m</argLine>
+	                <trimStackTrace>true</trimStackTrace>
+	                <reportFormat>plain</reportFormat>
+	                <printSummary>true</printSummary>
+                	<redirectTestOutputToFile>true</redirectTestOutputToFile>
+                	
+                	
+                	
+                	<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+                    
+	                    <disable>false</disable>
+	                    <version>3.0</version>
+	                    <usePhrasedFileName>false</usePhrasedFileName>
+	                    <usePhrasedTestSuiteClassName>true</usePhrasedTestSuiteClassName>
+	                    <usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+	                    <usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+	                </statelessTestsetReporter>
+	                <consoleOutputReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5ConsoleOutputReporter">
+	                    <disable>false</disable>
+	                    <encoding>UTF-8</encoding>
+	                    <usePhrasedFileName>false</usePhrasedFileName>
+	                </consoleOutputReporter>
+	                <statelessTestsetInfoReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5StatelessTestsetInfoReporter">
+	                    <disable>false</disable>
+	                    <usePhrasedFileName>false</usePhrasedFileName>
+	                    <usePhrasedClassNameInRunning>true</usePhrasedClassNameInRunning>
+	                    <usePhrasedClassNameInTestCaseSummary>true</usePhrasedClassNameInTestCaseSummary>
+	                </statelessTestsetInfoReporter>
+            	</configuration>
+            </plugin>
 
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M4</version>
-			</plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-surefire-report-plugin</artifactId>
+	            <version>3.5.3</version>
+	            <configuration>
+	                <outputDirectory>${project.build.directory}/surefire-reports</outputDirectory>
+	            </configuration>
+        	</plugin>
+	        <plugin>
+	            <groupId>org.apache.maven.plugins</groupId>
+	            <artifactId>maven-site-plugin</artifactId>
+	            <version>3.21.0</version> <!-- Update to a newer version -->
+	        </plugin>
 
 		</plugins>
 	</build>
+	
+	<reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>3.5.3</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

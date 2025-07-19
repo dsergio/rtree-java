@@ -2,6 +2,8 @@ package rtree.tree;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import rtree.item.IRType;
 import rtree.log.ILogger;
 import rtree.storage.IDataStorage;
 
@@ -13,25 +15,22 @@ import rtree.storage.IDataStorage;
  * @author David Sergio
  *
  */
-public abstract class RTreeCacheBase implements IRTreeCache {
+public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache<T> {
 	
-	protected Map<String, IRTreeNode> cache;
-	protected IDataStorage dbAccess;
+	protected Map<String, IRTreeNode<T>> cache;
+	protected IDataStorage<T> dbAccess;
 	protected String treeName;
 	protected ILogger logger;
 	protected int numDimensions;
 	
-	public RTreeCacheBase(String treeName, ILogger logger, IDataStorage dataStorage, int numDimensions) throws Exception {
-		cache = new HashMap<String, IRTreeNode>();
+	public RTreeCacheBase(String treeName, ILogger logger, IDataStorage<T> dataStorage, int numDimensions) throws Exception {
+		cache = new HashMap<String, IRTreeNode<T>>();
 		this.treeName = treeName;
 		this.logger = logger;
 		this.dbAccess = dataStorage;
 		this.numDimensions = numDimensions;
 		dbAccess.initializeStorage();
 	}
-	
-//	public abstract void updateNode2D(String nodeId, String children, String parent, String items, String rectangle);
-//	public abstract void updateNodeNDimensional(String nodeId, String children, String parent, String items, String rectangle);
 	
 	public abstract void updateNode(String nodeId, String children, String parent, String items, String rectangle);
 	
@@ -43,17 +42,17 @@ public abstract class RTreeCacheBase implements IRTreeCache {
 		logger.log();
 		logger.log("__CACHE: " + "Printing cache:");
 		for (String key : cache.keySet()) {
-			IRTreeNode cloudNode = cache.get(key);
+			IRTreeNode<T> cloudNode = cache.get(key);
 			logger.log(key + ": " + cloudNode);
 		}
 		logger.log();
 	}
 	
-	public IDataStorage getDBAccess() {
+	public IDataStorage<T> getDBAccess() {
 		return dbAccess;
 	}
 	
-	public IRTreeNode getNode(String nodeId) {
+	public IRTreeNode<T> getNode(String nodeId) {
 		
 		if (nodeId == null) {
 			return null;
@@ -63,7 +62,7 @@ public abstract class RTreeCacheBase implements IRTreeCache {
 //			logger.log("__CACHE: " + "returning " + nodeId + " from cache");
 			return cache.get(nodeId);
 		} else {		
-			IRTreeNode node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
+			IRTreeNode<T> node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
 			cache.put(nodeId, node);
 			
 			return node;
@@ -81,7 +80,7 @@ public abstract class RTreeCacheBase implements IRTreeCache {
 	 * @param rectangle
 	 * @param node
 	 */
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode node) {
+	public void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node) {
 		
 //		logger.log("__CACHE: " + "adding node to cache " + nodeId + " node != null: " + (node != null));
 		if (node != null) {

@@ -8,7 +8,9 @@ import org.apache.commons.configuration2.Configuration;
 import org.apache.commons.configuration2.builder.fluent.Configurations;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
+import rtree.item.IRType;
 import rtree.log.ILogger;
+import rtree.storage.StorageType;
 
 /**
  * 
@@ -17,13 +19,13 @@ import rtree.log.ILogger;
  * @author David Sergio
  *
  */
-public class DataStorageSqlite extends DataStorageSQLBase {
+public class DataStorageSqlite<T extends IRType<T>> extends DataStorageSQLBase<T> {
 	
 	private String dir;
 
 //	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions, boolean isTest) {
-	public DataStorageSqlite(ILogger logger, boolean isTest) {
-		super(StorageType.SQLITE, logger);
+	public DataStorageSqlite(ILogger logger, boolean isTest, Class<T> clazz) {
+		super(StorageType.SQLITE, logger, clazz);
 		if (isTest) {
 			this.isTest = true;
 			tablePrefix = "rtree_test";
@@ -32,8 +34,8 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 	}
 	
 //	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
-	public DataStorageSqlite(ILogger logger) {
-		super(StorageType.SQLITE, logger);
+	public DataStorageSqlite(ILogger logger, Class<T> clazz) {
+		super(StorageType.SQLITE, logger, clazz);
 		init();
 	}
 
@@ -114,6 +116,7 @@ public class DataStorageSqlite extends DataStorageSQLBase {
 					+ " location TEXT NULL, " 
 					+ " type VARCHAR(255) NULL, "
 					+ " treeType VARCHAR(255) NOT NULL, "
+					+ " properties TEXT NULL, " 
 					+ " PRIMARY KEY ( id ) "
 					+ ")";
 			

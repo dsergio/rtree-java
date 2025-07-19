@@ -3,10 +3,8 @@ package co.dsergio.rtree.business.dto;
 import java.util.List;
 
 import rtree.item.ILocationItem;
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.RDouble;
+import rtree.item.RDouble;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.generic.IHyperRectangleGeneric;
 
 public class RTreeDouble {
 	

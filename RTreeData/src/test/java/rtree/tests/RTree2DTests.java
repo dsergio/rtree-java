@@ -13,16 +13,18 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import rtree.item.ILocationItem;
-import rtree.item.LocationItem2D;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
+import rtree.item.RInteger;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
+import rtree.rectangle.HyperRectangle;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.Rectangle2D;
 import rtree.storage.DataStorageInMemory;
 import rtree.storage.IDataStorage;
 import rtree.tree.IRTree;
-import rtree.tree.RTree2D;
+import rtree.tree.RTree;
 
 class RTree2DTests {
 
@@ -42,17 +44,17 @@ class RTree2DTests {
 	void tearDown() throws Exception {
 	}
 
-	@Disabled
+//	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
 		int N = 2;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		
 		// Act
 		try {
-			new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
+			new RTree<RInteger>(dataStorage, 4, 4, logger, N, "TestTree1", RInteger.class);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -62,18 +64,18 @@ class RTree2DTests {
 		assertTrue(true);
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void InMemoryTree_CreateTree_CorrectMaxChildrenAndItems() {
 		// Arrange
 		int N = 2;
-		IRTree tree = null;
+		IRTree<RInteger> tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
 		try {
-			tree = new RTree2D(dataStorage, numChildrenExpected, numItemsExpected, logger, N, "TestTree1");
+			tree = new RTree<RInteger>(dataStorage, numChildrenExpected, numItemsExpected, logger, N, "TestTree1", RInteger.class);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
@@ -95,22 +97,26 @@ class RTree2DTests {
 		
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void InMemoryTree_Insert_Success() {
 		// Arrange
 		int N = 2;
-		IRTree tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		IRTree<RDouble> tree = null;
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		IDataStorage<RDouble> dataStorage = new DataStorageInMemory<>(logger, RDouble.class);
 		
 		try {
-			tree = new RTree2D(dataStorage, 4, 20, logger, N, "TestTree1");
+			tree = new RTree<>(dataStorage, 4, 20, logger, N, "TestTree1", RDouble.class);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
 		}
-		LocationItem2D item = new LocationItem2D(0, 0, null);
+		ILocationItem<RDouble> item = new LocationItem<>(2);
+		
+		item.setDim(0, new RDouble(0.0));
+		item.setDim(1, new RDouble(0.0));
+		item.setType("TestType");
 		
 		
 		// Act
@@ -121,7 +127,7 @@ class RTree2DTests {
 				tree.insert(item);
 			}
 		} catch (IOException e) {
-			fail("Insert Exception");
+			fail("Insert Exception " + e.getMessage());
 			e.printStackTrace();
 		}
 		
@@ -129,22 +135,26 @@ class RTree2DTests {
 		assertTrue(true);
 	}
 	
-	@Disabled
+//	@Disabled
 	@Test
 	void InMemoryTree_Query_Success() {
 		// Arrange
 		int N = 2;
-		IRTree tree = null;
+		IRTree<RInteger> tree = null;
 		ILogger logger = new LoggerStdOut(LogLevel.PROD);
-		IDataStorage dataStorage = new DataStorageInMemory(logger);
+		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		
 		try {
-			tree = new RTree2D(dataStorage, 4, 4, logger, N, "TestTree1");
+			tree = new RTree<>(dataStorage, 4, 4, logger, N, "TestTree1", RInteger.class);
 		} catch (Exception e) {
 			fail("Failed to create tree");
 			e.printStackTrace();
 		}
-		ILocationItem item = new LocationItem2D(0, 0, null);
+		ILocationItem<RInteger> item = new LocationItem<>(2);
+		item.setDim(0, new RInteger(0));
+		item.setDim(1, new RInteger(0));
+		item.setType("TestType");
+		
 		try {
 			if (tree == null) {
 				fail("Failed to create tree");
@@ -156,29 +166,73 @@ class RTree2DTests {
 			e.printStackTrace();
 		}
 		
-		IHyperRectangle r = new Rectangle2D();
-		r.setDim1(0, -1);
-		r.setDim2(0, 1);
-		r.setDim1(1, -1);
-		r.setDim2(1, 1);
+		IHyperRectangle<RInteger> r = new HyperRectangle<>(2);
+		r.setDim1(0, new RInteger(-1));
+		r.setDim2(0, new RInteger(1));
+		r.setDim1(1, new RInteger(-1));
+		r.setDim2(1, new RInteger(1));
 		
 		// Act
 		if (tree == null) {
 			fail("Failed to create tree");
 		} else {
-			Map<IHyperRectangle, List<ILocationItem>> searchResult = tree.search(r);
+			Map<IHyperRectangle<RInteger>, List<ILocationItem<RInteger>>> searchResult = tree.search(r);
 			
 			// Assert
-			for (IHyperRectangle k : searchResult.keySet()) {
-				List<ILocationItem> i = searchResult.get(k);
-				for (ILocationItem j : i) {
-					assertEquals(j.getDim(0), item.getDim(0));
-					assertEquals(j.getDim(1), item.getDim(1));
+			for (IHyperRectangle<RInteger> k : searchResult.keySet()) {
+				List<ILocationItem<RInteger>> i = searchResult.get(k);
+				for (ILocationItem<RInteger> j : i) {
+					assertEquals(j.getDim(0).getData(), item.getDim(0).getData());
+					assertEquals(j.getDim(1).getData(), item.getDim(1).getData());
 				}
 				
 			}
 		}
 		
+	}
+	
+	//	@Disabled
+	@Test
+	void InMemoryTree_DeleteTree_Success() {
+		// Arrange
+		int N = 2;
+		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
+		
+		RTree<RInteger> tree = null;
+		try {
+			tree = new RTree<RInteger>(dataStorage, 4, 4, logger, N, "TestTree1", RInteger.class);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		ILocationItem<RInteger> item = new LocationItem<>(2);
+		item.setDim(0, new RInteger(0));
+		item.setDim(1, new RInteger(0));
+		item.setType("TestType");
+		
+		try {
+			tree.insert(item);
+			
+		} catch (IOException e) {
+			fail("Insert Exception");
+			e.printStackTrace();
+		}
+
+		// Act
+		try {
+			
+			tree.delete();
+			
+		} catch (Exception e) {
+			fail("Failed to delete tree");
+			e.printStackTrace();
+		}
+
+		// Assert
+		assertTrue(true);
+
 	}
 
 }

@@ -20,14 +20,6 @@ $(document).ready(function () {
 			drawTree(c, ctx, null, data.points, data.rectangles);
 		}
 	});
-
-
-	$(document).on("detail-close", function (e) {
-		console.log("detail view close N: " + e.detail.N(), e);
-		if (e.detail.N() == 2 && e.detail.numberPoints() !== 0) {
-			clear2DRTree();
-		}
-	});
 });
 
 function clear2DRTree() {
@@ -36,14 +28,6 @@ function clear2DRTree() {
 		myNode.removeChild(myNode.firstChild);
 	}
 }
-
-$(document).on("click", ".rectangle", function () {
-
-	var c = document.getElementById("canvas");
-	var ctx = c.getContext("2d");
-
-	drawTree(c, ctx, $(this).attr("id"));
-});
 
 function drawTree(c, ctx, id, points, rectangles) {
 
@@ -191,42 +175,5 @@ function drawTree(c, ctx, id, points, rectangles) {
             ctx.stroke();
         }
     }
-
-    
-
-	$(".rectangle").each(function () {
-
-		var obj = JSON.parse($(this).html());
-		var rectangleId = $(this).attr("id");
-		var rectangleLevel = obj["level"];
-
-		console.log("obj: ", obj);
-
-		var width = Math.abs(obj.x2 - obj.x1);
-		var height = Math.abs(obj.y2 - obj.y1);
-
-		var x1 = obj.x1;
-		var y1 = obj.y1;
-
-		var depth = "N/A";
-		if (typeof (obj.z1) != "undefined") {
-			depth = Math.abs(obj.z2 - obj.z1);
-		}
-
-		console.log("width: " + width + ", height: " + height + ", depth: " + depth);
-
-		ctx.beginPath();
-		ctx.rect(obj.x1, obj.y1, width, height);
-		ctx.lineWidth = 1;
-
-		if (id === rectangleId) {
-			ctx.strokeStyle = '#e20909';
-		} else {
-			ctx.strokeStyle = '#000000';
-		}
-
-		ctx.stroke();
-
-	});
 
 }

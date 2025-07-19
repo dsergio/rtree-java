@@ -3,8 +3,9 @@ package rtree.storage;
 import java.util.List;
 
 import rtree.item.ILocationItem;
-import rtree.tree.IRTree;
+import rtree.item.IRType;
 import rtree.tree.IRTreeCache;
+import rtree.tree.IRTree;
 import rtree.tree.IRTreeNode;
 
 /**
@@ -14,19 +15,19 @@ import rtree.tree.IRTreeNode;
  * @author David Sergio
  *
  */
-public interface IDataStorage {
+public interface IDataStorage<T extends IRType<T>> {
 	
 	 void close();
 	
-	 List<IRTree> getAllTrees();
-	 List<ILocationItem> getAllLocationItems();
+	 List<IRTree<T>> getAllTrees();
+	 List<ILocationItem<T>> getAllLocationItems();
 	
 	 void initializeStorage();
-	 IRTreeNode addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache cache);
+	 IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache<T> cache);
 	 void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
-	 IRTreeNode getCloudRTreeNode(String treeName, String nodeId, IRTreeCache cache);
+	 IRTreeNode<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache);
 	
-	 void addItem(String Id, int N, String location, String type);
+	 void addItem(String Id, int N, String location, String type, String properties);
 	
 	// use these for performance analysis
 	 int getNumAdds();
@@ -44,9 +45,14 @@ public interface IDataStorage {
 	 int getMaxItems(String treeName);  // get the persistent maxItems value
 	 int getNumDimensions(String treeName);  // get number of dimensions
 	 void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName);
-	 void updateMetaDataBoundariesNDimensional(List<Integer> minimums, List<Integer> maximums, String treeName);
+	 void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName);
 	 StorageType getStorageType();
 	
 	 void clearData();
+	 
+	 List<T> getMin(String treeName);
+	 List<T> getMax(String treeName);
+	 
+	 boolean isDbConnected();
 	
 }

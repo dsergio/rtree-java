@@ -27,12 +27,12 @@ import co.dsergio.rtree.business.services.generic.RTreeServiceBaseGeneric;
 import co.dsergio.rtree.business.services.generic.RTreeServiceDouble;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import rtree.item.generic.ILocationItemGeneric;
-import rtree.item.generic.LocationItemNDGeneric;
-import rtree.item.generic.RDouble;
-import rtree.rectangle.generic.IHyperRectangleGeneric;
-import rtree.rectangle.generic.RectangleNDGeneric;
-import rtree.tree.generic.IRTreeGeneric;
+import rtree.item.ILocationItem;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
+import rtree.rectangle.IHyperRectangle;
+import rtree.rectangle.HyperRectangle;
+import rtree.tree.IRTree;
 
 @RestController
 @RequestMapping("api/RTreeDouble")
@@ -48,11 +48,11 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	@RequestMapping(value="/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<List<RTreeDouble>> get(HttpServletRequest request, HttpServletResponse response) {
 		
-		List<IRTreeGeneric<RDouble>> trees = rtreeService.fetchAll();
+		List<IRTree<RDouble>> trees = rtreeService.fetchAll();
 		
 		List<RTreeDouble> returnRTreeList = new ArrayList<RTreeDouble>();
 		
-		for (IRTreeGeneric<RDouble> t : trees) {
+		for (IRTree<RDouble> t : trees) {
 			
 			RTreeDouble tree = new RTreeDouble(t.getTreeName(), t.getNumDimensions(), null, null);
 			returnRTreeList.add(tree);
@@ -66,7 +66,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	@RequestMapping(value="/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeDouble> insert(@PathVariable String treeName, @RequestBody LocationItemDouble itemToInsert) {
 		
-		ILocationItemGeneric<RDouble> item = new LocationItemNDGeneric<RDouble>(itemToInsert.numberDimensions);
+		ILocationItem<RDouble> item = new LocationItem<RDouble>(itemToInsert.numberDimensions);
 		item.setType(itemToInsert.type);
 		for (String s : itemToInsert.itemProperties.keySet()) {
 			item.setProperty(s, itemToInsert.itemProperties.get(s));
@@ -79,7 +79,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		
 		rtreeService.insert(treeName, item);
 		
-		IRTreeGeneric<RDouble> tree = rtreeService.fetchByTreeName(treeName);
+		IRTree<RDouble> tree = rtreeService.fetchByTreeName(treeName);
 		
 		if (tree != null) {
 			RTreeDouble treeRet = new RTreeDouble();
@@ -96,7 +96,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	@RequestMapping(value="/{treeName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeDouble> get(@PathVariable String treeName) {
 		
-		IRTreeGeneric<RDouble> tree = rtreeService.fetchByTreeName(treeName);
+		IRTree<RDouble> tree = rtreeService.fetchByTreeName(treeName);
 		
 		if (tree != null) {
 			
@@ -104,7 +104,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 			treeRet.rectangles = new ArrayList<>();
 			treeRet.points = new ArrayList<>();
 			
-			for (IHyperRectangleGeneric<RDouble> r : tree.getRectangles()) {
+			for (IHyperRectangle<RDouble> r : tree.getAllRectangles()) {
 				RectangleDouble rectDouble = new RectangleDouble();
 				rectDouble.dimensionArray1 = new ArrayList<Double>();
 				rectDouble.dimensionArray2 = new ArrayList<Double>();
@@ -117,7 +117,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 				rectDouble.numberDimensions = r.getNumberDimensions();
 				treeRet.rectangles.add(rectDouble);
 			}
-			for (ILocationItemGeneric<RDouble> item : tree.getPoints()) {
+			for (ILocationItem<RDouble> item : tree.getAllPoints()) {
 				LocationItemDouble i = new LocationItemDouble();
 				i.dimensionArray = new ArrayList<Double>();
 				i.type = item.getType();
@@ -143,7 +143,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	public @ResponseBody ResponseEntity<List<LocationItemDouble>> search(
 			@PathVariable String treeName, @RequestBody RectangleDouble searchRectangleInput) {
 		
-		IHyperRectangleGeneric<RDouble> searchRectangle = new RectangleNDGeneric<RDouble>(searchRectangleInput.numberDimensions);
+		IHyperRectangle<RDouble> searchRectangle = new HyperRectangle<RDouble>(searchRectangleInput.numberDimensions);
 		for (int i = 0; i < searchRectangleInput.numberDimensions; i++) {
 			RDouble rd1 = new RDouble(searchRectangleInput.dimensionArray1.get(i));
 			searchRectangle.setDim1(i, rd1);
@@ -151,18 +151,18 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 			searchRectangle.setDim2(i, rd2);
 		}
 		
-		Map<IHyperRectangleGeneric<RDouble>, List<ILocationItemGeneric<RDouble>>> results = rtreeService.search(treeName, searchRectangle);
+		Map<IHyperRectangle<RDouble>, List<ILocationItem<RDouble>>> results = rtreeService.search(treeName, searchRectangle);
 		
 		List<LocationItemDouble> searchResults = new ArrayList<LocationItemDouble>();
 		
 		if (results != null) {
 			
-			for (IHyperRectangleGeneric<RDouble> r : results.keySet()) {
-				List<ILocationItemGeneric<RDouble>> items = results.get(r);
+			for (IHyperRectangle<RDouble> r : results.keySet()) {
+				List<ILocationItem<RDouble>> items = results.get(r);
 				
 				RectangleDouble eachR = new RectangleDouble();
 
-				for (ILocationItemGeneric<RDouble> item : items) {
+				for (ILocationItem<RDouble> item : items) {
 					LocationItemDouble i = new LocationItemDouble();
 					i.type = item.getType();
 					i.id = item.getId();
@@ -188,7 +188,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 	@RequestMapping(value="/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeDouble> create(@RequestBody RTreeCreate rtreeCreate) {
 		
-		IRTreeGeneric<RDouble> t = rtreeService.create(rtreeCreate);
+		IRTree<RDouble> t = rtreeService.create(rtreeCreate);
 		
 		RTreeDouble treeRet = null;
 		
@@ -198,5 +198,23 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		}
 		
 		return ResponseEntity.ok(treeRet);
+	}
+	
+	@ApiOperation(value="RTreeDouble_delete", notes = "Delete RTree<Double> by treeName", nickname = "RTreeDouble_delete")
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value="/{treeName}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<List<String>> delete(@PathVariable String treeName) {
+		
+		List<String> ret = new ArrayList<String>();
+		
+		try {
+			rtreeService.delete(treeName);
+			
+			ret.add("Tree " + treeName + " deleted successfully");
+			return ResponseEntity.ok(ret);
+		} catch (Exception e) {
+			ret.add("Error deleting tree: " + e.getMessage());
+			return ResponseEntity.status(500).body(ret);
+		}
 	}
 }

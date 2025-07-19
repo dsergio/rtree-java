@@ -10,7 +10,7 @@ public class LoggerStdOut extends LoggerBase {
 	public void log(String message) {
 		
 		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
-//			System.out.println(message);
+			System.out.println(message);
 		}
 		
 	}
@@ -18,7 +18,7 @@ public class LoggerStdOut extends LoggerBase {
 	@Override
 	public void log() {
 		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
-//			System.out.println();
+			System.out.println();
 		}
 	}
 
@@ -26,7 +26,7 @@ public class LoggerStdOut extends LoggerBase {
 	public void logExact(String message) {
 		
 		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
-//			System.out.print(message);
+			System.out.print(message);
 		}
 		
 	}
