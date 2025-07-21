@@ -29,9 +29,9 @@ jobs:
       run: mvn clean install -DskipTests
 
     - name: Build & package API
-      working-directory: ./rtree-boot-api/rtree-boot-api
+      working-directory: ./rtree-api-boot/rtree-api-boot
       run: mvn clean package -DskipTests
 
     - name: Deploy API
-      working-directory: ./rtree-boot-api/rtree-boot-api
+      working-directory: ./rtree-api-boot/rtree-api-boot
       run: mvn clean spring-boot:run -DskipTests
