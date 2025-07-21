@@ -44,6 +44,7 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 		} else {
 			
 			System.out.println("Using config.properties file for MySQL connection parameters user: (" + System.getenv("MYSQL.user") + ")");
+			System.getenv().forEach((k, v) -> System.out.println(k + ": " + v));
 
 			Configurations configs = new Configurations();
 			try {
