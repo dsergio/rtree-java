@@ -40,7 +40,10 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 			host = System.getenv("MYSQL.host");
 			database = System.getenv("MYSQL.database");
 			
+			
 		} else {
+			
+			System.out.println("Using config.properties file for MySQL connection parameters user: (" + System.getenv("MYSQL.user") + ")");
 
 			Configurations configs = new Configurations();
 			try {
