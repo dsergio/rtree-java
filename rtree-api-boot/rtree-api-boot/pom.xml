@@ -11,8 +11,8 @@
 	</parent>
 	<groupId>com.dsergio</groupId>
 	<artifactId>rtree-api-boot</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<version>1.0</version>
+	<packaging>jar</packaging>
 	<name>rtree-api-boot</name>
 	<description>RTree Api Boot</description>
 	<properties>

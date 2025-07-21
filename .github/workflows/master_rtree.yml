@@ -36,8 +36,8 @@ jobs:
     #   working-directory: ./rtree-api-boot/rtree-api-boot
     #   run: mvn clean spring-boot:run -DskipTests
 
-    - name: Deploy to Azure
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: rtree
-        package: ./rtree-api-boot/rtree-api-boot/target/rtree-api-boot.jar
+    # - name: Deploy to Azure
+    #   uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: rtree
+    #     package: ./rtree-api-boot/rtree-api-boot/target/rtree-api-boot.jar
