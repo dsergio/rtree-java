@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -7,9 +6,8 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.3.1.RELEASE</version>
+		<version>3.2.0</version> <!-- Update to the latest version -->
 		<relativePath />
-		<!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.dsergio</groupId>
 	<artifactId>rtree-api-boot</artifactId>
@@ -18,7 +16,7 @@
 	<name>rtree-api-boot</name>
 	<description>RTree Api Boot</description>
 	<properties>
-		<java.version>1.8</java.version>
+		<java.version>17</java.version> <!-- Update to at least Java 17 -->
 	</properties>
 	<dependencies>
 		<dependency>
@@ -41,38 +39,47 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
 		<dependency>
 			<groupId>dsergio</groupId>
 			<artifactId>rtree</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.2</version> <!-- Check for the latest version -->
 		</dependency>
 		<dependency>
 			<groupId>co.dsergio</groupId>
 			<artifactId>rtree-business</artifactId>
-			<version>0.0.1</version>
+			<version>0.0.1</version> <!-- Check for the latest version -->
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-boot-starter</artifactId>
 			<version>3.0.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 
-			<dependency> <groupId>io.springfox</groupId> <artifactId>springfox-swagger2</artifactId> 
-			<version>3.0.0</version> </dependency> -->
-		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-core <dependency> 
-			<groupId>io.springfox</groupId> <artifactId>springfox-core</artifactId> <version>3.0.0</version> 
-			</dependency> -->
-		<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger-ui 
-			<dependency> <groupId>io.springfox</groupId> <artifactId>springfox-swagger-ui</artifactId> 
-			<version>3.0.0</version> </dependency> -->
+		 <dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>3.0.0</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>jakarta.servlet</groupId>
+		    <artifactId>jakarta.servlet-api</artifactId>
+		    <version>6.0.0</version>
+		    <scope>provided</scope>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>2.2.0</version>
+		</dependency>
 	</dependencies>
 	<build>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring-boot.version}</version>
+                <version>3.2.0</version> <!-- Update to the latest version -->
                 <executions>
                     <execution>
                         <goals>

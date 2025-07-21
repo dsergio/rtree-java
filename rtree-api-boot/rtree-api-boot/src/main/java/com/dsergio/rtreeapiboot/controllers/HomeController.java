@@ -3,11 +3,12 @@ package com.dsergio.rtreeapiboot.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import springfox.documentation.annotations.ApiIgnore;
+import io.swagger.v3.oas.annotations.Hidden;
+
 
 @Controller
 @RequestMapping("/")
-@ApiIgnore
+@Hidden
 public class HomeController {
 	
 	@RequestMapping("/")

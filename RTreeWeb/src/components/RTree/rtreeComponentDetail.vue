@@ -38,10 +38,6 @@ const props = defineProps<{
   numDimensions?: number;
 }>();
 
-props.treeName = 'tree1';
-
-
-
 class RTreeComponentDetail {
     name: string;
     numDimensions: number;
@@ -55,12 +51,7 @@ class RTreeComponentDetail {
 
 }
 
-
-const api = new RTreeDoubleApi(
-  new Configuration({
-    basePath: 'http://localhost:8080',
-  })
-);
+import { api } from '@/config';
 
 const rtreeDetail = ref<RTreeComponentDetail | null>(null);
 const pointsRef = ref<Object[]>([]);

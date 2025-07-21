@@ -23,7 +23,10 @@ module.exports = {
       { test: /\.css$/, use: ['style-loader', 'css-loader'] },
     ],
   },
-  plugins: [new VueLoaderPlugin()],
+  plugins: [
+    new VueLoaderPlugin()
+
+  ],
   devServer: {
     static: path.join(__dirname, '/'),
     port: 3000,

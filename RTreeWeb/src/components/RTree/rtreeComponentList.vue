@@ -44,11 +44,7 @@ import { Configuration, RTreeDoubleApi, RTreeDouble } from '@/generated/TypeScri
 
 import RTreeComponentDetail from '@/components/RTree/rtreeComponentDetail.vue';
 
-const api = new RTreeDoubleApi(
-  new Configuration({
-    basePath: 'http://localhost:8080',
-  })
-);
+import { api } from '@/config';
 
 const createRTree = async (name: string) => {
   try {

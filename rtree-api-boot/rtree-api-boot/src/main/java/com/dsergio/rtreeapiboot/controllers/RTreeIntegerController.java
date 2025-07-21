@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +18,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.dsergio.rtree.business.dto.LocationItemDouble;
 import co.dsergio.rtree.business.dto.LocationItemInteger;
 import co.dsergio.rtree.business.dto.RTreeCreate;
-import co.dsergio.rtree.business.dto.RTreeDouble;
 import co.dsergio.rtree.business.dto.RTreeInteger;
-import co.dsergio.rtree.business.dto.RectangleDouble;
 import co.dsergio.rtree.business.dto.RectangleInteger;
-import co.dsergio.rtree.business.services.RTreeServiceDouble;
 import co.dsergio.rtree.business.services.RTreeServiceInteger;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import rtree.item.ILocationItem;
 import rtree.item.LocationItem;
-import rtree.item.RDouble;
 import rtree.item.RInteger;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
@@ -39,14 +34,15 @@ import rtree.tree.IRTree;
 
 @RestController
 @RequestMapping("api/RTreeInteger")
-@Api(tags = "RTreeInteger")
+@Tag(name = "RTreeInteger", description = "Operations related to RTreeInteger")
 public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>{
 	
 	public RTreeIntegerController() {
 		super(new RTreeServiceInteger());
 	}
 	
-	@ApiOperation(value="RTreeInteger_getAll", notes = "Get all RTree<Integer> structures from metadata", nickname = "RTreeInteger_getAll")
+//	@ApiOperation(value="RTreeInteger_getAll", notes = "Get all RTree<Integer> structures from metadata", nickname = "RTreeInteger_getAll")
+	@Operation(summary = "RTreeInteger_getAll", description = "Get all RTree<Integer> structures from metadata", operationId = "RTreeInteger_getAll")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<List<RTreeInteger>> get(HttpServletRequest request, HttpServletResponse response) {
@@ -64,7 +60,8 @@ public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>
 		return ResponseEntity.ok(returnRTreeList);
 	}
 	
-	@ApiOperation(value="RTreeInteger_insert", notes = "Insert into RTree<Integer", nickname = "RTreeInteger_insert")
+//	@ApiOperation(value="RTreeInteger_insert", notes = "Insert into RTree<Integer", nickname = "RTreeInteger_insert")
+	@Operation(summary = "RTreeInteger_insert", description = "Insert into RTree<Integer>", operationId = "RTreeInteger_insert")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeInteger> insert(@PathVariable String treeName, @RequestBody LocationItemInteger itemToInsert) {
@@ -97,7 +94,8 @@ public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>
 		return ResponseEntity.ok(null);
 	}
 	
-	@ApiOperation(value="RTreeInteger_get", notes = "Get RTree<Integer> structure and data by treeName", nickname = "RTreeInteger_get")
+//	@ApiOperation(value="RTreeInteger_get", notes = "Get RTree<Integer> structure and data by treeName", nickname = "RTreeInteger_get")
+	@Operation(summary = "RTreeInteger_get", description = "Get RTree<Integer> structure and data by treeName", operationId = "RTreeInteger_get")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeInteger> get(@PathVariable String treeName) {
@@ -147,7 +145,8 @@ public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>
 		return ResponseEntity.ok(null);
 	}
 	
-	@ApiOperation(value="RTreeInteger_search", notes = "Search RTree<Integer> structure by rectangle", nickname = "RTreeInteger_search")
+//	@ApiOperation(value="RTreeInteger_search", notes = "Search RTree<Integer> structure by rectangle", nickname = "RTreeInteger_search")
+	@Operation(summary = "RTreeInteger_search", description = "Search RTree<Integer> structure by rectangle", operationId = "RTreeInteger_search")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/search/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<Map<RectangleInteger, List<LocationItemInteger>>> search(
@@ -192,7 +191,8 @@ public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>
 		return ResponseEntity.ok(null);
 	}
 	
-	@ApiOperation(value="RTreeInteger_newTree", notes = "Create new RTree<Integer>", nickname = "RTreeInteger_newTree")
+//	@ApiOperation(value="RTreeInteger_newTree", notes = "Create new RTree<Integer>", nickname = "RTreeInteger_newTree")
+	@Operation(summary = "RTreeInteger_newTree", description = "Create new RTree<Integer>", operationId = "RTreeInteger_newTree")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public @ResponseBody ResponseEntity<RTreeInteger> create(@RequestBody RTreeCreate rtreeCreate) {
