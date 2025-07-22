@@ -30,20 +30,20 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 		String host = "";
 		String database = "";
 		
-		if (System.getenv("MYSQL.user") != null && 
-			System.getenv("MYSQL.password") != null && 
-			System.getenv("MYSQL.host") != null && 
-			System.getenv("MYSQL.database") != null
+		if (System.getenv("MYSQL_user") != null && 
+			System.getenv("MYSQL_password") != null && 
+			System.getenv("MYSQL_host") != null && 
+			System.getenv("MYSQL_database") != null
 			) {
-			username = System.getenv("MYSQL.user");
-			password = System.getenv("MYSQL.password");
-			host = System.getenv("MYSQL.host");
-			database = System.getenv("MYSQL.database");
+			username = System.getenv("MYSQL_user");
+			password = System.getenv("MYSQL_password");
+			host = System.getenv("MYSQL_host");
+			database = System.getenv("MYSQL_database");
 			
 			
 		} else {
 			
-			System.out.println("Using config.properties file for MySQL connection parameters user: (" + System.getenv("MYSQL.user") + ")");
+			System.out.println("Using config.properties file for MySQL connection parameters MYSQL_user: (" + System.getenv("MYSQL_user") + ")");
 			System.getenv().forEach((k, v) -> System.out.println(k + ": " + v));
 
 			Configurations configs = new Configurations();
