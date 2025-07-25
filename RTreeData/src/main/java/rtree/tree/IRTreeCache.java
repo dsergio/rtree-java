@@ -10,13 +10,14 @@ import rtree.storage.IDataStorage;
  */
 public interface IRTreeCache<T extends IRType<T>> {
 	
-	 int getNumDimensions();
 	 void printCache();
+	 
 	 IDataStorage<T> getDBAccess();
+	 IRTree<T> getTree();
+	 
 	 IRTreeNode<T> getNode(String nodeId);
-	 void updateNode(String nodeId, String children, String parent, String items, String rectangle);
-	 void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node);
-	 void addNode(String nodeId, String children, String parent, String items, String rectangle);
-	 void remove(String node);
-	
+	 void removeNode(String nodeId);
+	 void putNode(String nodeId, IRTreeNode<T> node);
+	 void updateNode(String nodeId, IRTreeNode<T> node);
+	 
 }

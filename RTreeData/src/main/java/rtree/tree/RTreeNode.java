@@ -23,7 +23,7 @@ import rtree.rectangle.IHyperRectangle;
  */
 public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 
-	Class<T> clazz;
+	Class<T> className;
 	/**
 	 * @param nodeId
 	 * @param childrenStr
@@ -31,22 +31,19 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 	 * @param cache
 	 * @param logger
 	 */
-	public RTreeNode(String nodeId, String childrenStr, String parent, IRTreeCache<T> cache, ILogger logger, Class<T> clazz) {
+	public RTreeNode(String nodeId, String childrenStr, String parent, IRTreeCache<T> cache, ILogger logger, Class<T> className) {
 		super(nodeId, childrenStr, parent, cache, logger);
-		this.clazz = clazz;
+		this.className = className;
 	}
 	
 	public T getInstanceOf() {
 		
 		try {
-			
-			return clazz.getDeclaredConstructor().newInstance();
+			return className.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
 		return null;
 	}
 	
@@ -57,7 +54,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 	
 	@Override
 	public void updateRectangle(boolean goUp) {
-		logger.log(rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		logger.log("[RTREENODE] " + rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
 		
 		List<T> minimums = new ArrayList<T>();
 		List<T> maximums = new ArrayList<T>();
@@ -95,20 +92,20 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 			rectangle.setDim2(i, maximums.get(i));
 		}
 		
-		cache.updateNode(nodeId, null, null, null, rectangle.getJson().toJSONString());
-		logger.log("updated rectangle for " + nodeId + " new rectangle: " + rectangle);
+		IRTreeNode<T> node = cache.getNode(nodeId);
+		node.setRectangle(rectangle);
+		cache.updateNode(nodeId, node);
 		
-		// logger.log("This node has a bounding box of " + rectangle.toString()
-		// + " has parent? " + (parent != null) + "... child rect: " + childRectangle);
+		logger.log("[RTREENODE] " + "updated rectangle for " + nodeId + " new rectangle: " + rectangle);
 
-		if (parent != null && cache.getNode(parent) != null && goUp) {
-			updateRectangle(cache.getNode(parent));
+		if (parentId != null && cache.getNode(parentId) != null && goUp) {
+			updateRectangle(cache.getNode(parentId));
 		}
 	}
 	
 	@Override
 	public void updateRectangle(IRTreeNode<T> node) {
-		logger.log(rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + node.getNodeId() + " ... node.children: " + node.getChildren() + " node.parent: " + node.getParent());
+		logger.log("[RTREENODE] " + rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + node.getNodeId() + " ... node.children: " + node.getChildren() + " node.parent: " + node.getParent());
 		
 		IHyperRectangle<T> childSum = node.getRectangle();
 		
@@ -144,7 +141,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 				IRTreeNode<T> childNode = cache.getNode(child);
 				if (childNode != null && childNode.getRectangle() != null) {
 					
-					logger.log("childSum: " + childSum);
+					logger.log("[RTREENODE] " + "childSum: " + childSum);
 					IHyperRectangle<T> childRectangle = cache.getNode(child).getRectangle();
 					
 					List<IHyperRectangle<T>> temp = new ArrayList<IHyperRectangle<T>>();
@@ -166,10 +163,9 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 				}
 			}
 			
-			
-			
 			node.setRectangle(childSum);
-			cache.updateNode(node.getNodeId(), null, null, null, node.getRectangle().getJson().toJSONString());
+			
+			cache.updateNode(node.getNodeId(), node);
 		}
 		
 		if (node.getParent() != null && cache.getNode(node.getParent()) != null) {
@@ -180,7 +176,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 	
 	
 	@Override
-	public void setItemsJson(String items) {
+	public void setLocationItemsJson(String items) {
 		
 		JSONParser parser = new JSONParser();
 		Object obj;
@@ -230,7 +226,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 				}
 			}
 		} catch (ParseException e) {
-			logger.log("items: |" + items + "|");
+			logger.log("[RTREENODE] " + "items: |" + items + "|");
 			e.printStackTrace();
 		}
 		

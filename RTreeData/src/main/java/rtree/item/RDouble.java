@@ -1,5 +1,8 @@
 package rtree.item;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class RDouble extends RType<Double> implements IRType<RDouble> {
 	
 	public RDouble(Object data) {
@@ -43,6 +46,15 @@ public class RDouble extends RType<Double> implements IRType<RDouble> {
 	@Override
 	public boolean hasDiscreteValues() {
 		return false;
+	}
+	
+	@Override
+	public Double getData() {
+		
+		BigDecimal bd = new BigDecimal(data);
+        bd = bd.setScale(3, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+        
 	}
 
 }

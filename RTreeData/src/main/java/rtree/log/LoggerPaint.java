@@ -11,7 +11,7 @@ public class LoggerPaint extends LoggerBase implements ILoggerPaint {
 	public void log(String message, Graphics2D drawImage, int x, int y) {
 		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
 			drawImage.drawString(message, x, y);
-			log(message + ", x = " + x + ", y = " + y);
+//			log("[PAINT] " + message + ", x = " + x + ", y = " + y);
 		}
 	}
 

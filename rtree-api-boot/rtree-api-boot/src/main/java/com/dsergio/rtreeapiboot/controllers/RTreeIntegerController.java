@@ -125,7 +125,7 @@ public class RTreeIntegerController extends RTreeControllerBaseGeneric<RInteger>
 				rectInteger.numberDimensions = r.getNumberDimensions();
 				treeRet.rectangles.add(rectInteger);
 			}
-			for (ILocationItem<RInteger> item : tree.getAllPoints()) {
+			for (ILocationItem<RInteger> item : tree.getAllLocationItems()) {
 				LocationItemInteger i = new LocationItemInteger();
 				i.dimensionArray = new ArrayList<Integer>();
 				i.type = item.getType();

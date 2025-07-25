@@ -34,7 +34,6 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	private int numDimensions;
 	Class<T> className;
 	
-//	public DataStorageInMemory(ILogger logger, String treeName, int numDimensions) {
 	public DataStorageInMemory(ILogger logger, Class<T> className) {
 		super(StorageType.INMEMORY, logger);
 		localData = new HashMap<String, IRTreeNode<T>>();
@@ -51,13 +50,11 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 
 	@Override
 	public void close() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void initializeStorage() {
-		// TODO Auto-generated method stub
 	}
 
 	@Override
@@ -143,7 +140,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 			}
 		}
 		node.setRectangle(r);
-		node.setItemsJson(items);
+		node.setLocationItemsJson(items);
 		
 		localData.put(nodeId, node);
 		
@@ -169,8 +166,13 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 		
 		IRTreeNode<T> node = localData.get(nodeId);
 		
+		if (node == null) {
+			logger.log("[ERROR] Node with ID " + nodeId + " not found in local data.");
+			return;
+		}
+		
 		if (children != null) {
-			node.setChildren(children);
+			node.setChildrenJSON(children);
 		}
 		
 		node.setParent(parent);
@@ -240,7 +242,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 			node.setRectangle(r);
 		}
 		if (items != null) {
-			node.setItemsJson(items);
+			node.setLocationItemsJson(items);
 		}
 		
 		numUpdates++;

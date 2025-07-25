@@ -18,29 +18,31 @@ import rtree.rectangle.IHyperRectangle;
 public interface IRTreeNode<T extends IRType<T>> {
 
 	 String getNodeId();
-	 void setChildren(String childrenStr);
+	 String toString();
+	 int getNumberOfItems();
+	 boolean isLeafNode();
+	 
+	 List<String> getChildren();
+	 void setChildren(List<String> children);
 	 JSONArray getChildrenJSON();
-	 JSONArray getItemsJSON();
-	 List<ILocationItem<T>> getLocationItems();
-	 void addItem(ILocationItem<T> locationItem) throws IOException;
+	 void setChildrenJSON(String childrenJSONString);
 	
 	 void updateRectangle();
 	 void updateRectangle(boolean goUp);
 	 void updateRectangle(IRTreeNode<T> node);
-	
-	 int getNumberOfItems();
-	 boolean isLeafNode();
+	 
 	 IHyperRectangle<T> getRectangle();
 	 void setRectangle(IHyperRectangle<T> rectangle);
-	 List<String> getChildren();
-	 void setParent(String node);
-	 List<ILocationItem<T>> getPoints();
+	 
 	 String getParent();
-	 void setChildren(List<String> newChildren);
-	 String toString();
-	
-	
-	 void setItemsJson(String items);
+	 void setParent(String nodeId);
+	 
+	 JSONArray getLocationItemsJSON();
+	 void setLocationItemsJson(String itemsJSONString);
+	 List<ILocationItem<T>> getLocationItems();
 	 void setLocationItems(ArrayList<ILocationItem<T>> arrayList);
+	 
+	 void addLocationItem(ILocationItem<T> locationItem) throws IOException;	 
+	 
 
 }

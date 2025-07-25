@@ -42,14 +42,19 @@ public interface IRTree<T extends IRType<T>> {
 	 * @return all items in this tree
 	 * 
 	 */
-	 List<ILocationItem<T>> getAllPoints();
+	 List<ILocationItem<T>> getAllLocationItems();
+	 
+	 /**
+	  * Get all items in this tree with their depth in the tree.
+	  * @return a map of items with their depth in the tree.
+	  */
+	 Map<ILocationItem<T>, Integer> getAllLocationItemsWithDepth();
 	 
 	 /**
 	  * Get all rectangles in this tree
 	  * @return
 	  */
 	 List<IHyperRectangle<T>> getAllRectangles();
-	 
 	 
 	 /**
 	  * Delete a specific location item from the R-tree.
@@ -66,7 +71,6 @@ public interface IRTree<T extends IRType<T>> {
 	 */
 	 Map<IHyperRectangle<T>, List<ILocationItem<T>>> search(IHyperRectangle<T> searchRectangle);
 	 
-	 
 	 /**
 	  * Print tree
 	  * 
@@ -79,28 +83,63 @@ public interface IRTree<T extends IRType<T>> {
 	  */
 	 String getTreeName();
 	 
+	 /** 
+	  * get maximum number of children per node
+	  * @return maximum number of children per node
+	  */
+	 int getMaxChildren();
+	 
+	 /**
+	  * get maximum number of items per node
+	  * @return maximum number of items per node
+	  */
+	 int getMaxItems();
+	 
+	 /**
+	  * Get the JSON representation of the R-tree
+	  * @return a JSONObject containing the R-tree structure
+	  */
+	 JSONObject getJSON();
+	 
+	 /**
+	  * Get the number of dimensions of the R-tree
+	  * @return the number of dimensions
+	  */
+	 int getNumDimensions();
+	 
+	 /**
+	 * Get the minimum of each dimension in the R-tree.
+	 * 
+	 * @return a list of minimum values for each dimension
+	 */
+	 List<T> getMin();
+	 
+	 /**
+	  * Get the maximum of each dimension in the R-tree.
+	  * @return a list of maximum values for each dimension
+	  */
+	 List<T> getMax();
+	 
 	 
 	 // the rest of these methods are internal, and should be moved out of this public interface
 	 //
-	 IRTreeCache<T> getCache();
-	 void updateRoot();
-	 boolean metaDataExists() throws Exception;
-	 int getMaxChildren();
-	 int getMaxItems();
-	 IRTreeNode<T> getNode(String nodeId);
-	 void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node);
-	 void addNode(String nodeId, String children, String parent, String items, String rectangle);
-	 Map<ILocationItem<T>, Integer> getPointsWithDepth();
-	 JSONObject getJson();
+//	 IRTreeCache<T> getCache();
+//	 void updateRoot();
+//	 boolean metaDataExists() throws Exception;
+//	 IRTreeNode<T> getNode(String nodeId);
+//	 void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node);
+//	 void addNode(String nodeId, String children, String parent, String items, String rectangle);
+	 
+	 
+	 
+	 // performance analysis, move these into another class 
 	 int numAdds();
 	 int numReads();
 	 int numUpdates();
 	 long getAddTime();
 	 long getReadTime();
 	 long getUpdateTime();
-	 int getNumDimensions();
-	 List<T> getMin();
-	 List<T> getMax();
+	 
 }
 
 

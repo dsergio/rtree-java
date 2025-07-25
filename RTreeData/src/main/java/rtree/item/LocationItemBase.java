@@ -186,7 +186,7 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 							break;
 					}
 					obj.put("type", item.getType());
-					
+					obj.put("id", item.getId());
 					obj.put("properties", item.getPropertiesJson());
 					
 

@@ -16,11 +16,11 @@ import rtree.rectangle.IHyperRectangle;
 public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 	
 	final String description;
-	Class<T> clazz;
+	Class<T> className;
 	
-	public SplitQuadratic(Class<T> clazz) {
+	public SplitQuadratic(Class<T> className) {
 		description = "ND Quadratic Split";
-		this.clazz = clazz;
+		this.className = className;
 	}
 	
 	@Override
@@ -32,147 +32,125 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 	public void splitLeafNode(IRTreeNode<T> node, ILocationItem<T> locationItem) {
 		
 		// full leaf node, so split leaf node
-		logger.log("#SPLIT-LEAF: " + " We're full, splitting leaf node: " + node.getNodeId() + " node.getParent(): " + node.getParent() + " node.getNumberOfItems(): " + node.getNumberOfItems() + " items:");
-		for (ILocationItem<T> item : node.getPoints()) {
-			logger.log(item + " ***** ");
-		}
-		logger.log();
 		
+		// current node location items
+		List<ILocationItem<T>> nodeItems = node.getLocationItems();
+		
+		// add the new location item that caused the split
+		nodeItems.add(locationItem);
+		
+		// find worst combination of two locations, use these as the seeds for the rest of the location items.
 		double maxArea = 0;
-		int index1 = 0; // seed 1
-		int index2 = 0; // seed 2
-		
-		List<ILocationItem<T>> points = node.getPoints();
-		points.add(locationItem);
-		
-		// find worst combination of two points, use these as the seeds for the rest of the points
-		for (int i = 0; i < points.size(); i++) {
-			for (int j = 0; j < points.size(); j++) {
+		int seed1 = 0;
+		int seed2 = 0;
+		for (int i = 0; i < nodeItems.size(); i++) {
+			for (int j = 0; j < nodeItems.size(); j++) {
 				
-				double a = LocationItemBase.space(points.get(i), points.get(j));
+				double a = LocationItemBase.space(nodeItems.get(i), nodeItems.get(j));
 				if (a > maxArea) {
 					maxArea = a;
-					index1 = i;
-					index2 = j;
+					seed1 = i;
+					seed2 = j;
 				}
 			}
 		}
 		
-		logger.log("#SPLIT-LEAF: " + "Max area: " + maxArea + " points.get(index1): " + points.get(index1) + " points.get(index2): " + points.get(index2));
+		// first create two new nodes, with new IDs
+		IRTreeNode<T> node1 = new RTreeNode<T>(UUID.randomUUID().toString(), null, null, cache, logger, className);
+		IRTreeNode<T> node2 = new RTreeNode<T>(UUID.randomUUID().toString(), null, null, cache, logger, className);
 		
-		String node1Id = UUID.randomUUID().toString();
-		String node2Id = UUID.randomUUID().toString();
-		
-		IRTreeNode<T> node1 = new RTreeNode<T>(node1Id, null, null, cache, logger, clazz);
-		IRTreeNode<T> node2 = new RTreeNode<T>(node2Id, null, null, cache, logger, clazz);
-		ArrayList<String> newChildren = new ArrayList<String>();
-		newChildren.add(node1.getNodeId());
-		newChildren.add(node2.getNodeId());
+		// the current node's parent's children will be replaced with the new nodes created above
+		ArrayList<String> nodeParentSplitChildren = new ArrayList<String>();
+		nodeParentSplitChildren.add(node1.getNodeId());
+		nodeParentSplitChildren.add(node2.getNodeId());
 		
 
-		if (node.getParent() == null) {
+		if (node.getParent() == null) { // node is root (parent is null)
 			
-			logger.log("#SPLIT-LEAF: " + "we're at the root");
-			logger.log("#SPLIT-LEAF: " + "root.children: " + getNode(treeName).getChildren());
+			IRTreeNode<T> root = cache.getNode(treeName);
 			
-			
-			IRTreeNode<T> rootTemp = new RTreeNode<T>(treeName, null, null, cache, logger, clazz);
-			rootTemp.setChildren(newChildren);
-			
+			// set the root's children to the new nodes, and the new nodes' parent to the root
+			root.setChildren(nodeParentSplitChildren);
 			node1.setParent(treeName);
 			node2.setParent(treeName);
-			
-			
-//	        JSONArray childrenArr = root.getChildrenJSON();
-			JSONArray childrenArr = rootTemp.getChildrenJSON();
-	        logger.log("trying to add " + childrenArr.toJSONString());
-			cache.updateNode(treeName, childrenArr.toJSONString(), null, "[]", HyperRectangleBase.sumRectanglesNDimensional(node.getRectangle(), locationItem).getJson().toJSONString());
-			
+	        
+			// expand the rectangle with the new location item, and set the root's rectangle to the new rectangle
+	        IHyperRectangle<T> rootRectangle = HyperRectangleBase.sumRectanglesNDimensional(node.getRectangle(), locationItem);
+	        root.setRectangle(rootRectangle);
+	        cache.updateNode(treeName, root);
 			
 		} else { // parent is not null
+						
+			IRTreeNode<T> nodeParent = cache.getNode(node.getParent());
 			
-			logger.log("#SPLIT-LEAF: " + "parent is not null");
-			
-			IRTreeNode<T> nodesParent = cache.getNode(node.getParent());
-			logger.log("#SPLIT-LEAF: " + "nodesParent.children: " + nodesParent.getChildren());
-			
-			List<String> nodesParentsChildrenList = new ArrayList<String>();
-			for (String s : nodesParent.getChildren()) {
+			// the node parent may have other children
+			List<String> nodeParentExistingChildren = new ArrayList<String>();
+			for (String s : nodeParent.getChildren()) {
 				if (!s.equals(node.getNodeId())) {
-					nodesParentsChildrenList.add(s);
+					nodeParentExistingChildren.add(s);
 				}
 			}
-			nodesParentsChildrenList.add(node1.getNodeId());
-			nodesParentsChildrenList.add(node2.getNodeId());
-			nodesParent.setChildren(nodesParentsChildrenList);
-			logger.log("#SPLIT-LEAF: " + "node's parent's new children: " + nodesParent.getChildrenJSON().toJSONString());
-			nodesParent.updateRectangle();
-			cache.updateNode(nodesParent.getNodeId(), nodesParent.getChildrenJSON().toJSONString(), nodesParent.getParent(), "[]", nodesParent.getRectangle().getJson().toJSONString());
 			
-			node1.setParent(nodesParent.getNodeId());
-			node2.setParent(nodesParent.getNodeId());
+			// add the new nodes to the parents children
+			nodeParentExistingChildren.add(node1.getNodeId());
+			nodeParentExistingChildren.add(node2.getNodeId());
+			nodeParent.setChildren(nodeParentExistingChildren);
+			
+			
+			// 
+			nodeParent.updateRectangle();
+			
+			cache.updateNode(nodeParent.getNodeId(), nodeParent);
+			
+			node1.setParent(nodeParent.getNodeId());
+			node2.setParent(nodeParent.getNodeId());
 			
 		}
 		
-		
-		node1.getLocationItems().add(points.get(index1));
-		node2.getLocationItems().add(points.get(index2));
+		// first add the two seeds to the new nodes
+		node1.getLocationItems().add(nodeItems.get(seed1));
+		node2.getLocationItems().add(nodeItems.get(seed2));
 		
 		for (int i = 0; i < locationItem.getNumberDimensions(); i++) {
-			node1.getRectangle().setDim1(i, points.get(index1).getDim(i));
-			node1.getRectangle().setDim2(i, points.get(index1).getDim(i));
+			node1.getRectangle().setDim1(i, nodeItems.get(seed1).getDim(i));
+			node1.getRectangle().setDim2(i, nodeItems.get(seed1).getDim(i));
 			
-			node2.getRectangle().setDim1(i, points.get(index2).getDim(i));
-			node2.getRectangle().setDim2(i, points.get(index2).getDim(i));
+			node2.getRectangle().setDim1(i, nodeItems.get(seed2).getDim(i));
+			node2.getRectangle().setDim2(i, nodeItems.get(seed2).getDim(i));
 		}
 		
-		
-		for (int i = 0; i < points.size(); i++) {
-			if (i != index1 && i != index2) {
+		// then distribute the rest of the location items to the two new nodes
+		// if the rectangle of the first seed is smaller than the rectangle of the second seed, add it to node1, otherwise add it to node2
+		//
+		for (int i = 0; i < nodeItems.size(); i++) {
+			if (i != seed1 && i != seed2) {
 				
-				IHyperRectangle<T> r1 = HyperRectangleBase.twoPointsRectangles(points.get(index1), points.get(i));
-				IHyperRectangle<T> r2 = HyperRectangleBase.twoPointsRectangles(points.get(index2), points.get(i));
+				IHyperRectangle<T> r1 = HyperRectangleBase.twoPointsRectangles(nodeItems.get(seed1), nodeItems.get(i));
+				IHyperRectangle<T> r2 = HyperRectangleBase.twoPointsRectangles(nodeItems.get(seed2), nodeItems.get(i));
 				
-				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r1.getArea(): " + r1.getSpace() + " node1 area:" + node1.getRectangle().getSpace());
-				logger.log("#SPLIT-LEAF: " + "COMPARE seeds: " + points.get(i) + " r2.getArea(): " + r2.getSpace() + " node2 area:" + node2.getRectangle().getSpace());
+				logger.log("[SPLIT-LEAF] " + "COMPARE seeds: " + nodeItems.get(i) + " r1.getArea(): " + r1.getSpace() + " node1 area:" + node1.getRectangle().getSpace());
+				logger.log("[SPLIT-LEAF] " + "COMPARE seeds: " + nodeItems.get(i) + " r2.getArea(): " + r2.getSpace() + " node2 area:" + node2.getRectangle().getSpace());
 				
 				if (r1.getSpace() < r2.getSpace()) {
-					node1.getLocationItems().add(points.get(i));
+					node1.getLocationItems().add(nodeItems.get(i));
 					
 				} else {
-					node2.getLocationItems().add(points.get(i));
+					node2.getLocationItems().add(nodeItems.get(i));
 					
 				}
 			}
 		}
 		
-		logger.log("#SPLIT-LEAF: " + " Splitting " + node.getNodeId());
-		logger.log("#SPLIT-LEAF: " + "POINTS DISTRIBUTION \n node1: " + node1.getNodeId() + "\n...node1");
-		for (ILocationItem<T> i : node1.getPoints()) {
-			logger.logExact(" | " + i);
-		}
-		logger.log();
-		
-		logger.log("#SPLIT-LEAF: " + " node2: " + node2.getNodeId() + "\n...node2");
-		for (ILocationItem<T> i : node2.getPoints()) {
-			logger.logExact(" | " + i);
-			
-		}
-		logger.log();
-		
-		
-		
-		logger.log("#SPLIT-LEAF: " + "adding to the cache... node1.getItemsJSON().toJSONString(): " + node1.getItemsJSON().toJSONString());
-		logger.log("#SPLIT-LEAF: " + "adding to the cache... node2.getItemsJSON().toJSONString(): " + node2.getItemsJSON().toJSONString());
-		cache.addNode(node1.getNodeId(), null, node1.getParent(), node1.getItemsJSON().toJSONString(), node1.getRectangle().getJson().toJSONString(), node1);
-		cache.addNode(node2.getNodeId(), null, node1.getParent(), node2.getItemsJSON().toJSONString(), node2.getRectangle().getJson().toJSONString(), node2);
+		// then add the new nodes to the cache and update the rectangles
+		cache.putNode(node1.getNodeId(), node1);
+		cache.putNode(node2.getNodeId(), node2);
 		
 		node1.updateRectangle();
 		node2.updateRectangle();
 		
+		// split the branch nodes if necessary
 		splitBranchNode(cache.getNode(node1.getParent()));
 		
-		logger.log();
 		cache.printCache();
 	}
 
@@ -246,8 +224,8 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 			String nodesParentsNewChild1Id = UUID.randomUUID().toString();
 			String nodesParentsNewChild2Id = UUID.randomUUID().toString();
 			
-			IRTreeNode<T> nodesParentsNewChild1 = new RTreeNode<T>(nodesParentsNewChild1Id, null, null, cache, logger, clazz);
-			IRTreeNode<T> nodesParentsNewChild2 = new RTreeNode<T>(nodesParentsNewChild2Id, null, null, cache, logger, clazz);
+			IRTreeNode<T> nodesParentsNewChild1 = new RTreeNode<T>(nodesParentsNewChild1Id, null, null, cache, logger, className);
+			IRTreeNode<T> nodesParentsNewChild2 = new RTreeNode<T>(nodesParentsNewChild2Id, null, null, cache, logger, className);
 			
 			List<IRTreeNode<T>> nodesParentsNewChildren = new ArrayList<IRTreeNode<T>>();
 			nodesParentsNewChildren.add(nodesParentsNewChild1);
@@ -275,7 +253,10 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				
 				
 				logger.log("@~SPLIT BRANCH: " + "*****rootsNewChildrenArr: " + rootsNewChildrenArr);
-				cache.updateNode(treeName, rootsNewChildrenArr.toJSONString(), null, null, cache.getNode(treeName).getRectangle().getJson().toJSONString());
+				IRTreeNode<T> rootTemp = getNode(treeName);
+				rootTemp.setChildrenJSON(rootsNewChildrenArr.toJSONString());
+//				cache.updateNode(treeName, rootsNewChildrenArr.toJSONString(), null, null, cache.getNode(treeName).getRectangle().getJson().toJSONString());
+				cache.updateNode(treeName, rootTemp);
 
 				nodesParentsNewChild1.setParent(treeName);
 				nodesParentsNewChild2.setParent(treeName);
@@ -296,16 +277,35 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				
 				nodesParentsNewChild1.setRectangle(node1SumRect);
 				nodesParentsNewChild2.setRectangle(node2SumRect);
-				cache.addNode(nodesParentsNewChild1.getNodeId(), nodesParentsNewChild1.getChildrenJSON().toJSONString(), treeName, null, node1SumRect.getJson().toJSONString(), nodesParentsNewChild1);
-				cache.addNode(nodesParentsNewChild2.getNodeId(), nodesParentsNewChild2.getChildrenJSON().toJSONString(), treeName, null, node2SumRect.getJson().toJSONString(), nodesParentsNewChild2);
+				
+				IRTreeNode<T> node1Temp = cache.getNode(nodesParentsNewChild1.getNodeId());
+				node1Temp.setChildrenJSON(nodesParentsNewChild1.getChildrenJSON().toJSONString());
+				node1Temp.setRectangle(node1SumRect);
+				node1Temp.setParent(treeName);
+				IRTreeNode<T> node2Temp = cache.getNode(nodesParentsNewChild2.getNodeId());
+				node2Temp.setRectangle(node2SumRect);
+				node2Temp.setChildrenJSON(nodesParentsNewChild2.getChildrenJSON().toJSONString());
+				node2Temp.setParent(treeName);
+				
+//				cache.addNode(nodesParentsNewChild1.getNodeId(), nodesParentsNewChild1.getChildrenJSON().toJSONString(), treeName, null, node1SumRect.getJson().toJSONString(), nodesParentsNewChild1);
+//				cache.addNode(nodesParentsNewChild2.getNodeId(), nodesParentsNewChild2.getChildrenJSON().toJSONString(), treeName, null, node2SumRect.getJson().toJSONString(), nodesParentsNewChild2);
+				
+				cache.putNode(nodesParentsNewChild1.getNodeId(), node1Temp);
+				cache.putNode(nodesParentsNewChild2.getNodeId(), node2Temp);
 				
 				for (String child : nodesParentsNewChild1Children) {
-					cache.getNode(child).setParent(nodesParentsNewChild1.getNodeId());
-					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild1.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					IRTreeNode<T> tempNode = cache.getNode(child);
+					tempNode.setParent(nodesParentsNewChild1.getNodeId());
+					
+//					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild1.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					cache.putNode(child, tempNode);
+					
 				}
 				for (String child : nodesParentsNewChild2Children) {
-					cache.getNode(child).setParent(nodesParentsNewChild2.getNodeId());
-					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					IRTreeNode<T> tempNode = cache.getNode(child);
+					tempNode.setParent(nodesParentsNewChild2.getNodeId());
+//					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					cache.putNode(child, tempNode);
 				}
 				
 				splitBranchNode(getNode(treeName));
@@ -333,7 +333,12 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				}
 				
 				logger.log("@~SPLIT BRANCH: " + "*****nodesParentsNewChildrenArr: " + nodesParentsNewChildrenArr);
-				cache.updateNode(nodesParent.getNodeId(), nodesParentsNewChildrenArr.toJSONString(), null, null, cache.getNode(nodesParent.getNodeId()).getRectangle().getJson().toJSONString());
+				
+				IRTreeNode<T> nodesParentTemp = cache.getNode(nodesParent.getNodeId());
+				nodesParentTemp.setChildrenJSON(nodesParentsNewChildrenArr.toJSONString());
+//				cache.updateNode(nodesParent.getNodeId(), nodesParentsNewChildrenArr.toJSONString(), null, null, cache.getNode(nodesParent.getNodeId()).getRectangle().getJson().toJSONString());
+				cache.updateNode(nodesParent.getNodeId(), nodesParentTemp);
+				
 				nodesParent = cache.getNode(nodesParent.getNodeId());
 				
 				nodesParentsNewChild1.setParent(nodesParent.getNodeId());
@@ -355,18 +360,35 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				
 				nodesParentsNewChild1.setRectangle(node1SumRect);
 				nodesParentsNewChild2.setRectangle(node2SumRect);
-				cache.addNode(nodesParentsNewChild1.getNodeId(), nodesParentsNewChild1.getChildrenJSON().toJSONString(), nodesParent.getNodeId(), null, node1SumRect.getJson().toJSONString(), nodesParentsNewChild1);
-				cache.addNode(nodesParentsNewChild2.getNodeId(), nodesParentsNewChild2.getChildrenJSON().toJSONString(), nodesParent.getNodeId(), null, node2SumRect.getJson().toJSONString(), nodesParentsNewChild2);
+				
+				IRTreeNode<T> node1Temp = cache.getNode(nodesParentsNewChild1.getNodeId());
+				node1Temp.setChildrenJSON(nodesParentsNewChild1.getChildrenJSON().toJSONString());
+				node1Temp.setRectangle(node1SumRect);
+				node1Temp.setParent(nodesParent.getNodeId());
+				IRTreeNode<T> node2Temp = cache.getNode(nodesParentsNewChild2.getNodeId());
+				node2Temp.setRectangle(node2SumRect);
+				node2Temp.setChildrenJSON(nodesParentsNewChild2.getChildrenJSON().toJSONString());
+				node2Temp.setParent(nodesParent.getNodeId());
+				
+//				cache.addNode(nodesParentsNewChild1.getNodeId(), nodesParentsNewChild1.getChildrenJSON().toJSONString(), nodesParent.getNodeId(), null, node1SumRect.getJson().toJSONString(), nodesParentsNewChild1);
+//				cache.addNode(nodesParentsNewChild2.getNodeId(), nodesParentsNewChild2.getChildrenJSON().toJSONString(), nodesParent.getNodeId(), null, node2SumRect.getJson().toJSONString(), nodesParentsNewChild2);
+				
+				cache.putNode(nodesParentsNewChild1.getNodeId(), node1Temp);
+				cache.putNode(nodesParentsNewChild2.getNodeId(), node2Temp);
 				
 				for (String child : nodesParentsNewChild1Children) {
 					logger.log("@~SPLIT BRANCH: " + "nodesParentsNewChild1Children[]: " + child);
-					cache.getNode(child).setParent(nodesParentsNewChild1.getNodeId());
-					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild1.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					IRTreeNode<T> tempNode = cache.getNode(child);
+					tempNode.setParent(nodesParentsNewChild1.getNodeId());
+//					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild1.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					cache.putNode(child, tempNode);
 				}
 				for (String child : nodesParentsNewChild2Children) {
 					logger.log("@~SPLIT BRANCH: " + "nodesParentsNewChild2Children[]: " + child);
-					cache.getNode(child).setParent(nodesParentsNewChild2.getNodeId());
-					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					IRTreeNode<T> tempNode = cache.getNode(child);
+					tempNode.setParent(nodesParentsNewChild2.getNodeId());
+//					cache.updateNode(child, cache.getNode(child).getChildrenJSON().toJSONString(), nodesParentsNewChild2.getNodeId(), cache.getNode(child).getItemsJSON().toJSONString(), cache.getNode(child).getRectangle().getJson().toJSONString());
+					cache.putNode(child, tempNode);
 				}
 				
 				splitBranchNode(nodesParent);

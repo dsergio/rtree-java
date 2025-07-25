@@ -16,9 +16,8 @@ import rtree.log.ILogger;
 
 public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T> {
 
-//	public DataStorageMySQL(ILogger logger, String treeName, int numDimensions) {
-	public DataStorageMySQL(ILogger logger, Class<T> clazz) {
-		super(StorageType.MYSQL, logger, clazz);
+	public DataStorageMySQL(ILogger logger, Class<T> className) {
+		super(StorageType.MYSQL, logger, className);
 		init();
 	}
 	
@@ -43,8 +42,8 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 			
 		} else {
 			
-			System.out.println("Using config.properties file for MySQL connection parameters MYSQL_user: (" + System.getenv("MYSQL_user") + ")");
-			System.getenv().forEach((k, v) -> System.out.println(k + ": " + v));
+//			System.out.println("Using config.properties file for MySQL connection parameters MYSQL_user: (" + System.getenv("MYSQL_user") + ")");
+//			System.getenv().forEach((k, v) -> System.out.println(k + ": " + v));
 
 			Configurations configs = new Configurations();
 			try {
@@ -73,7 +72,6 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 			logger.log(e);
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -107,7 +105,7 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 			sql = "CREATE TABLE IF NOT EXISTS " + tablePrefix + "_data (nodeId VARCHAR(255) NOT NULL, "
 					+ " parent VARCHAR(255) NULL, " + " rectangle TEXT NULL, " + " items TEXT NULL, "
 					+ " children TEXT NULL, " + " PRIMARY KEY ( nodeId ))";
-			logger.log("create table: \n" + sql);
+			logger.log("[QUERY] MySQL create table: \n" + sql);
 
 			stmt.executeUpdate(sql);
 
@@ -128,7 +126,7 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 					+ " PRIMARY KEY ( id ) "
 					+ ")";
 			
-			logger.log("create table: \n" + sql);
+			logger.log("[QUERY] MySQL create table: \n" + sql);
 			
 			stmt = conn.createStatement();
 			stmt.executeUpdate(sql);

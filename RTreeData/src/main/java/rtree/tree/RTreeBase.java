@@ -45,7 +45,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	protected int numDimensions;
 	protected List<T> maximums;
 	protected List<T> minimums;
-	Class<T> clazz;
+	Class<T> className;
 	
 	
 	/**
@@ -57,8 +57,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param dataStorage
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, String treeName, Class<T> clazz) throws Exception {
-		this(dataStorage, 4, 4, treeName, clazz);
+	public RTreeBase(IDataStorage<T> dataStorage, String treeName, Class<T> className) throws Exception {
+		this(dataStorage, 4, 4, treeName, className);
 	}
 	
 	/**
@@ -71,8 +71,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param logger
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> clazz) throws Exception {
-		this(dataStorage, 4, 4, logger, treeName, clazz); // default to Quadratic
+	public RTreeBase(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> className) throws Exception {
+		this(dataStorage, 4, 4, logger, treeName, className); // default to Quadratic
 	}
 	
 	/**
@@ -84,8 +84,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> clazz) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), treeName, clazz); // default to DEV, Quadratic
+	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> className) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), treeName, className); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -97,8 +97,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param maxItems
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName, Class<T> clazz) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), numDimensions, treeName, clazz); // default to DEV, Quadratic
+	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName, Class<T> className) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), numDimensions, treeName, className); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -111,8 +111,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param splitBehavior
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> clazz) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), 2, treeName, clazz); // default to DEV, Quadratic, 2-D
+	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> className) throws Exception {
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), 2, treeName, className); // default to DEV, Quadratic, 2-D
 	}
 	
 	/**
@@ -125,13 +125,13 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param numDimensions
 	 * @throws Exception
 	 */
-	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName, Class<T> clazz) throws Exception {
+	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName, Class<T> className) throws Exception {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.treeName = treeName;
 		this.storageType = dataStorage.getStorageType();
 		this.logger = logger;
-		this.clazz = clazz;
+		this.className = className;
 		
 		this.numDimensions = numDimensions;
 		
@@ -167,8 +167,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		try {
 			
 			// TODO pull these out, use dependency injection instead
-			cache = new RTreeCache<T>(treeName, logger, dataStorage, numDimensions, clazz);
-			this.splitBehavior = new SplitQuadratic<T>(clazz);
+			cache = new RTreeCache<T>(this, logger, dataStorage, className);
+			this.splitBehavior = new SplitQuadratic<T>(className);
 			
 		} catch (Exception e) {
 			logger.log("Cache initialization failed.");
@@ -189,18 +189,13 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	
 	
 	
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
 	@Override
-	public JSONObject getJson() {
+	public JSONObject getJSON() {
 		JSONObject obj = new JSONObject();
 		obj.put("name", treeName);
 		obj.put("numDimensions", numDimensions);
 		return obj;
-	}
-
-	@Override
-	public IRTreeCache<T> getCache() {
-		return cache;
 	}
 	
 	public abstract void insert(ILocationItem<T> locationItem) throws IOException;
@@ -209,36 +204,15 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	public abstract void delete(ILocationItem<T> toDelete);
 	
 	
-	/**
-	 * Check if metadata exists for the member treeName
-	 * 
-	 * @param
-	 * @return true if metadata for this tree is defined
-	 * @throws Exception 
-	 * 
-	 */
-	@Override
-	public boolean metaDataExists() throws Exception {
+	protected boolean metaDataExists() throws Exception {
 		return cache.getDBAccess().metaDataExists(treeName);
 	}
 	
-	/**
-	 * Get max children
-	 * 
-	 * @return maxChildren
-	 * 
-	 */
 	@Override
 	public int getMaxChildren() {
 		return cache.getDBAccess().getMaxChildren(treeName);
 	}
 	
-	/**
-	 * Get max items
-	 * 
-	 * @return maxItems
-	 * 
-	 */
 	@Override
 	public int getMaxItems() {
 		return cache.getDBAccess().getMaxItems(treeName);
@@ -254,48 +228,6 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		return cache.getDBAccess().getMax(treeName);
 	}
 	
-	/**
-	 * Get node with given nodeId
-	 * 
-	 * @param nodeId
-	 * @return CloudRTreeNode object defined by nodeId
-	 */
-	@Override
-	public IRTreeNode<T> getNode(String nodeId) {
-		return cache.getNode(nodeId);
-	}
-	
-	
-	/**
-	 * Add node with parameters
-	 * 
-	 * @param nodeId
-	 * @param children
-	 * @param parent
-	 * @param items
-	 * @param rectangle
-	 * @param node
-	 */
-	@Override
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node) {
-		cache.addNode(nodeId, children, parent, items, rectangle, node);
-	}
-	
-	/**
-	 * Add node with parameters
-	 * 
-	 * @param nodeId
-	 * @param children
-	 * @param parent
-	 * @param items
-	 * @param rectangle
-	 */
-	@Override
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle) {
-		cache.addNode(nodeId, children, parent, items, rectangle);
-	}
-	
-	
 	protected void addToRectangle(IRTreeNode<T> node, IHyperRectangle<T> r) {
 		if (node == null) {
 			return;
@@ -305,14 +237,16 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		temp.add(r);
 		IHyperRectangle<T> sumRectangle = HyperRectangleBase.sumRectangles(temp);
 		node.setRectangle(sumRectangle);
-		cache.updateNode(node.getNodeId(), null, null, null, node.getRectangle().getJson().toJSONString());
-		addToRectangle(getNode(node.getParent()), sumRectangle);
+		
+		cache.updateNode(node.getNodeId(), node);
+		
+		addToRectangle(cache.getNode(node.getParent()), sumRectangle);
 	}
 	
 	@Override
 	public List<IHyperRectangle<T>> getAllRectangles() {
 		List<IHyperRectangle<T>> allRectangles = new ArrayList<IHyperRectangle<T>>();
-		getRectangles(getNode(treeName), allRectangles, 0);
+		getRectangles(cache.getNode(treeName), allRectangles, 0);
 		return allRectangles;
 	}
 	
@@ -324,52 +258,43 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		}
 		if (node != null && !node.isLeafNode()) {
 			for (String s : node.getChildren()) {
-				IRTreeNode<T> child = getNode(s);
+				IRTreeNode<T> child = cache.getNode(s);
 				getRectangles(child, rectangles, depth);
 			}
 		}
 		
 	}
 	
-	
 	@Override
-	public List<ILocationItem<T>> getAllPoints() {
+	public List<ILocationItem<T>> getAllLocationItems() {
 		List<ILocationItem<T>> points = new ArrayList<ILocationItem<T>>();
-		getPoints(getNode(treeName), points, 0);
-		logger.log("RTree.getAllPoints() returned a list of size " + points.size());
+		getLocationItems(cache.getNode(treeName), points, 0);
+		logger.log("[RTREE] getAllLocationItems() returned a list of size " + points.size());
 		return points;
 	}
 	
-	private void getPoints(IRTreeNode<T> node, List<ILocationItem<T>> points, int depth) {
+	private void getLocationItems(IRTreeNode<T> node, List<ILocationItem<T>> points, int depth) {
 		depth++;
 		if (node == null) {
 			return;
 		}
-		if (node.isLeafNode()) {
-			logger.log("leaf node found: " + node.getNodeId() + ", depth = " + depth);
-			
-			List<ILocationItem<T>> tempPoints = node.getPoints();
-			for (ILocationItem<T> i : tempPoints) {
-				logger.log("RTree.getPoints() adding point: " + i);
-			}
-			
-			points.addAll(node.getPoints());
+		if (node.isLeafNode()) {			
+			points.addAll(node.getLocationItems());
 		} else {
 			for (String s : node.getChildren()) {
-				logger.log("RTree.getPoints() getting child node: " + s);
-				IRTreeNode<T> child = getNode(s);
-				getPoints(child, points, depth);
+				logger.log("[RTREE] getLocationItems() getting child node: " + s);
+				IRTreeNode<T> child = cache.getNode(s);
+				getLocationItems(child, points, depth);
 			}
 		}
 		
 	}
 	
-	
 	@Override
-	public Map<ILocationItem<T>, Integer> getPointsWithDepth() {
+	public Map<ILocationItem<T>, Integer> getAllLocationItemsWithDepth() {
 		Map<ILocationItem<T>, Integer> points = new HashMap<ILocationItem<T>, Integer>();
 		
-		getPointsWithDepth(getNode(treeName), points, 0);
+		getPointsWithDepth(cache.getNode(treeName), points, 0);
 		return points;
 	}
 	
@@ -379,12 +304,12 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			return;
 		}
 		if (node.isLeafNode()) {
-			for (ILocationItem<T> i : node.getPoints()) {
+			for (ILocationItem<T> i : node.getLocationItems()) {
 				points.put(i, depth);
 			}
 		} else {
 			for (String s : node.getChildren()) {
-				IRTreeNode<T> child = getNode(s);
+				IRTreeNode<T> child = cache.getNode(s);
 				getPointsWithDepth(child, points, depth);
 			}
 		}
@@ -396,7 +321,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	public void printTree() {
 		LogLevel temp = logger.getLogLevel();
 		logger.setLogLevel(LogLevel.DEV);
-		logger.log("PRINTING TREE: ");
+		logger.log("[RTREE] PRINTING TREE: ");
 		logger.logExact("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
 		for (int i = 0; i < maxItems; i++) {
 			logger.logExact("\titem");
@@ -405,7 +330,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			logger.logExact("\tchild");
 		}
 		logger.log();
-		printTree(getNode(treeName), 0);
+		printTree(cache.getNode(treeName), 0);
 		logger.log();
 		logger.setLogLevel(temp);
 	}
@@ -423,7 +348,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth);
 		
 		
-		List<ILocationItem<T>> tempPoints = node.getPoints();
+		List<ILocationItem<T>> tempPoints = node.getLocationItems();
 		logger.logExact("\t");
 		for (int i = 0; i < tempPoints.size(); i++) {
 			logger.logExact(tempPoints.get(i) + ";");
@@ -439,17 +364,13 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		depth++;
 		if (node.getChildren() != null) {
 			for (String s : node.getChildren()) {
-				IRTreeNode<T> child = getNode(s);
+				IRTreeNode<T> child = cache.getNode(s);
 				printTree(child, depth);
 			}
 		}
 	}
 	
 	
-	/**
-	 * 
-	 * @return tree name
-	 */
 	@Override
 	public String getTreeName() {
 		return treeName;
@@ -510,10 +431,10 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	}
 
 	
-	@Override
-	public void updateRoot() {
-		getNode(treeName);
-	}
+//	@Override
+//	public void updateRoot() {
+//		getNode(treeName);
+//	}
 	
 	@Override
 	public int getNumDimensions() {

@@ -120,7 +120,7 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 				rectDouble.numberDimensions = r.getNumberDimensions();
 				treeRet.rectangles.add(rectDouble);
 			}
-			for (ILocationItem<RDouble> item : tree.getAllPoints()) {
+			for (ILocationItem<RDouble> item : tree.getAllLocationItems()) {
 				LocationItemDouble i = new LocationItemDouble();
 				i.dimensionArray = new ArrayList<Double>();
 				i.type = item.getType();

@@ -25,11 +25,13 @@ import rtree.rectangle.HyperRectangle;
  */
 public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T> {
 
+	protected String nodeId;
+	protected String parentId;
 	protected List<String> children;
-	protected String parent;
+	
 	protected List<ILocationItem<T>> locationItems;
 	protected IHyperRectangle<T> rectangle;
-	protected String nodeId;
+	
 	protected IRTreeCache<T> cache;
 	protected ILogger logger;
 
@@ -61,12 +63,11 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 			e.printStackTrace();
 		}
 		
-		
-		this.parent = parent;
+		this.parentId = parent;
 		this.locationItems = new ArrayList<ILocationItem<T>>();
 		
 		if (cache != null) {
-			this.rectangle = new HyperRectangle<T>(cache.getNumDimensions());
+			this.rectangle = new HyperRectangle<T>(cache.getTree().getNumDimensions());
 		}
 	}
 	
@@ -80,7 +81,7 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	}
 	
 	@Override
-	public void setChildren(String childrenStr) {
+	public void setChildrenJSON(String childrenStr) {
 		JSONParser parser = new JSONParser();
 		Object obj;
 		try {
@@ -99,7 +100,6 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 			}
 			
 		} catch (ParseException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -118,7 +118,7 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	}
 	
 	@Override
-	public JSONArray getItemsJSON() {
+	public JSONArray getLocationItemsJSON() {
 		
 		return LocationItemBase.getItemsJSON(locationItems);
 	}
@@ -129,34 +129,10 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	}
 
 	@Override
-	@SuppressWarnings("unchecked")
-	public void addItem(ILocationItem<T> locationItem) throws IOException {
-		
-		logger.log("CloudRTreeNode.addItem");
-		logger.log("Rectangle: " + this.rectangle);
+	public void addLocationItem(ILocationItem<T> locationItem) throws IOException {
 		locationItems.add(locationItem);
 		updateRectangle();
-		
-		StringWriter out;
-		
-		JSONArray jsonArr = new JSONArray();
-		for (ILocationItem<T> item : locationItems) {
-			jsonArr.add(item.getJson());
-		}
-		
-		out = new StringWriter();
-		jsonArr.writeJSONString(out);
-	    String itemsStr = out.toString();
-	    
-	    
-	    out = new StringWriter();
-	    JSONObject jsonRect = this.getRectangle().getJson();
-	    jsonRect.writeJSONString(out);
-	    String rectStr = out.toString();
-		
-		cache.updateNode(this.nodeId, this.getChildrenJSON().toJSONString(), this.getParent(), itemsStr, rectStr);
-		
-		
+		cache.updateNode(nodeId, this);
 	}
 	
 	public abstract void updateRectangle();
@@ -196,21 +172,12 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 
 	@Override
 	public void setParent(String node) {
-		this.parent = node;
-	}
-
-	@Override
-	public List<ILocationItem<T>> getPoints() {
-		logger.log("RTreeNodeBase getPoints called for node: " + this.nodeId + " locationItems size: " + locationItems.size());
-		for (ILocationItem<T> item : locationItems) {
-			logger.log("item: " + item.toString());
-		}
-		return locationItems;
+		this.parentId = node;
 	}
 
 	@Override
 	public String getParent() {
-		return parent;
+		return parentId;
 	}
 
 	@Override
@@ -221,13 +188,45 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	
 	@Override
 	public String toString() {
-		String str = "";
+		
+		String str = "RTreeNode\n * ";
 		str += "nodeId: " + nodeId + ", ";
-		str += "children: " + this.getChildrenJSON().toJSONString() + ", ";
-		str += "items: " + this.getItemsJSON().toJSONString() + ", ";
-		str += "parent: " + this.parent + ", ";
-		str += "rectangle: " + this.getRectangle().toString();
+		str += "children (short): " + getChildrenShort() + ", ";
+		str += "items (type): " + getLocationItemsType() + ", ";
+		str += "parent: " + parentId + ", ";
+		str += "rectangle: " + getRectangle().toString();
+		
 		return str;
+	}
+
+	private String getLocationItemsType() {
+		String ret = "";
+		if (locationItems == null || locationItems.size() == 0) {
+			return "[]";
+		}
+		for (int i = 0; i < locationItems.size(); i++) {
+			if (i < locationItems.size() - 1) {
+				ret += locationItems.get(i).getType().toString() + ",";
+			} else {
+				ret += locationItems.get(i).getType().toString();
+			}
+		}
+		return ret;
+	}
+
+	private String getChildrenShort() {
+		String ret = "";
+		if (children == null || children.size() == 0) {
+			return "[]";
+		}
+		for (int i = 0; i < children.size(); i++) {
+			if (i < children.size() - 1) {
+				ret += children.get(i).substring(0, 5) + ",";
+			} else {
+				ret += children.get(i).substring(0, 5);
+			}
+		}
+		return ret;
 	}
 
 	

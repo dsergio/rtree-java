@@ -37,22 +37,18 @@ import rtree.tree.RTreeNode;
 public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorageBase<T> {
 
 	protected Connection conn;
-	Class<T> clazz;
+	Class<T> className;
 	
-//	public DataStorageSQLBase(StorageType storageType, ILogger logger, String treeName, int numDimensions) {
-	public DataStorageSQLBase(StorageType storageType, ILogger logger, Class<T> clazz) {
+	public DataStorageSQLBase(StorageType storageType, ILogger logger, Class<T> className) {
 		super(storageType, logger);
-		this.clazz = clazz;
+		this.className = className;
 	}
 	
 	public T getInstanceOf() {
-		
 		try {
-			
-			return clazz.getDeclaredConstructor().newInstance();
+			return className.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
@@ -76,7 +72,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 	    final String CHECK_SQL_QUERY = "SELECT 1";
 	    boolean isConnected = false;
 	    try {
-	        final PreparedStatement statement = conn.prepareStatement(CHECK_SQL_QUERY);
+	        conn.prepareStatement(CHECK_SQL_QUERY);
 	        isConnected = true;
 	    } catch (SQLException | NullPointerException e) {
 	        return false;
@@ -130,7 +126,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		}
 		
 		long time = System.currentTimeMillis();
-		logger.log("Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
+		logger.log("[SQLBASE] Adding nodeId: " + nodeId + ", children: " + children + ", parent: " + parent + ", items: " + items + ", rectangle: " + rectangle);
 
 		String query = "INSERT INTO `" + tablePrefix + "_data` (`nodeId`, `parent`, `rectangle`, `items`, `children`) "
 				+ "VALUES (?, ?, ?, ?, ?);";
@@ -160,7 +156,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		int numDimensions = getNumDimensions(treeName);
 		
 		IRTreeNode<T> node = null;
-		node = new RTreeNode<T>(nodeId, children, parent, cache, logger, clazz);
+		node = new RTreeNode<T>(nodeId, children, parent, cache, logger, className);
 		
 		
 		IHyperRectangle<T> r;
@@ -199,16 +195,12 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 					}
 				}
 			} catch (ParseException | IllegalArgumentException | SecurityException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-//		Rectangle r = new Rectangle(rectangle);
-		
-		
-		
+
 		node.setRectangle(r);
-		node.setItemsJson(items);
+		node.setLocationItemsJson(items);
 
 		numAdds++;
 		addTime += (System.currentTimeMillis() - time);
@@ -240,10 +232,10 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt.setInt(c++, N);
 			stmt.setString(c++, location);
 			stmt.setString(c++, type);
-			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, className.getSimpleName());
 			stmt.setString(c++, properties);
 
-			logger.log("[QUERY]: " + stmt.toString());
+			logger.log("[QUERY] " + stmt.toString());
 
 			stmt.executeUpdate();
 
@@ -306,7 +298,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			}
 			stmt.setString(c++, nodeId);
 
-			logger.log("[QUERY]: " + stmt.toString());
+			logger.log("[QUERY] " + stmt.toString());
 
 			stmt.executeUpdate();
 
@@ -344,7 +336,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 
 			stmt.setString(1, nodeId);
 
-			logger.log("[QUERY]: " + stmt.toString());
+			logger.log("[QUERY] " + stmt.toString());
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -353,16 +345,10 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			String rectangle = null;
 			String items = null;
 			
-			int N = cache.getNumDimensions();
+			int N = cache.getTree().getNumDimensions();
 			
 			IHyperRectangle<T> r = new HyperRectangle<T>(N);
 			
-//			IHyperRectangle r;
-//			if (N == 2) {
-//				r = new Rectangle2D();
-//			} else {
-//				r = new RectangleND(N);
-//			}
 			
 			if (resultSet.next()) {
 				children = resultSet.getString("children");
@@ -370,7 +356,6 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 				rectangle = resultSet.getString("rectangle");
 				items = resultSet.getString("items");
 
-//				r = new Rectangle(rectangle);
 				
 				if (rectangle != null) {
 					JSONParser parser = new JSONParser();
@@ -405,37 +390,16 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 							}
 						}
 					} catch (ParseException | IllegalArgumentException | SecurityException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
 				
 
-				returnNode = new RTreeNode<T>(nodeId, children, parent, cache, logger, clazz);
-				
-//				if (cache.getNumDimensions() == 2) {
-//					returnNode = new RTreeNode2D(nodeId, children, parent, cache, logger);
-//				} else {
-//					returnNode = new RTreeNodeND(nodeId, children, parent, cache, logger);
-//				}
+				returnNode = new RTreeNode<T>(nodeId, children, parent, cache, logger, className);
 
 				returnNode.setRectangle(r);
-				returnNode.setItemsJson(items);
+				returnNode.setLocationItemsJson(items);
 
-				logger.log("select: nodeId: " + nodeId);
-				logger.log("select: node children: " + returnNode.getChildren());
-				logger.log("select: node rectangle: " + r.toString());
-				logger.log("select: node items: " + returnNode.getItemsJSON().toJSONString());
-				logger.log("select: items: " + items);
-				logger.log("select: parent: " + returnNode.getParent());
-			} else {
-
-				logger.log("select: nodeId: " + nodeId);
-				logger.log("select: node children: ");
-				logger.log("select: node rectangle: ");
-				logger.log("select: node items: ");
-				logger.log("select: items: ");
-				logger.log("select: parent: ");
 			}
 
 			return returnNode;
@@ -495,7 +459,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt.setString(c++, treeName);
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
-			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, className.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -523,7 +487,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt.setInt(c++, maxChildren);
 			stmt.setInt(c++, maxItems);
 			stmt.setInt(c++, N);
-			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, className.getSimpleName());
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -855,7 +819,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		try {
 			stmt = conn.prepareStatement(query);
 			
-			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, className.getSimpleName());
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -867,7 +831,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 				
 				IRTree<T> tree;
 				try {
-					tree = new RTree<T>(this, maxChildren, maxItems, logger, N, treeName, clazz);
+					tree = new RTree<T>(this, maxChildren, maxItems, logger, N, treeName, className);
 					trees.add(tree);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
@@ -903,7 +867,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		try {
 			stmt = conn.prepareStatement(query);
 
-			stmt.setString(c++, clazz.getSimpleName());
+			stmt.setString(c++, className.getSimpleName());
 			
 			ResultSet resultSet = stmt.executeQuery();
 

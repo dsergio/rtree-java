@@ -27,13 +27,10 @@ public abstract class SplitBehaviorBase<T extends IRType<T>> implements ISplitBe
 		return cache.getNode(nodeId);
 	}
 	
-	
 	@Override
 	public abstract void splitLeafNode(IRTreeNode<T> node, ILocationItem<T> locationItem);
 	@Override
 	public abstract void splitBranchNode(IRTreeNode<T> node);
-	
-	
 	
 	@Override
 	public abstract String getDescription();

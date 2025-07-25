@@ -332,7 +332,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 			}
 			
 			if (showTreeOn) {
-				for (ILocationItem<RDouble> item : tree.getAllPoints()) {
+				for (ILocationItem<RDouble> item : tree.getAllLocationItems()) {
 					
 					RDouble Rx = item.getDim(0);
 					RDouble Ry = item.getDim(1);
@@ -356,7 +356,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 						drawImage.setColor(color);
 						drawImage.fillOval(x, y, 4, 4);
 						paintLogger.log("(" + x + ", " + y + ")", drawImage, x, y);
-						paintLogger.log(item.getType(), drawImage, x, y + 20);
+						paintLogger.log("" + item.getType(), drawImage, x, y + 20);
 //						drawImage.drawString("(" + x + ", " + y + ")", x, y);
 //						drawImage.drawString(item.getType(), x, y + 20);
 						
@@ -555,7 +555,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 			
 			// addPoint(item);
 			tree.insertRandomAnimal(item);
-			tree.updateRoot();
+//			tree.updateRoot();
 			repaint();
 		}
 	}

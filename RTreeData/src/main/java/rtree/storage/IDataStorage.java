@@ -24,6 +24,16 @@ public interface IDataStorage<T extends IRType<T>> {
 	
 	 void initializeStorage();
 	 IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache<T> cache);
+	 
+	 /**
+	  * 
+	  * @param treeName
+	  * @param nodeId
+	  * @param children
+	  * @param parent
+	  * @param items
+	  * @param rectangle
+	  */
 	 void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
 	 IRTreeNode<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache);
 	

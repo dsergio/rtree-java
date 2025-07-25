@@ -346,7 +346,7 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 			}
 			
 			if (showTreeOn) {
-				for (ILocationItem<RDouble> item : tree.getAllPoints()) {
+				for (ILocationItem<RDouble> item : tree.getAllLocationItems()) {
 					
 					RDouble Rx = item.getDim(0);
 					RDouble Ry = item.getDim(1);

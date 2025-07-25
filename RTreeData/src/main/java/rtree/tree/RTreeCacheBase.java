@@ -19,31 +19,24 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 	
 	protected Map<String, IRTreeNode<T>> cache;
 	protected IDataStorage<T> dbAccess;
-	protected String treeName;
+	protected IRTree<T> tree;
 	protected ILogger logger;
-	protected int numDimensions;
 	
-	public RTreeCacheBase(String treeName, ILogger logger, IDataStorage<T> dataStorage, int numDimensions) throws Exception {
+	public RTreeCacheBase(IRTree<T> tree, ILogger logger, IDataStorage<T> dataStorage) throws Exception {
+		
 		cache = new HashMap<String, IRTreeNode<T>>();
-		this.treeName = treeName;
+		this.tree = tree;
 		this.logger = logger;
 		this.dbAccess = dataStorage;
-		this.numDimensions = numDimensions;
+		
 		dbAccess.initializeStorage();
-	}
-	
-	public abstract void updateNode(String nodeId, String children, String parent, String items, String rectangle);
-	
-	public int getNumDimensions() {
-		return numDimensions;
-	}
+	}	
 	
 	public void printCache() {
-		logger.log();
-		logger.log("__CACHE: " + "Printing cache:");
+		logger.log("[CACHE] " + "Printing cache:");
 		for (String key : cache.keySet()) {
 			IRTreeNode<T> cloudNode = cache.get(key);
-			logger.log(key + ": " + cloudNode);
+			logger.log("[CACHE] " + key + ": " + cloudNode);
 		}
 		logger.log();
 	}
@@ -59,44 +52,44 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 		}
 		
 		if (cache.containsKey(nodeId)) { // first try the cache
-//			logger.log("__CACHE: " + "returning " + nodeId + " from cache");
 			return cache.get(nodeId);
 		} else {		
-			IRTreeNode<T> node = dbAccess.getCloudRTreeNode(treeName, nodeId, this);
+			IRTreeNode<T> node = dbAccess.getCloudRTreeNode(tree.getTreeName(), nodeId, this);
 			cache.put(nodeId, node);
 			
 			return node;
 		}
 	}
 	
-	/**
-	 * TODO this method should be polymorphic - one that accepts strings as parameters, 
-	 * and another that accepts a node object as a parameter
-	 * 
-	 * @param nodeId
-	 * @param children
-	 * @param parent
-	 * @param items
-	 * @param rectangle
-	 * @param node
-	 */
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node) {
-		
-//		logger.log("__CACHE: " + "adding node to cache " + nodeId + " node != null: " + (node != null));
+	@Override
+	public void putNode(String nodeId, IRTreeNode<T> node) {
 		if (node != null) {
-			dbAccess.addCloudRTreeNode(nodeId, node.getChildrenJSON().toString(), node.getParent(), node.getItemsJSON().toString(), node.getRectangle().getJson().toString(), treeName, this);
 			cache.put(nodeId, node);
+			dbAccess.addCloudRTreeNode(node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
+					node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString(), tree.getTreeName(), this);
 		} else {
-			cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
+			logger.log("[ERROR] RTreeCacheBase.putNode called with null node for " + nodeId);
 		}
 	}
 	
-	public void addNode(String nodeId, String children, String parent, String items, String rectangle) {
-		cache.put(nodeId, dbAccess.addCloudRTreeNode(nodeId, children, parent, items, rectangle, treeName, this));
+	@Override
+	public void updateNode(String nodeId, IRTreeNode<T> node) {
+		if (node != null) {
+			
+			dbAccess.updateItem(tree.getTreeName(), node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
+					node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString());
+			cache.put(nodeId, node);
+		} else {
+			logger.log("[ERROR] RTreeCacheBase.updateNode called with null node for " + nodeId);
+		}
 	}
 
-	public void remove(String node) {
+	public void removeNode(String node) {
 		cache.remove(node);
+	}
+	
+	public IRTree<T> getTree() {
+		return tree;
 	}
 
 }
