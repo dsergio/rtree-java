@@ -148,7 +148,7 @@ import { api } from '@/config';
 import { ModelSelect } from 'vue-search-select';
 
 var newTreeLocationCountOptions = ref<Array<{ value: number; text: string }>>([]);
-var newTreeLocationCountItem = ref<{ value: number; text: string }>({ value: 5, text: '5' });
+var newTreeLocationCountItem = ref<{ value: number; text: string }>({ value: 10, text: '10' });
 
 var newTreeNumDimensionsOptions = ref<Array<{ value: number; text: string }>>([]);
 var newTreeNumDimensionsItem = ref<{ value: number; text: string }>({ value: 2, text: '2' });
@@ -172,7 +172,7 @@ var newTreeName = ref<string>('rtree-' + newTreeDatasetItem.value.value + '-' + 
 var option_generate_random_items = ref<boolean>(true);
 
 for (let i = 1; i <= 10; i++) {
-  newTreeLocationCountOptions.value.push({ value: i, text: '' + i });
+  newTreeLocationCountOptions.value.push({ value: i * 10, text: '' + i * 10});
   newTreeNumDimensionsOptions.value.push({ value: i, text: '' + i });
   newTreeMaxChildrenOptions.value.push({ value: i, text: '' + i });
   newTreeMaxItemsOptions.value.push({ value: i, text: '' + i });

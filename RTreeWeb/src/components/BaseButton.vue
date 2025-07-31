@@ -1,11 +1,20 @@
 <template>
-  <button class="base-button">
+  <button class="base-button"
+  :disabled="props.disabled"
+  >
     <slot />
   </button>
 </template>
 
 <script setup lang="ts">
-// No logic here: purely presentational
+
+import { ref, defineProps } from 'vue';
+
+// Define props
+const props = defineProps<{
+  disabled: boolean;
+}>();
+
 </script>
 
 <style scoped>

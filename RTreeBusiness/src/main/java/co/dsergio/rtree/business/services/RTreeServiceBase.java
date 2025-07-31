@@ -101,7 +101,9 @@ public class RTreeServiceBase<T extends IRType<T>> extends EntityServiceBase<T> 
 //		}
 		
 		try {
-			t.insertRandomAnimal(item);
+//			t.insertRandomAnimal(item);
+			t.insertRandomWACity(item);
+//			t.insert(item);
 			dbContext.treeSetMap.put(treeName, t);
 			
 		} catch (IOException e) {

@@ -33,6 +33,13 @@ public interface IRTree<T extends IRType<T>> {
 	 void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException;
 	 
 	 /**
+	  * Insert a random type of "city" into the R-tree
+	  * @param locationItem
+	  * @throws IOException
+	  */
+	 void insertRandomWACity(ILocationItem<T> locationItem) throws IOException;
+	 
+	 /**
 	  * Deletes the RTree and all its data.
 	  * @param treeName
 	  * @throws Exception

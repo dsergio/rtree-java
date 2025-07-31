@@ -3,7 +3,7 @@
     <div class="box">
         <h1 class="title">{{ props.numDimensions }}-D {{ props.treeName }} Detail</h1>
 
-        <BaseButton class="button is-primary" @click="generate_random_data">
+        <BaseButton :disabled="loading" class="button is-primary" @click="generate_random_data">
             <span class="spinner" v-if="loading"></span> 
             <span v-if="loading">Generating {{ gen_count }} random location items</span>
             <span v-else>Generate random location items</span>
@@ -179,7 +179,7 @@ const generate_random_data = async () => {
                 clearInterval(intervalId);
                 loading.value = false;
             }
-        }, 1000);
+        }, 500);
         
     }
 };

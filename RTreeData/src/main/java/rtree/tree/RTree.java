@@ -1,13 +1,18 @@
 package rtree.tree;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
+import rtree.item.LocationItem;
+import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
@@ -24,6 +29,10 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 
 	private int resultCount = 0;
 	private int maxResults = 50;
+	
+	private List<ILocationItem<T>> cities = null;
+	private List<Double> min_cities = new ArrayList<>();
+	private List<Double> max_cities = new ArrayList<>();
 
 	/**
 	 * @param dataStorage
@@ -91,12 +100,16 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	}
 	
 	@Override
-	public void insert(ILocationItem<T> locationItem) throws IOException {	
+	public void insert(ILocationItem<T> locationItem) throws IOException {
+		logger.log("[DEBUG] insert called for " + locationItem);
 		insert(locationItem, cache.getNode(treeName));
 	}
 	
+	
+	
 	@Override
 	public void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException {
+		logger.log("[DEBUG] insertRandomAnimal called for " + locationItem);
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
 		insert(locationItem, cache.getNode(treeName));
@@ -417,6 +430,92 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		List<ILocationItem<T>> items = getAllLocationItems();
 		for (ILocationItem<T> item : items) {
 			delete(item);
+		}
+		
+	}
+
+	@Override
+	public void insertRandomWACity(ILocationItem<T> locationItem) throws IOException {
+		
+		if (!className.equals(RDouble.class)) {
+			
+			logger.log("[ERROR] Only RDouble is supported for insertRandomWACity, but got " + className.getSimpleName() + ". Using amimal instead.");
+			insertRandomAnimal(locationItem);
+			return;
+			
+		}
+		
+		logger.log("[DEBUG] insertRandomWACity called for " + locationItem);
+		
+		File f = new File("../../wa_cities");
+		Scanner scanner = null;
+		try {
+			scanner = new Scanner(f);
+		} catch (FileNotFoundException e) {
+			throw new IOException("File not found: " + f.getAbsolutePath(), e);
+		}
+		
+		if (cities == null) {
+			cities = new ArrayList<ILocationItem<T>>();
+
+			while (scanner.hasNextLine()) {
+				String line = scanner.nextLine();
+				if (line != null && !line.isEmpty()) {
+					String[] parts = line.split(";");
+					
+					String lat = parts[1].split(",")[0];
+					String lon = parts[1].split(",")[1];
+					
+					double latDouble = Double.parseDouble(lat);
+					double lonDouble = Double.parseDouble(lon);
+					
+					if (min_cities.isEmpty()) {
+						for (int i = 0; i < numDimensions; i++) {
+							min_cities.add(latDouble);
+							min_cities.add(lonDouble);
+							max_cities.add(latDouble);
+							max_cities.add(lonDouble);
+							
+						}
+					} else {
+						if (latDouble < min_cities.get(0)) {
+							min_cities.set(0, latDouble);
+						}
+						if (latDouble > max_cities.get(0)) {
+							max_cities.set(0, latDouble);
+						}
+						if (lonDouble < min_cities.get(1)) {
+							min_cities.set(1, lonDouble);
+						}
+						if (lonDouble > max_cities.get(1)) {
+							max_cities.set(1, lonDouble);
+						}
+					}
+					
+					double lat_normalized = (latDouble - min_cities.get(0)) / (max_cities.get(0) - min_cities.get(0));
+					double lon_normalized = (lonDouble - min_cities.get(1)) / (max_cities.get(1) - min_cities.get(1));
+					
+					T latitude = className.cast(new RDouble(1 - lat_normalized));
+					T longitude = className.cast(new RDouble(lon_normalized));
+					
+					ILocationItem<T> item = new LocationItem<T>(numDimensions);
+					item.setType(parts[0]);
+					
+					item.setDim(0, longitude);
+					item.setDim(1, latitude);
+					
+					cities.add(item);
+				}
+			}
+			scanner.close();
+		} else {
+			
+			int x = r.nextInt(cities.size());
+			ILocationItem<T> locationItemCity = cities.get(x);
+			insert(locationItemCity, cache.getNode(treeName));
+			
+			printTree();
+			
 		}
 		
 	}
