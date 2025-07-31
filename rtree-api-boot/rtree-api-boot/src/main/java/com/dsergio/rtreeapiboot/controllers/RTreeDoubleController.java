@@ -62,7 +62,6 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		return ResponseEntity.ok(returnRTreeList);
 	}
 	
-//	@ApiOperation(value="RTreeDouble_insert", notes = "Insert into RTree<Double", nickname = "RTreeDouble_insert")
 	@Operation(summary = "RTreeDouble_insert", description = "Insert a new item into RTree<Double>", operationId = "RTreeDouble_insert")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -125,7 +124,68 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		return ResponseEntity.ok(null);
 	}
 	
-//	@ApiOperation(value="RTreeDouble_get", notes = "Get RTree<Double> structure and data by treeName", nickname = "RTreeDouble_get")
+	@Operation(summary = "RTreeDouble_insert_geo", description = "Insert a new geo into RTree<Double>", operationId = "RTreeDouble_insert_geo")
+	@CrossOrigin(origins = "*")
+	@RequestMapping(value="/{treeName}/geo/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public @ResponseBody ResponseEntity<RTreeDouble> insert_geo(@PathVariable String treeName, @RequestBody LocationItemDouble itemToInsert) {
+		
+		ILocationItem<RDouble> item = new LocationItem<RDouble>(itemToInsert.numberDimensions);
+		item.setType(itemToInsert.type);
+		for (String s : itemToInsert.itemProperties.keySet()) {
+			item.setProperty(s, itemToInsert.itemProperties.get(s));
+		}
+		for (int i = 0; i < itemToInsert.numberDimensions; i++) {
+			Double d = itemToInsert.dimensionArray.get(i);
+			RDouble rd = new RDouble(d);
+			item.setDim(i, rd);
+		}
+		
+		rtreeService.insert_geo(treeName, item);
+		
+		IRTree<RDouble> tree = rtreeService.fetchByTreeName(treeName);
+		
+		if (tree != null) {
+			RTreeDouble treeRet = new RTreeDouble();
+			treeRet.name = tree.getTreeName();
+			treeRet.numDimensions = tree.getNumDimensions();
+			
+			treeRet.points = new ArrayList<>();
+			for (ILocationItem<RDouble> i : tree.getAllLocationItems()) {
+				LocationItemDouble li = new LocationItemDouble();
+				li.id = i.getId();
+				li.type = i.getType();
+				li.itemProperties = i.getProperties();
+				li.numberDimensions = i.getNumberDimensions();
+				li.dimensionArray = new ArrayList<Double>();
+				for (RDouble rd : i.getDimensionArray()) {
+					li.dimensionArray.add(rd.getData());
+				}
+				treeRet.points.add(li);
+			}
+			treeRet.rectangles = new ArrayList<>();
+			
+			Map<IHyperRectangle<RDouble>, Integer> rectanglesWithDepth = tree.getAllRectanglesWithDepth();
+			
+			for (IHyperRectangle<RDouble> r : rectanglesWithDepth.keySet()) {
+				RectangleDouble rectDouble = new RectangleDouble();
+				rectDouble.dimensionArray1 = new ArrayList<Double>();
+				rectDouble.dimensionArray2 = new ArrayList<Double>();
+				rectDouble.depth = rectanglesWithDepth.get(r);
+				for (RDouble rd : r.getDimensionArray1()) {
+					rectDouble.dimensionArray1.add(rd.getData());
+				}
+				for (RDouble rd : r.getDimensionArray2()) {
+					rectDouble.dimensionArray2.add(rd.getData());
+				}
+				rectDouble.numberDimensions = r.getNumberDimensions();
+				treeRet.rectangles.add(rectDouble);
+			}
+			
+			return ResponseEntity.ok(treeRet);
+		}
+		return ResponseEntity.ok(null);
+	}
+	
 	@Operation(summary = "RTreeDouble_get", description = "Get RTree<Double> structure and data by treeName", operationId = "RTreeDouble_get")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,7 +235,6 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		return ResponseEntity.ok(null);
 	}
 	
-//	@ApiOperation(value="RTreeDouble_search", notes = "Search RTree<Double> structure by rectangle", nickname = "RTreeDouble_search")
 	@Operation(summary = "RTreeDouble_search", description = "Search RTree<Double> structure by rectangle", operationId = "RTreeDouble_search")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/search/{treeName}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -222,7 +281,6 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		return ResponseEntity.ok(null);
 	}
 	
-//	@ApiOperation(value="RTreeDouble_newTree", notes = "Create new RTree<Double>", nickname = "RTreeDouble_newTree")
 	@Operation(summary = "RTreeDouble_newTree", description = "Create new RTree<Double>", operationId = "RTreeDouble_newTree")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -240,7 +298,6 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 		return ResponseEntity.ok(treeRet);
 	}
 	
-//	@ApiOperation(value="RTreeDouble_delete", notes = "Delete RTree<Double> by treeName", nickname = "RTreeDouble_delete")
 	@Operation(summary = "RTreeDouble_delete", description = "Delete RTree<Double> by treeName", operationId = "RTreeDouble_delete")
 	@CrossOrigin(origins = "*")
 	@RequestMapping(value="/{treeName}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)

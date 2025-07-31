@@ -101,6 +101,32 @@ public class RTreeServiceBase<T extends IRType<T>> extends EntityServiceBase<T> 
 //		}
 		
 		try {
+			t.insertRandomAnimal(item);
+//			t.insertRandomWACity(item);
+//			t.insert(item);
+			dbContext.treeSetMap.put(treeName, t);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public void insert_geo(String treeName, ILocationItem<T> item) {
+		
+		IRTree<T> t = dbContext.treeSetMap.get(treeName);
+		
+		
+//		ILocationItemGeneric<T> locationItem = new LocationItemNDGeneric<T>(item.getNumberDimensions());
+//		for (int i = 0; i < locationItem.getNumberDimensions(); i++) {
+//			
+//			T val = getInstanceOf();
+//			val.setData("" + item.getDim(i));
+//			locationItem.setDim(i, val);
+//		}
+		
+		try {
 //			t.insertRandomAnimal(item);
 			t.insertRandomWACity(item);
 //			t.insert(item);

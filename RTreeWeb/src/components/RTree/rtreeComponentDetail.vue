@@ -1,7 +1,7 @@
 <template
     lang="html">
     <div class="box">
-        <h1 class="title">{{ props.numDimensions }}-D {{ props.treeName }} Detail</h1>
+        <h1 class="title">{{ props.numDimensions }}-D {{ props.treeName }}</h1>
 
         <BaseButton :disabled="loading" class="button is-primary" @click="generate_random_data">
             <span class="spinner" v-if="loading"></span> 
@@ -160,7 +160,7 @@ const generate_random_data = async () => {
             console.log(`Count: ${count}`);
             gen_count.value = numPoints - count;
 
-            const res = await api.rTreeDoubleInsert({
+            var obj = {
 
                 treeName: props.treeName,
                 locationItemDouble: {
@@ -171,7 +171,15 @@ const generate_random_data = async () => {
                     itemProperties: {}
                 }
 
-            });
+            };
+            var res;
+            if (props.dataSet == "geo") {
+                res = await api.rTreeDoubleInsertGeo(obj);
+            } else {
+                res = await api.rTreeDoubleInsert(obj);
+            }
+
+            
 
             init_tree();
 
@@ -222,7 +230,8 @@ onMounted(async () => {
                 console.log(`[INSERT Web] props: `, props);
 
                 try {
-                    const res = api.rTreeDoubleInsert({
+
+                    var obj = {
                         treeName: props.treeName,
                         locationItemDouble: {
                             dimensionArray: [x_normalized, y_normalized],
@@ -232,8 +241,15 @@ onMounted(async () => {
                             itemProperties: {}
 
                         }
-                    });
+                    }
 
+                    var res;
+                    if (props.dataSet == "geo") {
+                        res = api.rTreeDoubleInsertGeo(obj);
+                    } else {
+                        res = api.rTreeDoubleInsert(obj);
+                    }
+                    
                     if (res instanceof Promise) {
                         init_tree(res);
                     } else {

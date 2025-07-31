@@ -44,6 +44,11 @@ export interface RTreeDoubleInsertRequest {
     locationItemDouble: LocationItemDouble;
 }
 
+export interface RTreeDoubleInsertGeoRequest {
+    treeName: string;
+    locationItemDouble: LocationItemDouble;
+}
+
 export interface RTreeDoubleNewTreeRequest {
     rTreeCreate: RTreeCreate;
 }
@@ -213,6 +218,55 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
      */
     async rTreeDoubleInsert(requestParameters: RTreeDoubleInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble> {
         const response = await this.rTreeDoubleInsertRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Insert a new geo into RTree<Double>
+     * RTreeDouble_insert_geo
+     */
+    async rTreeDoubleInsertGeoRaw(requestParameters: RTreeDoubleInsertGeoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RTreeDouble>> {
+        if (requestParameters['treeName'] == null) {
+            throw new runtime.RequiredError(
+                'treeName',
+                'Required parameter "treeName" was null or undefined when calling rTreeDoubleInsertGeo().'
+            );
+        }
+
+        if (requestParameters['locationItemDouble'] == null) {
+            throw new runtime.RequiredError(
+                'locationItemDouble',
+                'Required parameter "locationItemDouble" was null or undefined when calling rTreeDoubleInsertGeo().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/api/RTreeDouble/{treeName}/geo/`;
+        urlPath = urlPath.replace(`{${"treeName"}}`, encodeURIComponent(String(requestParameters['treeName'])));
+
+        const response = await this.request({
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: LocationItemDoubleToJSON(requestParameters['locationItemDouble']),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => RTreeDoubleFromJSON(jsonValue));
+    }
+
+    /**
+     * Insert a new geo into RTree<Double>
+     * RTreeDouble_insert_geo
+     */
+    async rTreeDoubleInsertGeo(requestParameters: RTreeDoubleInsertGeoRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble> {
+        const response = await this.rTreeDoubleInsertGeoRaw(requestParameters, initOverrides);
         return await response.value();
     }
 

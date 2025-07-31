@@ -144,7 +144,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		
 		init(dataStorage);
 		
-		System.out.println("Cloud R-Tree initializing...");
+		System.out.println("R-Tree initializing...");
 		System.out.println(" > Storage Type set to " + storageType + ".");
 		System.out.println(" > Split Behavior set to " + splitBehavior.getDescription() + ".");
 		System.out.println(" > Log level set to " + logger.getLogLevel() + ".");
@@ -198,7 +198,6 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		return obj;
 	}
 	
-	public abstract void insert(ILocationItem<T> locationItem) throws IOException;
 	public abstract void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException;
 	public abstract Map<IHyperRectangle<T>, List<ILocationItem<T>>> search(IHyperRectangle<T> searchRectangle);
 	public abstract void delete(ILocationItem<T> toDelete);
