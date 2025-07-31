@@ -88,6 +88,38 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 			treeRet.name = tree.getTreeName();
 			treeRet.numDimensions = tree.getNumDimensions();
 			
+			treeRet.points = new ArrayList<>();
+			for (ILocationItem<RDouble> i : tree.getAllLocationItems()) {
+				LocationItemDouble li = new LocationItemDouble();
+				li.id = i.getId();
+				li.type = i.getType();
+				li.itemProperties = i.getProperties();
+				li.numberDimensions = i.getNumberDimensions();
+				li.dimensionArray = new ArrayList<Double>();
+				for (RDouble rd : i.getDimensionArray()) {
+					li.dimensionArray.add(rd.getData());
+				}
+				treeRet.points.add(li);
+			}
+			treeRet.rectangles = new ArrayList<>();
+			
+			Map<IHyperRectangle<RDouble>, Integer> rectanglesWithDepth = tree.getAllRectanglesWithDepth();
+			
+			for (IHyperRectangle<RDouble> r : rectanglesWithDepth.keySet()) {
+				RectangleDouble rectDouble = new RectangleDouble();
+				rectDouble.dimensionArray1 = new ArrayList<Double>();
+				rectDouble.dimensionArray2 = new ArrayList<Double>();
+				rectDouble.depth = rectanglesWithDepth.get(r);
+				for (RDouble rd : r.getDimensionArray1()) {
+					rectDouble.dimensionArray1.add(rd.getData());
+				}
+				for (RDouble rd : r.getDimensionArray2()) {
+					rectDouble.dimensionArray2.add(rd.getData());
+				}
+				rectDouble.numberDimensions = r.getNumberDimensions();
+				treeRet.rectangles.add(rectDouble);
+			}
+			
 			return ResponseEntity.ok(treeRet);
 		}
 		return ResponseEntity.ok(null);
@@ -107,10 +139,13 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 			treeRet.rectangles = new ArrayList<>();
 			treeRet.points = new ArrayList<>();
 			
-			for (IHyperRectangle<RDouble> r : tree.getAllRectangles()) {
+			Map<IHyperRectangle<RDouble>, Integer> rectanglesWithDepth = tree.getAllRectanglesWithDepth();
+			
+			for (IHyperRectangle<RDouble> r : rectanglesWithDepth.keySet()) {
 				RectangleDouble rectDouble = new RectangleDouble();
 				rectDouble.dimensionArray1 = new ArrayList<Double>();
 				rectDouble.dimensionArray2 = new ArrayList<Double>();
+				rectDouble.depth = rectanglesWithDepth.get(r);
 				for (RDouble rd : r.getDimensionArray1()) {
 					rectDouble.dimensionArray1.add(rd.getData());
 				}

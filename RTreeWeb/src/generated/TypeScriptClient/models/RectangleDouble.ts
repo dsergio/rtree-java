@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { LocationItemIntegerJson } from './LocationItemIntegerJson';
+import {
+    LocationItemIntegerJsonFromJSON,
+    LocationItemIntegerJsonFromJSONTyped,
+    LocationItemIntegerJsonToJSON,
+    LocationItemIntegerJsonToJSONTyped,
+} from './LocationItemIntegerJson';
+
 /**
  * 
  * @export
@@ -33,16 +41,22 @@ export interface RectangleDouble {
     dimensionArray2?: Array<number>;
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {number}
      * @memberof RectangleDouble
      */
-    json?: { [key: string]: object; };
+    numberDimensions?: number;
     /**
      * 
      * @type {number}
      * @memberof RectangleDouble
      */
-    numberDimensions?: number;
+    depth?: number;
+    /**
+     * 
+     * @type {LocationItemIntegerJson}
+     * @memberof RectangleDouble
+     */
+    json?: LocationItemIntegerJson;
 }
 
 /**
@@ -64,8 +78,9 @@ export function RectangleDoubleFromJSONTyped(json: any, ignoreDiscriminator: boo
         
         'dimensionArray1': json['dimensionArray1'] == null ? undefined : json['dimensionArray1'],
         'dimensionArray2': json['dimensionArray2'] == null ? undefined : json['dimensionArray2'],
-        'json': json['json'] == null ? undefined : json['json'],
         'numberDimensions': json['numberDimensions'] == null ? undefined : json['numberDimensions'],
+        'depth': json['depth'] == null ? undefined : json['depth'],
+        'json': json['json'] == null ? undefined : LocationItemIntegerJsonFromJSON(json['json']),
     };
 }
 
@@ -82,8 +97,9 @@ export function RectangleDoubleToJSONTyped(value?: RectangleDouble | null, ignor
         
         'dimensionArray1': value['dimensionArray1'],
         'dimensionArray2': value['dimensionArray2'],
-        'json': value['json'],
         'numberDimensions': value['numberDimensions'],
+        'depth': value['depth'],
+        'json': LocationItemIntegerJsonToJSON(value['json']),
     };
 }
 

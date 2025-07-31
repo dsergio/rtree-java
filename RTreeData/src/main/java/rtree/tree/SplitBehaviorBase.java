@@ -29,6 +29,7 @@ public abstract class SplitBehaviorBase<T extends IRType<T>> implements ISplitBe
 	
 	@Override
 	public abstract void splitLeafNode(IRTreeNode<T> node, ILocationItem<T> locationItem);
+	
 	@Override
 	public abstract void splitBranchNode(IRTreeNode<T> node);
 	

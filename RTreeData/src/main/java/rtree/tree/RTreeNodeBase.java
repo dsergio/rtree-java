@@ -81,6 +81,42 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	}
 	
 	@Override
+	public String getNodeIdShort() {
+		if (nodeId != null && nodeId.length() > 8) {
+			return nodeId.substring(0, 8);
+		} else {
+			return nodeId;
+		}
+	}
+	
+	@Override
+	public List<String> getChildren() {
+		if (children != null) {
+			return children;
+		} else {
+			children = new ArrayList<String>(); 
+			return children;
+		}
+	}
+	
+	@Override
+	public List<String> getChildrenShort() {
+		List<String> childrenShort = new ArrayList<String>();
+		
+		if (children != null) {
+			for (String s : children) {
+				if (s != null && s.length() > 8) {
+					childrenShort.add(s.substring(0, 8));
+				} else {
+					childrenShort.add(s);
+				}
+			}
+		}
+		
+		return childrenShort;
+	}
+	
+	@Override
 	public void setChildrenJSON(String childrenStr) {
 		JSONParser parser = new JSONParser();
 		Object obj;
@@ -161,16 +197,6 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	}
 
 	@Override
-	public List<String> getChildren() {
-		if (children != null) {
-			return children;
-		} else {
-			children = new ArrayList<String>(); 
-			return children;
-		}
-	}
-
-	@Override
 	public void setParent(String node) {
 		this.parentId = node;
 	}
@@ -209,21 +235,6 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 				ret += locationItems.get(i).getType().toString() + ",";
 			} else {
 				ret += locationItems.get(i).getType().toString();
-			}
-		}
-		return ret;
-	}
-
-	private String getChildrenShort() {
-		String ret = "";
-		if (children == null || children.size() == 0) {
-			return "[]";
-		}
-		for (int i = 0; i < children.size(); i++) {
-			if (i < children.size() - 1) {
-				ret += children.get(i).substring(0, 5) + ",";
-			} else {
-				ret += children.get(i).substring(0, 5);
 			}
 		}
 		return ret;

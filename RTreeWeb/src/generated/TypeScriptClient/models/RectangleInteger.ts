@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { LocationItemIntegerJson } from './LocationItemIntegerJson';
+import {
+    LocationItemIntegerJsonFromJSON,
+    LocationItemIntegerJsonFromJSONTyped,
+    LocationItemIntegerJsonToJSON,
+    LocationItemIntegerJsonToJSONTyped,
+} from './LocationItemIntegerJson';
+
 /**
  * 
  * @export
@@ -33,16 +41,16 @@ export interface RectangleInteger {
     dimensionArray2?: Array<number>;
     /**
      * 
-     * @type {{ [key: string]: object; }}
-     * @memberof RectangleInteger
-     */
-    json?: { [key: string]: object; };
-    /**
-     * 
      * @type {number}
      * @memberof RectangleInteger
      */
     numberDimensions?: number;
+    /**
+     * 
+     * @type {LocationItemIntegerJson}
+     * @memberof RectangleInteger
+     */
+    json?: LocationItemIntegerJson;
 }
 
 /**
@@ -64,8 +72,8 @@ export function RectangleIntegerFromJSONTyped(json: any, ignoreDiscriminator: bo
         
         'dimensionArray1': json['dimensionArray1'] == null ? undefined : json['dimensionArray1'],
         'dimensionArray2': json['dimensionArray2'] == null ? undefined : json['dimensionArray2'],
-        'json': json['json'] == null ? undefined : json['json'],
         'numberDimensions': json['numberDimensions'] == null ? undefined : json['numberDimensions'],
+        'json': json['json'] == null ? undefined : LocationItemIntegerJsonFromJSON(json['json']),
     };
 }
 
@@ -82,8 +90,8 @@ export function RectangleIntegerToJSONTyped(value?: RectangleInteger | null, ign
         
         'dimensionArray1': value['dimensionArray1'],
         'dimensionArray2': value['dimensionArray2'],
-        'json': value['json'],
         'numberDimensions': value['numberDimensions'],
+        'json': LocationItemIntegerJsonToJSON(value['json']),
     };
 }
 

@@ -16,6 +16,9 @@
   color: white;
   border-radius: 4px;
   cursor: pointer;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+  
 }
 .base-button:hover {
   background: #2759a1;

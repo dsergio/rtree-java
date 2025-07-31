@@ -18,11 +18,13 @@ import rtree.rectangle.IHyperRectangle;
 public interface IRTreeNode<T extends IRType<T>> {
 
 	 String getNodeId();
+	 String getNodeIdShort();
 	 String toString();
 	 int getNumberOfItems();
 	 boolean isLeafNode();
 	 
 	 List<String> getChildren();
+	 List<String> getChildrenShort();
 	 void setChildren(List<String> children);
 	 JSONArray getChildrenJSON();
 	 void setChildrenJSON(String childrenJSONString);

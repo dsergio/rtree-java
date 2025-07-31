@@ -4,10 +4,106 @@
         <div class="column">
             <div class="rtree-component-list">
                 <h2 class="title">R-Tree datasets</h2>
-                <input type = "text" placeholder="New Tree Name" v-model="newTreeName" />
-                <br /><br />
-                <BaseButton @click="createRTree(newTreeName)">Add New R-Tree dataset</BaseButton>
-                <br /><br />
+
+                <table class='table is-bordered'>
+                  <tbody>
+                    <tr>
+                      <td><label class="label">Name</label></td>
+                      <td><input class="input is-primary" type = "text" placeholder="New Tree Name" v-model="newTreeName" /></td>
+                    </tr>
+
+                    <tr>
+                      <td><label class="label">Dataset</label></td>
+                      <td>
+
+                        <model-select :options="newTreeDatasetOptions"
+                                v-model="newTreeDatasetItem"
+                                :multiple="false"
+                                :searchable="true"
+                                :clearable="true"
+                                @select="updateTreeName()"
+                                >
+                        </model-select>
+
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td><label class="label">Options</label></td>
+                      <td>
+
+                        <input type="checkbox" id="option_generate_random_items" v-model="option_generate_random_items" />
+                        <label for="option_generate_random_items">Create tree and generate random items</label>
+
+                      </td>
+                    </tr>
+
+                    <tr v-if="option_generate_random_items">
+                      <td><label class="label">Number of randomly generated items</label></td>
+                      <td>
+
+                        <model-select :options="newTreeLocationCountOptions"
+                                v-model="newTreeLocationCountItem"
+                                :multiple="false"
+                                :searchable="true"
+                                :clearable="true"
+                                :placeholder="'Select item'"
+                                :label="'label'">
+                        </model-select>
+                      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label class="label">Number of dimensions</label></td>
+                      <td>
+
+                        <model-select :options="newTreeNumDimensionsOptions"
+                                v-model="newTreeNumDimensionsItem"
+                                :multiple="false"
+                                :searchable="true"
+                                :clearable="true"
+                                :placeholder="'Select item'"
+                                :label="'label'">
+                        </model-select>
+                      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label class="label">Max Children</label></td>
+                      <td>
+
+                        <model-select :options="newTreeMaxChildrenOptions"
+                                v-model="newTreeMaxChildrenItem"
+                                :multiple="false"
+                                :searchable="true"
+                                :clearable="true"
+                                :placeholder="'Select item'"
+                                :label="'label'">
+                        </model-select>
+                      
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><label class="label">Max Items</label></td>
+                      <td>
+
+                        <model-select :options="newTreeMaxItemsOptions"
+                                v-model="newTreeMaxItemsItem"
+                                :multiple="false"
+                                :searchable="true"
+                                :clearable="true"
+                                :placeholder="'Select item'"
+                                :label="'label'">
+                        </model-select>
+                      
+                      </td>
+                    </tr>
+
+                    
+                  </tbody>
+                </table>
+                <BaseButton @click="createRTree(newTreeName)">Create</BaseButton>
+
                 <table class="table is-striped">
                 <thead>
                     <tr>
@@ -17,7 +113,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="component in rtree_list" :key="component.name">
+                    <tr v-for="component in rtree_list" :key="component.item.name">
                         <td>{{ component.item.name }}</td>
                         <td>{{ component.item.numDimensions }}</td>
                         <td>
@@ -31,7 +127,13 @@
         </div>
         <div class="column">
             <div v-for="component in rtree_list" :key="component.item.name">
-                <RTreeComponentDetail v-if="component.active" :treeName="component.item.name" :numDimensions="component.item.numDimensions" />
+                <RTreeComponentDetail v-if="component.active" 
+                :treeName="component.item.name" 
+                :numDimensions="component.item.numDimensions" 
+                :dataSet="newTreeDatasetItem.value"
+                :generateRandomData="option_generate_random_items && generateItems"
+                :locationCount="newTreeLocationCountItem.value"
+              />
             </div>
         </div>
     </div>
@@ -39,41 +141,125 @@
 
 <script setup lang="ts">
 
-import { ref, onMounted } from 'vue';
-import { Configuration, RTreeDoubleApi, RTreeDouble } from '@/generated/TypeScriptClient';
-
+import { ref, onMounted, watch } from 'vue';
+import { RTreeDouble } from '@/generated/TypeScriptClient';
 import RTreeComponentDetail from '@/components/RTree/rtreeComponentDetail.vue';
-
 import { api } from '@/config';
+import { ModelSelect } from 'vue-search-select';
+
+var newTreeLocationCountOptions = ref<Array<{ value: number; text: string }>>([]);
+var newTreeLocationCountItem = ref<{ value: number; text: string }>({ value: 5, text: '5' });
+
+var newTreeNumDimensionsOptions = ref<Array<{ value: number; text: string }>>([]);
+var newTreeNumDimensionsItem = ref<{ value: number; text: string }>({ value: 2, text: '2' });
+
+var newTreeMaxChildrenOptions = ref<Array<{ value: number; text: string }>>([]);
+var newTreeMaxChildrenItem = ref<{ value: number; text: string }>({ value: 4, text: '4' });
+var newTreeMaxItemsOptions = ref<Array<{ value: number; text: string }>>([]);
+var newTreeMaxItemsItem = ref<{ value: number; text: string }>({ value: 4, text: '4' });
+
+var generateItems = ref<boolean>(false);
+
+var newTreeDatasetOptions = ref<Array<{ value: string; text: string }>>([
+  { value: 'geo', text: 'Geographic 1 - WA cities' },
+  { value: 'animal', text: 'Animal' },
+]);
+
+var newTreeDatasetItem = ref<{ value: string; text: string }>({ value: 'animal', text: 'Animal' });
+
+var newTreeName = ref<string>('rtree-' + newTreeDatasetItem.value.value + '-' + Math.random().toString(36).substring(2, 10));
+
+var option_generate_random_items = ref<boolean>(true);
+
+for (let i = 1; i <= 10; i++) {
+  newTreeLocationCountOptions.value.push({ value: i, text: '' + i });
+  newTreeNumDimensionsOptions.value.push({ value: i, text: '' + i });
+  newTreeMaxChildrenOptions.value.push({ value: i, text: '' + i });
+  newTreeMaxItemsOptions.value.push({ value: i, text: '' + i });
+}
+
+class RTreeDoubleItems {
+  item: RTreeDouble;
+  active?: boolean;
+  name?: string;
+
+  constructor(item: RTreeDouble) {
+    this.item = item;
+    this.active = false; // Default to inactive
+    this.name = item.name;
+  }
+}
+
+var rtree_list = ref<RTreeDoubleItems[]>([]);
+
+const updateTreeName = () => {
+  if (newTreeDatasetItem.value) {
+    newTreeName.value = 'rtree-' + newTreeDatasetItem.value.value + '-' + Math.random().toString(36).substring(2, 10);
+  } else {
+    newTreeName.value = 'rtree-' + Math.random().toString(36).substring(2, 10);
+  }
+  // console.log('Updated newTreeName:', newTreeName.value);
+};
+
+watch(newTreeDatasetItem, (newValue) => {
+  updateTreeName();
+});
 
 const createRTree = async (name: string) => {
+  generateItems.value = option_generate_random_items.value; // Set generate items option based on checkbox
+  
   try {
 
+    if (!name) {
+      name = 'rtree-' + Math.random().toString(36).substring(2, 10);
+    }
+
     var obj = {
-        rtreeCreate: {
-          maxChildren: 4,
-          maxItems: 4,
+        'rTreeCreate': {
+          maxChildren: newTreeMaxChildrenItem.value.value,
+          maxItems: newTreeMaxItemsItem.value.value,
           treeName: name,
-          numDimensions: 2,
+          numDimensions: newTreeNumDimensionsItem.value.value,
         }
       };
 
     console.log("new R-Tree object:", obj);
+
     const res = await api.rTreeDoubleNewTree(
       obj
     );
 
     console.log(`Created new R-Tree: ${name}`);
+    const newTree = new RTreeDoubleItems(
+     {
+        name: name,
+        numDimensions: newTreeNumDimensionsItem.value.value,
+      }
+    );
 
-    init_treeList(); // Refresh the list after creating a new R-Tree
+    rtree_list.value.push(newTree);
+
+    updateTreeName(); // Reset the new tree name
+
+    for (var i = 0; i < rtree_list.value.length; i++) {
+      console.log('i: ' + i + ', name: ' + name + ', rtree_list.value[i].item.name: ' + rtree_list.value[i].item.name);
+      if (rtree_list.value[i].item.name === name) {
+        rtree_list.value[i].active = true;
+      } else {
+        rtree_list.value[i].active = false;
+      }
+    }
+
   } catch (error) {
     console.error('Failed to create new R-Tree:', error);
   }
 };
 
 const setActiveComponent = (component: RTreeDouble) => {
+  generateItems.value = false; // Reset generate items option
   rtree_list.value.forEach((item) => {
     item.active = item === component;
+    
     // item.active = true;
   });
 };
@@ -97,17 +283,7 @@ const deleteComponent = async (name: string) => {
   }
 };
 
-class RTreeDoubleItems {
-  item: RTreeDouble;
-  active?: boolean;
 
-  constructor(item: RTreeDouble) {
-    this.item = item;
-    this.active = false; // Default to inactive
-  }
-}
-
-var rtree_list = ref<RTreeDoubleItems[]>([]);
 
 async function init_treeList() {
     const res = await api.rTreeDoubleGetAll();
@@ -120,7 +296,6 @@ async function init_treeList() {
     for (const item of rtree_list.value) {
       item.active = false; // Set all items to inactive initially
     }
-    
 
     // rtree_list.value.push(...res.map(item => new RTreeDoubleItems(item)));
 
@@ -150,4 +325,19 @@ onMounted(async () => {
   margin-bottom: 0.5em;
   color: black
 }
+
+.label {
+  font-weight: bold;
+  /* color: black; */
+}
+
+.table {
+  width: 100%;
+  margin-top: 20px;
+}
+
+label {
+  padding: 10px;
+}
+
 </style>

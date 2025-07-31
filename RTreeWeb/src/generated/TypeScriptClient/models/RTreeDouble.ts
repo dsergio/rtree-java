@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -48,16 +48,16 @@ export interface RTreeDouble {
     numDimensions?: number;
     /**
      * 
-     * @type {Array<LocationItemDouble>}
-     * @memberof RTreeDouble
-     */
-    points?: Array<LocationItemDouble>;
-    /**
-     * 
      * @type {Array<RectangleDouble>}
      * @memberof RTreeDouble
      */
     rectangles?: Array<RectangleDouble>;
+    /**
+     * 
+     * @type {Array<LocationItemDouble>}
+     * @memberof RTreeDouble
+     */
+    points?: Array<LocationItemDouble>;
 }
 
 /**
@@ -79,8 +79,8 @@ export function RTreeDoubleFromJSONTyped(json: any, ignoreDiscriminator: boolean
         
         'name': json['name'] == null ? undefined : json['name'],
         'numDimensions': json['numDimensions'] == null ? undefined : json['numDimensions'],
-        'points': json['points'] == null ? undefined : ((json['points'] as Array<any>).map(LocationItemDoubleFromJSON)),
         'rectangles': json['rectangles'] == null ? undefined : ((json['rectangles'] as Array<any>).map(RectangleDoubleFromJSON)),
+        'points': json['points'] == null ? undefined : ((json['points'] as Array<any>).map(LocationItemDoubleFromJSON)),
     };
 }
 
@@ -97,8 +97,8 @@ export function RTreeDoubleToJSONTyped(value?: RTreeDouble | null, ignoreDiscrim
         
         'name': value['name'],
         'numDimensions': value['numDimensions'],
-        'points': value['points'] == null ? undefined : ((value['points'] as Array<any>).map(LocationItemDoubleToJSON)),
         'rectangles': value['rectangles'] == null ? undefined : ((value['rectangles'] as Array<any>).map(RectangleDoubleToJSON)),
+        'points': value['points'] == null ? undefined : ((value['points'] as Array<any>).map(LocationItemDoubleToJSON)),
     };
 }
 

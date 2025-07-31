@@ -17,29 +17,19 @@ import rtree.tree.IRTreeNode;
  */
 public interface IDataStorage<T extends IRType<T>> {
 	
-	 void close();
-	
 	 List<IRTree<T>> getAllTrees();
 	 List<ILocationItem<T>> getAllLocationItems();
+	 List<T> getMin(String treeName);
+	 List<T> getMax(String treeName);
 	
-	 void initializeStorage();
-	 IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache<T> cache);
 	 
-	 /**
-	  * 
-	  * @param treeName
-	  * @param nodeId
-	  * @param children
-	  * @param parent
-	  * @param items
-	  * @param rectangle
-	  */
-	 void updateItem(String treeName, String nodeId, String children, String parent, String items, String rectangle);
-	 IRTreeNode<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache);
+	 IRTreeNode<T> addRTreeNode(String nodeId, String children, String parent, String items, String rectangle, String treeName, IRTreeCache<T> cache);
+	 IRTreeNode<T> getRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache);
+	 void updateRTreeNode(String treeName, String nodeId, String children, String parent, String items, String rectangle);
+	 void addLocationItem(String Id, int N, String location, String type, String properties);
+	 
 	
-	 void addItem(String Id, int N, String location, String type, String properties);
-	
-	// use these for performance analysis
+	 // use these for performance analysis
 	 int getNumAdds();
 	 int getNumReads();
 	 int getNumUpdates();
@@ -48,21 +38,20 @@ public interface IDataStorage<T extends IRType<T>> {
 	 long getUpdateTime();
 	
 	
-	 void addToMetaData(String treeName, int maxChildren, int maxItems); // store the maxChildren and maxItems values
-	 void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N); // store N, maxChildren and maxItems values
+	 // metadata methods
+	 void addToMetaData(String treeName, int maxChildren, int maxItems, int N); // store N, maxChildren and maxItems values
 	 boolean metaDataExists(String treeName) throws Exception; // if treeName exists, use the metadata preferentially
 	 int getMaxChildren(String treeName); // get the persistent maxChildren value
 	 int getMaxItems(String treeName);  // get the persistent maxItems value
 	 int getNumDimensions(String treeName);  // get number of dimensions
-	 void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName);
-	 void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName);
+	 void updateMetaDataBoundaries(List<T> minimums, List<T> maximums, String treeName);
+	 
+	 
+	 // storage management methods
+	 void initializeStorage();
+	 void close();
 	 StorageType getStorageType();
-	
 	 void clearData();
-	 
-	 List<T> getMin(String treeName);
-	 List<T> getMax(String treeName);
-	 
 	 boolean isDbConnected();
-	
 }
+

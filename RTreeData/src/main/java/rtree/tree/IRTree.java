@@ -10,11 +10,15 @@ import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.rectangle.IHyperRectangle;
 
+/**
+ * Interface for R-Tree data structure.
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * 
+ */
 public interface IRTree<T extends IRType<T>> {
 	 
 	/**
 	 * Insert a location item into the R-tree
-	 * 
 	 * @param LocationItem locationItem
 	 * 
 	 */
@@ -38,7 +42,6 @@ public interface IRTree<T extends IRType<T>> {
 	 /**
 	 * Get all items in this tree
 	 * Caution: could be a big operation
-	 * 
 	 * @return all items in this tree
 	 * 
 	 */
@@ -57,6 +60,12 @@ public interface IRTree<T extends IRType<T>> {
 	 List<IHyperRectangle<T>> getAllRectangles();
 	 
 	 /**
+	  * Get all rectangles in this tree with their depth in the tree.
+	  * @return
+	  */
+	 Map<IHyperRectangle<T>, Integer> getAllRectanglesWithDepth();
+	 
+	 /**
 	  * Delete a specific location item from the R-tree.
 	  * @param toDelete
 	  */
@@ -64,7 +73,6 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	/**
 	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
-	 * 
 	 * @param HyperRectangle searchRectangle
 	 * @return a map of rectangles containing search results
 	 * 
@@ -109,7 +117,6 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	 /**
 	 * Get the minimum of each dimension in the R-tree.
-	 * 
 	 * @return a list of minimum values for each dimension
 	 */
 	 List<T> getMin();
@@ -119,18 +126,6 @@ public interface IRTree<T extends IRType<T>> {
 	  * @return a list of maximum values for each dimension
 	  */
 	 List<T> getMax();
-	 
-	 
-	 // the rest of these methods are internal, and should be moved out of this public interface
-	 //
-//	 IRTreeCache<T> getCache();
-//	 void updateRoot();
-//	 boolean metaDataExists() throws Exception;
-//	 IRTreeNode<T> getNode(String nodeId);
-//	 void addNode(String nodeId, String children, String parent, String items, String rectangle, IRTreeNode<T> node);
-//	 void addNode(String nodeId, String children, String parent, String items, String rectangle);
-	 
-	 
 	 
 	 // performance analysis, move these into another class 
 	 int numAdds();

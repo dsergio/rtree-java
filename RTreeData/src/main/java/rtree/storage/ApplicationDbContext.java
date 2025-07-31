@@ -15,6 +15,13 @@ import rtree.storage.DataStorageMySQL;
 import rtree.storage.IDataStorage;
 import rtree.tree.IRTree;
 
+/**
+ * ApplicationDbContext is a context class that manages the data storage and
+ * provides access to R-trees and location items. It initializes the data
+ * storage and loads all trees and location items into maps for easy access.
+ * 
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
+ */
 public class ApplicationDbContext<T extends IRType<T>> {
 	
 	private IDataStorage<T> dataStorage;
@@ -22,12 +29,10 @@ public class ApplicationDbContext<T extends IRType<T>> {
 	public Map<String, ILocationItem<T>> locationItemSetMap;
 	
 	
-	public ApplicationDbContext(Class<T> clazz) {
+	public ApplicationDbContext(Class<T> className) {
 		
 		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		
-//		dataStorage = new DataStorageSqliteGeneric<T>(logger, clazz);
-		dataStorage = new DataStorageMySQL<T>(logger, clazz);
+		dataStorage = new DataStorageMySQL<T>(logger, className);
 		
 		List<IRTree<T>> treeSet = dataStorage.getAllTrees();
 		List<ILocationItem<T>> locationItemSet = dataStorage.getAllLocationItems();

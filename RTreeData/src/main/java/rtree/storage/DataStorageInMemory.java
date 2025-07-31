@@ -58,7 +58,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	}
 
 	@Override
-	public IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+	public IRTreeNode<T> addRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, IRTreeCache<T> cache) {
 		
 		long time = System.currentTimeMillis();
@@ -151,7 +151,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	}
 
 	@Override
-	public void updateItem(String treeName, String nodeId, String children, String parent, String items,
+	public void updateRTreeNode(String treeName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 		
 		long time = System.currentTimeMillis();
@@ -250,7 +250,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	}
 
 	@Override
-	public IRTreeNode<T> getCloudRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache) {
+	public IRTreeNode<T> getRTreeNode(String treeName, String nodeId, IRTreeCache<T> cache) {
 		
 		long time = System.currentTimeMillis();
 		logger.log("Calling DBAccessRTreeLocal.getCloudRTreeNode with parameters: ");
@@ -295,12 +295,6 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	}
 
 	@Override
-	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
-		this.maxChildren = maxChildren;
-		this.maxItems = maxItems;
-	}
-
-	@Override
 	public boolean metaDataExists(String treeName) {
 		return maxChildren != 0 && maxItems != 0;
 	}
@@ -316,18 +310,13 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	}
 
 	@Override
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
-		
-	}
-
-	@Override
-	public void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName) {
+	public void updateMetaDataBoundaries(List<T> minimums, List<T> maximums, String treeName) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int numDimensions) {
+	public void addToMetaData(String treeName, int maxChildren, int maxItems, int numDimensions) {
 		this.maxChildren = maxChildren;
 		this.maxItems = maxItems;
 		this.numDimensions = numDimensions;
@@ -363,7 +352,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 
 
 	@Override
-	public void addItem(String Id, int N, String location, String type, String properties) {
+	public void addLocationItem(String Id, int N, String location, String type, String properties) {
 		// TODO Auto-generated method stub
 		
 	}

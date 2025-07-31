@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -21,6 +21,18 @@ import { mapValues } from '../runtime';
 export interface RTreeCreate {
     /**
      * 
+     * @type {string}
+     * @memberof RTreeCreate
+     */
+    treeName?: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof RTreeCreate
+     */
+    numDimensions?: number;
+    /**
+     * 
      * @type {number}
      * @memberof RTreeCreate
      */
@@ -31,18 +43,6 @@ export interface RTreeCreate {
      * @memberof RTreeCreate
      */
     maxItems?: number;
-    /**
-     * 
-     * @type {number}
-     * @memberof RTreeCreate
-     */
-    numDimensions?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof RTreeCreate
-     */
-    treeName?: string;
 }
 
 /**
@@ -62,10 +62,10 @@ export function RTreeCreateFromJSONTyped(json: any, ignoreDiscriminator: boolean
     }
     return {
         
+        'treeName': json['treeName'] == null ? undefined : json['treeName'],
+        'numDimensions': json['numDimensions'] == null ? undefined : json['numDimensions'],
         'maxChildren': json['maxChildren'] == null ? undefined : json['maxChildren'],
         'maxItems': json['maxItems'] == null ? undefined : json['maxItems'],
-        'numDimensions': json['numDimensions'] == null ? undefined : json['numDimensions'],
-        'treeName': json['treeName'] == null ? undefined : json['treeName'],
     };
 }
 
@@ -80,10 +80,10 @@ export function RTreeCreateToJSONTyped(value?: RTreeCreate | null, ignoreDiscrim
 
     return {
         
+        'treeName': value['treeName'],
+        'numDimensions': value['numDimensions'],
         'maxChildren': value['maxChildren'],
         'maxItems': value['maxItems'],
-        'numDimensions': value['numDimensions'],
-        'treeName': value['treeName'],
     };
 }
 

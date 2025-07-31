@@ -177,7 +177,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		}
 		
 		if (!metaDataExists()) {
-			cache.getDBAccess().addToMetaDataNDimensional(treeName, maxChildren, maxItems, numDimensions);
+			cache.getDBAccess().addToMetaData(treeName, maxChildren, maxItems, numDimensions);
 		}
 		
 		
@@ -249,7 +249,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		getRectangles(cache.getNode(treeName), allRectangles, 0);
 		return allRectangles;
 	}
-	
+
 	private void getRectangles(IRTreeNode<T> node, List<IHyperRectangle<T>> rectangles, int depth) {
 		depth++;
 		if (node != null && node.getRectangle() != null) {
@@ -260,6 +260,28 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			for (String s : node.getChildren()) {
 				IRTreeNode<T> child = cache.getNode(s);
 				getRectangles(child, rectangles, depth);
+			}
+		}
+		
+	}
+	
+	@Override
+	public Map<IHyperRectangle<T>, Integer> getAllRectanglesWithDepth() {
+		Map<IHyperRectangle<T>, Integer> rectangles = new HashMap<IHyperRectangle<T>, Integer>();
+		getRectanglesWithDepth(cache.getNode(treeName), rectangles, 0);
+		return rectangles;
+	}
+	
+	private void getRectanglesWithDepth(IRTreeNode<T> node, Map<IHyperRectangle<T>, Integer> rectanglesWithDepth, int depth) {
+		depth++;
+		if (node != null && node.getRectangle() != null) {
+			node.getRectangle().setLevel(depth);
+			rectanglesWithDepth.put(node.getRectangle(), depth);
+		}
+		if (node != null && !node.isLeafNode()) {
+			for (String s : node.getChildren()) {
+				IRTreeNode<T> child = cache.getNode(s);
+				getRectanglesWithDepth(child, rectanglesWithDepth, depth);
 			}
 		}
 		
@@ -322,7 +344,8 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		LogLevel temp = logger.getLogLevel();
 		logger.setLogLevel(LogLevel.DEV);
 		logger.log("[RTREE] PRINTING TREE: ");
-		logger.logExact("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth\titems");
+		logger.log();
+		logger.logExact("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth");
 		for (int i = 0; i < maxItems; i++) {
 			logger.logExact("\titem");
 		}
@@ -331,6 +354,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		}
 		logger.log();
 		printTree(cache.getNode(treeName), 0);
+		logger.log();
 		logger.log();
 		logger.setLogLevel(temp);
 	}
@@ -344,22 +368,30 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			numChildren = node.getChildren().size();
 		}
 		
-		logger.logExact("_" + node.getNodeId() + "\t" + node.getParent() + "\t" + node.getRectangle() + 
-				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth);
+		logger.logExact(node.getNodeIdShort() + "\t" + node.getParent() + "\t" + node.getRectangle() + 
+				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth + "\t");
 		
 		
 		List<ILocationItem<T>> tempPoints = node.getLocationItems();
-		logger.logExact("\t");
-		for (int i = 0; i < tempPoints.size(); i++) {
-			logger.logExact(tempPoints.get(i) + ";");
+		for (int i = 0; i < maxItems; i++) {
+			if (i < tempPoints.size()) {
+				logger.logExact(tempPoints.get(i).getType() + "\t");
+			} else {
+				logger.logExact("\t");
+			}
 			
 		}
 		
-		if (node.getChildren() != null) {
-			for (String s : node.getChildren()) {
-				logger.logExact("\t" + s);
+		List<String> tempChildren = node.getChildrenShort();
+		for (int i = 0; i < maxChildren; i++) {
+			if (i < tempChildren.size()) {
+				logger.logExact(tempChildren.get(i) + "\t");
+			} else {
+				logger.logExact("\t");
 			}
 		}
+		
+		
 		logger.log();
 		depth++;
 		if (node.getChildren() != null) {
@@ -429,12 +461,6 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	public long getUpdateTime() {
 		return cache.getDBAccess().getUpdateTime();
 	}
-
-	
-//	@Override
-//	public void updateRoot() {
-//		getNode(treeName);
-//	}
 	
 	@Override
 	public int getNumDimensions() {

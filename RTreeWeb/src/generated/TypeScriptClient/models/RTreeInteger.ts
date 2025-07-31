@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -48,16 +48,16 @@ export interface RTreeInteger {
     numDimensions?: number;
     /**
      * 
-     * @type {Array<LocationItemInteger>}
-     * @memberof RTreeInteger
-     */
-    points?: Array<LocationItemInteger>;
-    /**
-     * 
      * @type {Array<RectangleInteger>}
      * @memberof RTreeInteger
      */
     rectangles?: Array<RectangleInteger>;
+    /**
+     * 
+     * @type {Array<LocationItemInteger>}
+     * @memberof RTreeInteger
+     */
+    points?: Array<LocationItemInteger>;
 }
 
 /**
@@ -79,8 +79,8 @@ export function RTreeIntegerFromJSONTyped(json: any, ignoreDiscriminator: boolea
         
         'name': json['name'] == null ? undefined : json['name'],
         'numDimensions': json['numDimensions'] == null ? undefined : json['numDimensions'],
-        'points': json['points'] == null ? undefined : ((json['points'] as Array<any>).map(LocationItemIntegerFromJSON)),
         'rectangles': json['rectangles'] == null ? undefined : ((json['rectangles'] as Array<any>).map(RectangleIntegerFromJSON)),
+        'points': json['points'] == null ? undefined : ((json['points'] as Array<any>).map(LocationItemIntegerFromJSON)),
     };
 }
 
@@ -97,8 +97,8 @@ export function RTreeIntegerToJSONTyped(value?: RTreeInteger | null, ignoreDiscr
         
         'name': value['name'],
         'numDimensions': value['numDimensions'],
-        'points': value['points'] == null ? undefined : ((value['points'] as Array<any>).map(LocationItemIntegerToJSON)),
         'rectangles': value['rectangles'] == null ? undefined : ((value['rectangles'] as Array<any>).map(RectangleIntegerToJSON)),
+        'points': value['points'] == null ? undefined : ((value['points'] as Array<any>).map(LocationItemIntegerToJSON)),
     };
 }
 

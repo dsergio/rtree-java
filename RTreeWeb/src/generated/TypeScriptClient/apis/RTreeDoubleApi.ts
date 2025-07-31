@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -41,16 +41,16 @@ export interface RTreeDoubleGetRequest {
 
 export interface RTreeDoubleInsertRequest {
     treeName: string;
-    itemToInsert: LocationItemDouble;
+    locationItemDouble: LocationItemDouble;
 }
 
 export interface RTreeDoubleNewTreeRequest {
-    rtreeCreate: RTreeCreate;
+    rTreeCreate: RTreeCreate;
 }
 
 export interface RTreeDoubleSearchRequest {
     treeName: string;
-    searchRectangleInput: RectangleDouble;
+    rectangleDouble: RectangleDouble;
 }
 
 /**
@@ -62,7 +62,7 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
      * Delete RTree<Double> by treeName
      * RTreeDouble_delete
      */
-    async rTreeDoubleDeleteRaw(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<string>> {
+    async rTreeDoubleDeleteRaw(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Array<string>>> {
         if (requestParameters['treeName'] == null) {
             throw new runtime.RequiredError(
                 'treeName',
@@ -85,27 +85,16 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             query: queryParameters,
         }, initOverrides);
 
-        if (this.isJsonMime(response.headers.get('content-type'))) {
-            return new runtime.JSONApiResponse<string>(response);
-        } else {
-            return new runtime.TextApiResponse(response) as any;
-        }
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
      * Delete RTree<Double> by treeName
      * RTreeDouble_delete
      */
-    async rTreeDoubleDelete(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<string | null | undefined > {
+    async rTreeDoubleDelete(requestParameters: RTreeDoubleDeleteRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<string>> {
         const response = await this.rTreeDoubleDeleteRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 204:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
     /**
@@ -179,7 +168,7 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
     }
 
     /**
-     * Insert into RTree<Double
+     * Insert a new item into RTree<Double>
      * RTreeDouble_insert
      */
     async rTreeDoubleInsertRaw(requestParameters: RTreeDoubleInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RTreeDouble>> {
@@ -190,10 +179,10 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['itemToInsert'] == null) {
+        if (requestParameters['locationItemDouble'] == null) {
             throw new runtime.RequiredError(
-                'itemToInsert',
-                'Required parameter "itemToInsert" was null or undefined when calling rTreeDoubleInsert().'
+                'locationItemDouble',
+                'Required parameter "locationItemDouble" was null or undefined when calling rTreeDoubleInsert().'
             );
         }
 
@@ -212,26 +201,19 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationItemDoubleToJSON(requestParameters['itemToInsert']),
+            body: LocationItemDoubleToJSON(requestParameters['locationItemDouble']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RTreeDoubleFromJSON(jsonValue));
     }
 
     /**
-     * Insert into RTree<Double
+     * Insert a new item into RTree<Double>
      * RTreeDouble_insert
      */
-    async rTreeDoubleInsert(requestParameters: RTreeDoubleInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble | null | undefined > {
+    async rTreeDoubleInsert(requestParameters: RTreeDoubleInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble> {
         const response = await this.rTreeDoubleInsertRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
     /**
@@ -239,10 +221,10 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
      * RTreeDouble_newTree
      */
     async rTreeDoubleNewTreeRaw(requestParameters: RTreeDoubleNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RTreeDouble>> {
-        if (requestParameters['rtreeCreate'] == null) {
+        if (requestParameters['rTreeCreate'] == null) {
             throw new runtime.RequiredError(
-                'rtreeCreate',
-                'Required parameter "rtreeCreate" was null or undefined when calling rTreeDoubleNewTree().'
+                'rTreeCreate',
+                'Required parameter "rTreeCreate" was null or undefined when calling rTreeDoubleNewTree().'
             );
         }
 
@@ -260,7 +242,7 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RTreeCreateToJSON(requestParameters['rtreeCreate']),
+            body: RTreeCreateToJSON(requestParameters['rTreeCreate']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RTreeDoubleFromJSON(jsonValue));
@@ -270,16 +252,9 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
      * Create new RTree<Double>
      * RTreeDouble_newTree
      */
-    async rTreeDoubleNewTree(requestParameters: RTreeDoubleNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble | null | undefined > {
+    async rTreeDoubleNewTree(requestParameters: RTreeDoubleNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeDouble> {
         const response = await this.rTreeDoubleNewTreeRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
     /**
@@ -294,10 +269,10 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['searchRectangleInput'] == null) {
+        if (requestParameters['rectangleDouble'] == null) {
             throw new runtime.RequiredError(
-                'searchRectangleInput',
-                'Required parameter "searchRectangleInput" was null or undefined when calling rTreeDoubleSearch().'
+                'rectangleDouble',
+                'Required parameter "rectangleDouble" was null or undefined when calling rTreeDoubleSearch().'
             );
         }
 
@@ -316,7 +291,7 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RectangleDoubleToJSON(requestParameters['searchRectangleInput']),
+            body: RectangleDoubleToJSON(requestParameters['rectangleDouble']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => jsonValue.map(LocationItemDoubleFromJSON));
@@ -326,16 +301,9 @@ export class RTreeDoubleApi extends runtime.BaseAPI {
      * Search RTree<Double> structure by rectangle
      * RTreeDouble_search
      */
-    async rTreeDoubleSearch(requestParameters: RTreeDoubleSearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<LocationItemDouble> | null | undefined > {
+    async rTreeDoubleSearch(requestParameters: RTreeDoubleSearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Array<LocationItemDouble>> {
         const response = await this.rTreeDoubleSearchRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
 }

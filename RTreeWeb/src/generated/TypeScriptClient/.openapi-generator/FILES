@@ -4,6 +4,7 @@ apis/index.ts
 index.ts
 models/LocationItemDouble.ts
 models/LocationItemInteger.ts
+models/LocationItemIntegerJson.ts
 models/RTreeCreate.ts
 models/RTreeDouble.ts
 models/RTreeInteger.ts

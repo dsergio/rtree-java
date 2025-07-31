@@ -97,6 +97,8 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 		cache.updateNode(nodeId, node);
 		
 		logger.log("[RTREENODE] " + "updated rectangle for " + nodeId + " new rectangle: " + rectangle);
+		
+		cache.getDBAccess().updateMetaDataBoundaries(minimums, maximums, nodeId);
 
 		if (parentId != null && cache.getNode(parentId) != null && goUp) {
 			updateRectangle(cache.getNode(parentId));

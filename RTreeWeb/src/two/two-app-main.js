@@ -8,32 +8,39 @@ $(document).ready(function () {
 		console.log("we're showing the detail view: ", data, data.N, e);
 		if (data.N == 2) {
 
-			var canvas = document.createElement('canvas');
-			canvas.id = 'canvas';
-			canvas.width = 800;
-			canvas.height = 600;
-			document.getElementById("canvasContainer2D").appendChild(canvas);
+            var treeName = data.name;
+            var canvas;
+            if (document.getElementById("canvas_2D_" + treeName) == null) {
+                canvas = document.createElement('canvas');
+                canvas.id = 'canvas_2D_' + treeName;
+                canvas.width = 800;
+                canvas.height = 600;
+            } else {
+                canvas = document.getElementById("canvas_2D_" + treeName);
+            }
+			document.getElementById("canvasContainer2D_" + treeName).appendChild(canvas);
 
-			var c = document.getElementById("canvas");
-			var ctx = c.getContext("2d");
+			// var c = document.getElementById("canvas");
+			var ctx = canvas.getContext("2d");
 
-			drawTree(c, ctx, null, data.points, data.rectangles);
+			drawTree(canvas, ctx, data.name, data.points, data.rectangles);
 		}
 	});
 });
 
-function clear2DRTree() {
-	var myNode = document.getElementById("canvasContainer2D");
-	while (myNode && myNode.firstChild) {
-		myNode.removeChild(myNode.firstChild);
-	}
-}
+// function clear2DRTree() {
+// 	var myNode = document.getElementById("canvasContainer2D");
+// 	while (myNode && myNode.firstChild) {
+// 		myNode.removeChild(myNode.firstChild);
+// 	}
+// }
 
 function drawTree(c, ctx, id, points, rectangles) {
 
 	console.log("drawTree: id: " + id);
 
 	ctx.clearRect(0, 0, c.width, c.height);
+    console.log("canvas width: ", c.width, "canvas height: ", c.height);
 
 	ctx.globalAlpha = 1;
 	ctx.fillStyle = '#FFFFFF';
@@ -79,47 +86,22 @@ function drawTree(c, ctx, id, points, rectangles) {
 	}
 
     console.log("points: ", points);
+
+
     if (points) {
 
-        var x_min = 1000000;
-        var x_max = -1000000;
-        var y_min = 1000000;
-        var y_max = -1000000;
-
         for (var i = 0; i < points.length; i++) {
             var obj = points[i]["item"];
-            var x = obj["dimensionArray"][0];
-            var y = obj["dimensionArray"][1];
-
-            if (x < x_min) {
-                x_min = x;
-            }
-            if (x > x_max) {
-                x_max = x;
-            }
-            if (y < y_min) {
-                y_min = y;
-            }
-            if (y > y_max) {
-                y_max = y;
-            }
-        }
-
-        for (var i = 0; i < points.length; i++) {
-            var obj = points[i]["item"];
-            console.log("obj: ", obj);
+            // console.log("obj: ", obj);
             console.log("point: ", obj["dimensionArray"][0], obj["dimensionArray"][1]);
 
             var x = obj["dimensionArray"][0];
             var y = obj["dimensionArray"][1];
 
-            var x_normalized = (x - x_min) / (x_max - x_min);
-            var y_normalized = (y - y_min) / (y_max - y_min);
 
-            var x_scaled = x_normalized * (c.width - 100) + 50;
-            var y_scaled = y_normalized * (c.height - 100) + 50;
-            
-            console.log("point x_normalized: ", x_normalized, "point y_normalized: ", y_normalized);
+            var x_scaled = x * (c.width - 0) + 0;
+            var y_scaled = y * (c.height - 0) + 0;
+
             console.log("point x_scaled: ", x_scaled, "point y_scaled: ", y_scaled);
             ctx.beginPath();
             ctx.arc(x_scaled, y_scaled, 5, 0, 2 * Math.PI);
@@ -132,38 +114,44 @@ function drawTree(c, ctx, id, points, rectangles) {
     }
 
     if (rectangles) {
-        console.log("rectangles: ", rectangles);
+        // console.log("rectangles: ", rectangles);
+
+        var maxDepth = 0;
+        for (var i = 0; i < rectangles.length; i++) {
+            var obj = rectangles[i]["item"];
+            depth = obj["depth"];
+            if (depth > maxDepth) {
+                maxDepth = depth;
+            }
+        }
 
         for (var i = 0; i < rectangles.length; i++) {
             var obj = rectangles[i]["item"];
-            console.log("rectangle: ", obj);
+            // console.log("rectangle: ", obj);1
+
+            var depth = obj["depth"];
 
             var x1 = obj["dimensionArray1"][0];
             var y1 = obj["dimensionArray1"][1];
             var x2 = obj["dimensionArray2"][0];
             var y2 = obj["dimensionArray2"][1];
 
-            var x1_normalized = (x1 - x_min) / (x_max - x_min);
-            var y1_normalized = (y1 - y_min) / (y_max - y_min);
-            var x2_normalized = (x2 - x_min) / (x_max - x_min);
-            var y2_normalized = (y2 - y_min) / (y_max - y_min);
-
-            var x1_scaled = x1_normalized * (c.width - 100) + 50;
-            var y1_scaled = y1_normalized * (c.height - 100) + 50;
-            var x2_scaled = x2_normalized * (c.width - 100) + 50;
-            var y2_scaled = y2_normalized * (c.height - 100) + 50;
+            var x1_scaled = x1 * (c.width - 0) + 0;
+            var y1_scaled = y1 * (c.height - 0) + 0;
+            var x2_scaled = x2 * (c.width - 0) + 0;
+            var y2_scaled = y2 * (c.height - 0) + 0;
 
             var width = Math.abs(x2_scaled - x1_scaled);
             var height = Math.abs(y2_scaled - y1_scaled);
 
-            console.log("rectangle x1: ", x1, "rectangle y1: ", y1);
-            console.log("rectangle x2: ", x2, "rectangle y2: ", y2);
-            console.log("rectangle x_normalized: ", x_normalized, "rectangle y_normalized: ", y_normalized);
-            console.log("rectangle x_scaled: ", x_scaled, "rectangle y_scaled: ", y_scaled);
-            console.log("rectangle width: ", width, "height: ", height);
+            // console.log("rectangle x1: ", x1, "rectangle y1: ", y1);
+            // console.log("rectangle x2: ", x2, "rectangle y2: ", y2);
+            // console.log("rectangle x_scaled: ", x_scaled, "rectangle y_scaled: ", y_scaled);
+            // console.log("rectangle width: ", width, "height: ", height);
 
             ctx.beginPath();
-            ctx.rect(x1_scaled, y1_scaled, width, height);
+            ctx.fillStyle = 'rgba(0, 0, 0, ' + 0.25 * (depth / maxDepth) + ')';
+            ctx.fillRect(x1_scaled, y1_scaled, width, height);
             ctx.lineWidth = 1;
 
             if (id === obj.id) {

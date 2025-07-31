@@ -116,9 +116,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		return N;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public IRTreeNode<T> addCloudRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
+	public IRTreeNode<T> addRTreeNode(String nodeId, String children, String parent, String items, String rectangle,
 			String treeName, IRTreeCache<T> cache) {
 
 		if (!isDbConnected()) {
@@ -212,7 +211,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 	
 
 	@Override
-	public void addItem(String Id, int N, String location, String type, String properties) {
+	public void addLocationItem(String Id, int N, String location, String type, String properties) {
 		String query = "INSERT INTO `" + tablePrefix + "_items` (`id`, `N`, `location`, `type`, `treeType`, `properties`) "
 				+ "VALUES (?, ?, ?, ?, ?, ?);";
 
@@ -247,7 +246,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 	}
 
 	@Override
-	public void updateItem(String tableName, String nodeId, String children, String parent, String items,
+	public void updateRTreeNode(String tableName, String nodeId, String children, String parent, String items,
 			String rectangle) {
 
 		
@@ -313,7 +312,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public IRTreeNode<T> getCloudRTreeNode(String tableName, String nodeId, IRTreeCache<T> cache) {
+	public IRTreeNode<T> getRTreeNode(String tableName, String nodeId, IRTreeCache<T> cache) {
 
 		if (!isDbConnected()) {
 			System.out.println("re-initializing db connection...");
@@ -444,33 +443,9 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 	public long getUpdateTime() {
 		return updateTime;
 	}
-
-	@Override
-	@Deprecated
-	public void addToMetaData(String treeName, int maxChildren, int maxItems) {
-		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `treeType`) " + "VALUES (?, ?, ?, ?);";
-
-		PreparedStatement stmt = null;
-		int c = 1;
-
-		try {
-
-			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmt.setString(c++, treeName);
-			stmt.setInt(c++, maxChildren);
-			stmt.setInt(c++, maxItems);
-			stmt.setString(c++, className.getSimpleName());
-
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			logger.log(e);
-			e.printStackTrace();
-		}
-
-	}
 	
 	@Override
-	public void addToMetaDataNDimensional(String treeName, int maxChildren, int maxItems, int N) {
+	public void addToMetaData(String treeName, int maxChildren, int maxItems, int N) {
 		String query = "INSERT INTO `" + tablePrefix + "_metadata` (`treeName`, `maxChildren`, `maxItems`, `N`, `treeType`) " + "VALUES (?, ?, ?, ?, ?);";
 
 		if (!isDbConnected()) {
@@ -694,41 +669,10 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		return maximums;
 	}
 	
-
-	@Override
-	@Deprecated
-	public void updateMetaDataBoundaries(int minX, int maxX, int minY, int maxY, String treeName) {
-		
-		String update = "UPDATE `" + tablePrefix + "_metadata` ";
-		String set = " SET treeName = treeName" + ", minX = ? " + ", maxX = ? " + ", minY = ? " + ", maxY = ? " + "";
-		String where = " WHERE treeName = ? ";
-
-		String updateQuery = update + set + where;
-
-		PreparedStatement stmt = null;
-		int c = 1;
-
-		try {
-			stmt = conn.prepareStatement(updateQuery, Statement.RETURN_GENERATED_KEYS);
-
-			stmt.setInt(c++, minX);
-			stmt.setInt(c++, maxX);
-			stmt.setInt(c++, minY);
-			stmt.setInt(c++, maxY);
-			stmt.setString(c++, treeName);
-
-			stmt.executeUpdate();
-
-		} catch (SQLException e) {
-			logger.log(e);
-			e.printStackTrace();
-		}
-
-	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void updateMetaDataBoundariesNDimensional(List<T> minimums, List<T> maximums, String treeName) {
+	public void updateMetaDataBoundaries(List<T> minimums, List<T> maximums, String treeName) {
 		
 		if (!isDbConnected()) {
 			init();

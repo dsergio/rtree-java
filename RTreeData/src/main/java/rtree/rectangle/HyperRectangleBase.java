@@ -1,5 +1,7 @@
 package rtree.rectangle;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +101,8 @@ public abstract class HyperRectangleBase<T extends IRType<T>> implements IHyperR
 			spaceTotal = spaceTotal * Math.abs((getDim1(i).distanceTo(getDim2(i))));
 		}
 		
-		return spaceTotal;
+//		return spaceTotal;
+		return round(spaceTotal);
 	}
 	
 	public int getLevel() {
@@ -220,7 +223,8 @@ public abstract class HyperRectangleBase<T extends IRType<T>> implements IHyperR
 		for (int i = 0; i < r1.getNumberDimensions(); i++) {
 			area *= Math.abs(max.get(i).distanceTo(min.get(i)));
 		}
-		return area;
+		
+		return round(area);
 	}
 	
 	public static <T extends IRType<T>> IHyperRectangle<T> sumRectangles(List<IHyperRectangle<T>> rectangles) {
@@ -263,5 +267,11 @@ public abstract class HyperRectangleBase<T extends IRType<T>> implements IHyperR
 		} else {
 			return rectangles.get(0);
 		}
+	}
+	
+	private static double round(double value) {
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(3, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 }

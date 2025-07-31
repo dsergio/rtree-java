@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -37,16 +37,16 @@ export interface RTreeIntegerGetRequest {
 
 export interface RTreeIntegerInsertRequest {
     treeName: string;
-    itemToInsert: LocationItemInteger;
+    locationItemInteger: LocationItemInteger;
 }
 
 export interface RTreeIntegerNewTreeRequest {
-    rtreeCreate: RTreeCreate;
+    rTreeCreate: RTreeCreate;
 }
 
 export interface RTreeIntegerSearchRequest {
     treeName: string;
-    searchRectangleInput: RectangleInteger;
+    rectangleInteger: RectangleInteger;
 }
 
 /**
@@ -125,7 +125,7 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
     }
 
     /**
-     * Insert into RTree<Integer
+     * Insert into RTree<Integer>
      * RTreeInteger_insert
      */
     async rTreeIntegerInsertRaw(requestParameters: RTreeIntegerInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RTreeInteger>> {
@@ -136,10 +136,10 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['itemToInsert'] == null) {
+        if (requestParameters['locationItemInteger'] == null) {
             throw new runtime.RequiredError(
-                'itemToInsert',
-                'Required parameter "itemToInsert" was null or undefined when calling rTreeIntegerInsert().'
+                'locationItemInteger',
+                'Required parameter "locationItemInteger" was null or undefined when calling rTreeIntegerInsert().'
             );
         }
 
@@ -158,26 +158,19 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: LocationItemIntegerToJSON(requestParameters['itemToInsert']),
+            body: LocationItemIntegerToJSON(requestParameters['locationItemInteger']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RTreeIntegerFromJSON(jsonValue));
     }
 
     /**
-     * Insert into RTree<Integer
+     * Insert into RTree<Integer>
      * RTreeInteger_insert
      */
-    async rTreeIntegerInsert(requestParameters: RTreeIntegerInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeInteger | null | undefined > {
+    async rTreeIntegerInsert(requestParameters: RTreeIntegerInsertRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeInteger> {
         const response = await this.rTreeIntegerInsertRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
     /**
@@ -185,10 +178,10 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
      * RTreeInteger_newTree
      */
     async rTreeIntegerNewTreeRaw(requestParameters: RTreeIntegerNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<RTreeInteger>> {
-        if (requestParameters['rtreeCreate'] == null) {
+        if (requestParameters['rTreeCreate'] == null) {
             throw new runtime.RequiredError(
-                'rtreeCreate',
-                'Required parameter "rtreeCreate" was null or undefined when calling rTreeIntegerNewTree().'
+                'rTreeCreate',
+                'Required parameter "rTreeCreate" was null or undefined when calling rTreeIntegerNewTree().'
             );
         }
 
@@ -206,7 +199,7 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RTreeCreateToJSON(requestParameters['rtreeCreate']),
+            body: RTreeCreateToJSON(requestParameters['rTreeCreate']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse(response, (jsonValue) => RTreeIntegerFromJSON(jsonValue));
@@ -216,16 +209,9 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
      * Create new RTree<Integer>
      * RTreeInteger_newTree
      */
-    async rTreeIntegerNewTree(requestParameters: RTreeIntegerNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeInteger | null | undefined > {
+    async rTreeIntegerNewTree(requestParameters: RTreeIntegerNewTreeRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<RTreeInteger> {
         const response = await this.rTreeIntegerNewTreeRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
     /**
@@ -240,10 +226,10 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
             );
         }
 
-        if (requestParameters['searchRectangleInput'] == null) {
+        if (requestParameters['rectangleInteger'] == null) {
             throw new runtime.RequiredError(
-                'searchRectangleInput',
-                'Required parameter "searchRectangleInput" was null or undefined when calling rTreeIntegerSearch().'
+                'rectangleInteger',
+                'Required parameter "rectangleInteger" was null or undefined when calling rTreeIntegerSearch().'
             );
         }
 
@@ -262,7 +248,7 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: RectangleIntegerToJSON(requestParameters['searchRectangleInput']),
+            body: RectangleIntegerToJSON(requestParameters['rectangleInteger']),
         }, initOverrides);
 
         return new runtime.JSONApiResponse<any>(response);
@@ -272,16 +258,9 @@ export class RTreeIntegerApi extends runtime.BaseAPI {
      * Search RTree<Integer> structure by rectangle
      * RTreeInteger_search
      */
-    async rTreeIntegerSearch(requestParameters: RTreeIntegerSearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: Array<LocationItemInteger>; } | null | undefined > {
+    async rTreeIntegerSearch(requestParameters: RTreeIntegerSearchRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<{ [key: string]: Array<LocationItemInteger>; }> {
         const response = await this.rTreeIntegerSearchRaw(requestParameters, initOverrides);
-        switch (response.raw.status) {
-            case 200:
-                return await response.value();
-            case 201:
-                return null;
-            default:
-                return await response.value();
-        }
+        return await response.value();
     }
 
 }

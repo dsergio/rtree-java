@@ -15,7 +15,8 @@ import rtree.rectangle.HyperRectangle;
 import rtree.storage.IDataStorage;
 
 /**
- * 
+ * R-Tree implementation.
+ * @paaram <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */
@@ -99,6 +100,8 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
 		insert(locationItem, cache.getNode(treeName));
+		
+		printTree();
 	}
 	
 	/**
@@ -117,7 +120,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		logger.log();
 		logger.log("[INSERT] " + locationItem);
 		
-		cache.getDBAccess().addItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType(), locationItem.getPropertiesJson().toJSONString());	
+		
 		
 		if (node == null && cache.getNode(treeName) == null) { // empty tree
 			
@@ -137,6 +140,10 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		
 		if (node == null) {
 			return;
+		}
+		
+		if (node.getParent() == null) {
+			cache.getDBAccess().addLocationItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType(), locationItem.getPropertiesJson().toJSONString());
 		}
 		
 		logger.log("[INSERT] " + locationItem + " into " + node.getNodeId() + " node.parent: " + node.getParent());
@@ -164,7 +171,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 				}
 				
 				if (updateBoundaries) {
-					cache.getDBAccess().updateMetaDataBoundariesNDimensional(minimums, maximums, treeName);
+					cache.getDBAccess().updateMetaDataBoundaries(minimums, maximums, treeName);
 					boundariesSet = true;
 				}
 				
@@ -187,6 +194,10 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 			
 			for (String s : childrenArr) {
 				IRTreeNode<T> child = cache.getNode(s);
+				if (child == null) {
+					logger.log("[INSERT] " + " child " + s + " is null for " + node + ", skipping");
+					continue;
+				}
 				logger.log("[INSERT] " + " child: " + child.toString());
 				if (child.getRectangle().containsPoint(locationItem)) {
 					insert(locationItem, child);
@@ -356,7 +367,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	
 	private void delete(ILocationItem<T> toDelete, IRTreeNode<T> node) {
 		
-//		logger.log("deleting " + toDelete + " from leaf node " + node.getNodeId() + " (" + (node.isLeafNode() ? "leaf" : "branch") + ")");
+		logger.log("deleting " + toDelete + " from node " + node.getNodeId() + " (" + (node.isLeafNode() ? "leaf" : "branch") + ")");
 		
 		if (node.isLeafNode()) {
 			
@@ -372,25 +383,15 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 					logger.log("item.getId equals toDelete id, so delete it");
 					itemEqualsToDelete = true;
 				} else {
-					// put this check in a search method, then pass in the result
-//					for (int j = 0; j < numDimensions; j++) {
-//						if (!(node.getLocationItems().get(i).getDim(j).equals(toDelete.getDim(j)) && node.getLocationItems().get(i).getType().equals(toDelete.getType()))) {
-//							itemEqualsToDelete = false;
-//						}
-//					}
 				}
 				
 				if (itemEqualsToDelete) {
 					
 					node.getLocationItems().remove(i);
 					
-//					cache.updateNode(node.getNodeId(), null, null, node.getItemsJSON().toJSONString(), null);
 					cache.updateNode(node.getNodeId(), node);
 					
 					node.updateRectangle(true);
-					
-					// update metadata boundaries
-					// TODO
 					
 					logger.log("deleted " + toDelete);
 				}

@@ -1,13 +1,34 @@
 <template
     lang="html">
     <div class="box">
-        <h1 class="title">{{ props.treeName }} Detail</h1>
-        <p>Tree Name: [{{ props.treeName }}], numDimensions: {{ props.numDimensions }}</p>
+        <h1 class="title">{{ props.numDimensions }}-D {{ props.treeName }} Detail</h1>
 
-        Canvas: <div id = "canvasContainer2D"></div>
+        <BaseButton class="button is-primary" @click="generate_random_data">
+            <span class="spinner" v-if="loading"></span> 
+            <span v-if="loading">Generating {{ gen_count }} random location items</span>
+            <span v-else>Generate random location items</span>
+        </BaseButton>
 
-        <!-- <p>{{ pointsRef }}</p>
-        <p>{{ rectanglesRef }}</p> -->
+        <div :id = "'canvasContainer2D_' + props.treeName"></div>
+
+        <ul class="list">
+            <li class ="list-item">
+               generate: {{ props.generateRandomData }}
+            </li>
+            <li class ="list-item">
+                dataSet: {{ props.dataSet }}
+            </li>
+            <li class ="list-item">
+                numDimensions: {{ props.numDimensions }}
+            </li>
+            <li class ="list-item">
+                treeName: {{ props.treeName }}
+            </li>
+            <li class ="list-item">
+                locationCount: {{ props.locationCount }}
+            </li>
+        </ul>
+
         <h3 v-if="pointsRef.length != 0">Points</h3>
         <div v-if="pointsRef.length != 0" style="overflow-y:auto;height:200px;">
             <ul v-for="i in pointsRef" :key="i.id">
@@ -36,6 +57,9 @@ import * as twoAppMain from '@/two/two-app-main.js';
 const props = defineProps<{
   treeName: string;
   numDimensions?: number;
+  dataSet?: string;
+  generateRandomData?: boolean;
+  locationCount: number;
 }>();
 
 class RTreeComponentDetail {
@@ -45,120 +69,212 @@ class RTreeComponentDetail {
     constructor(name: string, numDimensions: number) {
         this.name = name;
         this.numDimensions = numDimensions;
-        
     }
-
 
 }
 
 import { api } from '@/config';
+import BaseButton from '../BaseButton.vue';
 
 const rtreeDetail = ref<RTreeComponentDetail | null>(null);
 const pointsRef = ref<Object[]>([]);
 const rectanglesRef = ref<Object[]>([]);
 
-async function init_tree() {
-    console.log('Fetching RTree details for:', props.treeName);
-        const res = await api.rTreeDoubleGet(props);
+const loading = ref<boolean>(false);
+var gen_count = ref<number>(0);
 
-        console.log(props.treeName + ' details:', res);
+async function init_tree(res?: any) {
+    console.log('props:', props);
 
-        if (res) {
-            rtreeDetail.value = new RTreeComponentDetail(props.treeName, props.numDimensions as number);
+    if (!res) {
 
-            if (res.points === undefined || res.points === null) {
-                console.error('Points data is undefined or null');
-                pointsRef.value = [];
-                return;
-            }
-            if (res.rectangles === undefined || res.rectangles === null) {
-                console.error('Rectangles data is undefined or null');
-                rectanglesRef.value = [];
-                return;
-            }
-            pointsRef.value = res.points.map(point => ({ item: point}));
-            rectanglesRef.value = res.rectangles.map(rectangle => ({ item: rectangle}));
-
-            try {
-
-                // emit detail-view
-                // emit('detail-view', {
-                //     name: rtreeDetail.value.name,
-                //     numDimensions: rtreeDetail.value.numDimensions,
-                //     points: pointsRef.value
-                // });
-
-                var eventObject = {
-                    name: rtreeDetail.value.name,
-                    N: props.numDimensions,
-                    points: pointsRef.value,
-                    rectangles: rectanglesRef.value
-                };
-
-                console.log('Emitting detail-view event with:', eventObject, eventObject.N);
-
-
-                $(document).trigger('detail-view', eventObject);
-
-            } catch (error) {
-                console.error('Failed to emit detail-view event:', error);
-            }
-
-        } else {
-            console.error('Failed to fetch RTree details');
-            rtreeDetail.value = null; // Reset if no data is returned
+        try {
+            res = await api.rTreeDoubleGet(props);
+        } catch (error) {
+            console.error('Failed to fetch RTree details:', error);
             return;
         }
+    } else {
+        res = await res;
+    }
+    
+
+    console.log('tree ' + props.treeName + ' res:', res);
+
+    if (res) {
+        rtreeDetail.value = new RTreeComponentDetail(props.treeName, props.numDimensions as number);
+
+        if (res.points === undefined || res.points === null) {
+            console.error('Points data is undefined or null');
+            pointsRef.value = [];
+            return;
+        }
+        if (res.rectangles === undefined || res.rectangles === null) {
+            console.error('Rectangles data is undefined or null');
+            rectanglesRef.value = [];
+            return;
+        }
+        pointsRef.value = [];
+        rectanglesRef.value = [];
+        pointsRef.value = res.points.map((point: any) => ({ item: point}));
+        rectanglesRef.value = res.rectangles.map((rectangle: any) => ({ item: rectangle}));
+
+        try {
+
+            var eventObject = {
+                name: rtreeDetail.value.name,
+                N: props.numDimensions,
+                points: pointsRef.value,
+                rectangles: rectanglesRef.value
+            };
+
+            // console.log('Emitting detail-view event with:', eventObject, eventObject.N);
+            
+            $(document).trigger('detail-view', eventObject);
+
+        } catch (error) {
+            console.error('Failed to emit detail-view event:', error);
+        }
+
+    } else {
+        console.error('Failed to fetch RTree details');
+        rtreeDetail.value = null; // Reset if no data is returned
+        return;
+    }
+};
+
+const generate_random_data = async () => {
+
+    gen_count.value = props.locationCount;
+
+    if (props.generateRandomData) {
+        
+        let numPoints = props.locationCount;
+
+        let count = 0;
+
+        loading.value = true;
+
+        const intervalId = setInterval(async () => {
+            count++;
+            console.log(`Count: ${count}`);
+            gen_count.value = numPoints - count;
+
+            const res = await api.rTreeDoubleInsert({
+
+                treeName: props.treeName,
+                locationItemDouble: {
+                    dimensionArray: [Math.random(), Math.random()],
+                    id: 'point-' + Date.now(), // Unique ID for the point
+                    type: 'web-insert',
+                    numberDimensions: 2,
+                    itemProperties: {}
+                }
+
+            });
+
+            init_tree();
+
+            if (count >= numPoints) {
+                clearInterval(intervalId);
+                loading.value = false;
+            }
+        }, 1000);
+        
+    }
 };
 
 onMounted(async () => {
 
     try {
 
-        init_tree();
+        if (props.generateRandomData) {
+            
+            console.log("Detail view for geographical R-Tree:", props.treeName);
+            generate_random_data();
 
-        $(document).on('click', '#canvasContainer2D', (event: MouseEvent) => {
-            const x = event.pageX - $('#canvasContainer2D').offset().left;
-            const y = event.pageY - $('#canvasContainer2D').offset().top;
+        } else {
 
-            const x_normalized = x / $('#canvasContainer2D').width();
-            const y_normalized = y / $('#canvasContainer2D').height();
+            init_tree();
 
-            console.log(`Clicked at: (${x}, ${y})`);
-            console.log(`Normalized coordinates: (${x_normalized}, ${y_normalized})`);
+            $(document).on('click', '#canvasContainer2D_' + props.treeName, (event: MouseEvent) => {
 
-
-            const res = api.rTreeDoubleInsert({
-                treeName: props.treeName,
-                itemToInsert:{
-                    dimensionArray: [x_normalized, y_normalized],
-                    id: 'point-' + Date.now(), // Unique ID for the point
-                    type: 'web-insert',
-                    numberDimensions: props.numDimensions as number,
-                    itemProperties: {}
-
+                var c = document.getElementById("canvas_2D_" + props.treeName);
+                var canvas_height = 0;
+                var canvas_width = 0;
+                if (c != null) {
+                    canvas_height = c.clientHeight;
+                    canvas_width = c.clientWidth;
+                } else {
+                    console.error('Canvas element not found');
+                    return;
                 }
+
+                const x = event.pageX - $('#canvasContainer2D_' + props.treeName).offset().left;
+                const y = event.pageY - $('#canvasContainer2D_' + props.treeName).offset().top;
+
+                const x_normalized = x / canvas_width;
+                const y_normalized = y / canvas_height;
+
+                console.log(`[INSERT Web] Clicked at: (${x}, ${y})`);
+                console.log(`[INSERT Web] Normalized coordinates: (${x_normalized}, ${y_normalized})`);
+                console.log('[INSERT Web] test: ', canvas_height, canvas_width);
+                console.log(`[INSERT Web] props: `, props);
+
+                try {
+                    const res = api.rTreeDoubleInsert({
+                        treeName: props.treeName,
+                        locationItemDouble: {
+                            dimensionArray: [x_normalized, y_normalized],
+                            id: 'point-' + Date.now(), // Unique ID for the point
+                            type: 'web-insert',
+                            numberDimensions: props.numDimensions as number,
+                            itemProperties: {}
+
+                        }
+                    });
+
+                    if (res instanceof Promise) {
+                        init_tree(res);
+                    } else {
+                        console.error('[INSERT Web] Insert operation did not return a Promise');
+                    }
+
+                    console.log('[INSERT Web] Insert response:', res);
+
+                } catch (error) {
+                    console.error('[INSERT Web] Failed to insert point:', error);
+                    return;
+                }
+
             });
 
-            if (res instanceof Promise) {
-                init_tree();
-            } else {
-                console.error('Insert operation did not return a Promise');
-            }
-
-            console.log('Insert response:', res);
-            
-        });
+        }
 
     } catch (error) {
         console.error('Failed to create API instance:', error);
     }
-    
-    
 
 });
 
 </script>
 
 <style scoped>
+
+.spinner {
+            border: 2px solid #f3f3f3; /* Light grey */
+            border-top: 2px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            animation: spin 0.6s linear infinite;
+            display: inline-block;
+            margin-right: 5px; /* Space between spinner and text */
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
 </style>

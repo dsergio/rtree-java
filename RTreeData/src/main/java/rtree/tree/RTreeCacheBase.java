@@ -53,9 +53,17 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 		
 		if (cache.containsKey(nodeId)) { // first try the cache
 			return cache.get(nodeId);
-		} else {		
-			IRTreeNode<T> node = dbAccess.getCloudRTreeNode(tree.getTreeName(), nodeId, this);
-			cache.put(nodeId, node);
+			
+		} else {
+			
+			IRTreeNode<T> node = dbAccess.getRTreeNode(tree.getTreeName(), nodeId, this);
+			
+			if (node != null) {
+				cache.put(nodeId, node);
+			} else {
+				logger.log("[ERROR] RTreeCacheBase.getNode called with unknown nodeId: " + nodeId + " and returned null.");
+				return null;
+			}
 			
 			return node;
 		}
@@ -64,9 +72,18 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 	@Override
 	public void putNode(String nodeId, IRTreeNode<T> node) {
 		if (node != null) {
-			cache.put(nodeId, node);
-			dbAccess.addCloudRTreeNode(node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
-					node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString(), tree.getTreeName(), this);
+			
+			if (getNode(nodeId) != null) {
+				
+				updateNode(nodeId, node);
+				
+			} else {
+			
+				cache.put(nodeId, node);
+				dbAccess.addRTreeNode(node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
+						node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString(), tree.getTreeName(), this);
+				
+			}
 		} else {
 			logger.log("[ERROR] RTreeCacheBase.putNode called with null node for " + nodeId);
 		}
@@ -76,7 +93,7 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 	public void updateNode(String nodeId, IRTreeNode<T> node) {
 		if (node != null) {
 			
-			dbAccess.updateItem(tree.getTreeName(), node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
+			dbAccess.updateRTreeNode(tree.getTreeName(), node.getNodeId(), node.getChildrenJSON().toString(), node.getParent(),
 					node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString());
 			cache.put(nodeId, node);
 		} else {

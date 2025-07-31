@@ -3,6 +3,10 @@ package rtree.storage;
 import rtree.item.IRType;
 import rtree.log.ILogger;
 
+/**
+ * Base class for data storage implementations, implements IDataStorage interface.
+ * @param <T> Type of the items stored in the data storage, extending IRType.
+ */
 public abstract class DataStorageBase<T extends IRType<T>> implements IDataStorage<T> {
 
 	public final StorageType storageType;

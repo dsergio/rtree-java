@@ -51,9 +51,15 @@ public class RDouble extends RType<Double> implements IRType<RDouble> {
 	@Override
 	public Double getData() {
 		
-		BigDecimal bd = new BigDecimal(data);
-        bd = bd.setScale(3, RoundingMode.HALF_UP);
-        return bd.doubleValue();
+		if (data == null) {
+			return null;
+		} else {
+			return data.doubleValue();
+		}
+		
+//		BigDecimal bd = new BigDecimal(data);
+//        bd = bd.setScale(3, RoundingMode.HALF_UP);
+//        return bd.doubleValue();
         
 	}
 

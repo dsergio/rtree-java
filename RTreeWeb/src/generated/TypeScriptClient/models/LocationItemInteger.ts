@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Api Documentation
- * Api Documentation
+ * RTree API
+ * Documentation of RTree API
  *
  * The version of the OpenAPI document: 1.0
  * 
@@ -13,6 +13,14 @@
  */
 
 import { mapValues } from '../runtime';
+import type { LocationItemIntegerJson } from './LocationItemIntegerJson';
+import {
+    LocationItemIntegerJsonFromJSON,
+    LocationItemIntegerJsonFromJSONTyped,
+    LocationItemIntegerJsonToJSON,
+    LocationItemIntegerJsonToJSONTyped,
+} from './LocationItemIntegerJson';
+
 /**
  * 
  * @export
@@ -27,6 +35,18 @@ export interface LocationItemInteger {
     dimensionArray?: Array<number>;
     /**
      * 
+     * @type {number}
+     * @memberof LocationItemInteger
+     */
+    numberDimensions?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof LocationItemInteger
+     */
+    type?: string;
+    /**
+     * 
      * @type {string}
      * @memberof LocationItemInteger
      */
@@ -39,22 +59,10 @@ export interface LocationItemInteger {
     itemProperties?: { [key: string]: string; };
     /**
      * 
-     * @type {{ [key: string]: object; }}
+     * @type {LocationItemIntegerJson}
      * @memberof LocationItemInteger
      */
-    json?: { [key: string]: object; };
-    /**
-     * 
-     * @type {number}
-     * @memberof LocationItemInteger
-     */
-    numberDimensions?: number;
-    /**
-     * 
-     * @type {string}
-     * @memberof LocationItemInteger
-     */
-    type?: string;
+    json?: LocationItemIntegerJson;
 }
 
 /**
@@ -75,11 +83,11 @@ export function LocationItemIntegerFromJSONTyped(json: any, ignoreDiscriminator:
     return {
         
         'dimensionArray': json['dimensionArray'] == null ? undefined : json['dimensionArray'],
-        'id': json['id'] == null ? undefined : json['id'],
-        'itemProperties': json['itemProperties'] == null ? undefined : json['itemProperties'],
-        'json': json['json'] == null ? undefined : json['json'],
         'numberDimensions': json['numberDimensions'] == null ? undefined : json['numberDimensions'],
         'type': json['type'] == null ? undefined : json['type'],
+        'id': json['id'] == null ? undefined : json['id'],
+        'itemProperties': json['itemProperties'] == null ? undefined : json['itemProperties'],
+        'json': json['json'] == null ? undefined : LocationItemIntegerJsonFromJSON(json['json']),
     };
 }
 
@@ -95,11 +103,11 @@ export function LocationItemIntegerToJSONTyped(value?: LocationItemInteger | nul
     return {
         
         'dimensionArray': value['dimensionArray'],
-        'id': value['id'],
-        'itemProperties': value['itemProperties'],
-        'json': value['json'],
         'numberDimensions': value['numberDimensions'],
         'type': value['type'],
+        'id': value['id'],
+        'itemProperties': value['itemProperties'],
+        'json': LocationItemIntegerJsonToJSON(value['json']),
     };
 }
 

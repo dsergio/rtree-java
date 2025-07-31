@@ -29,6 +29,8 @@
     "process": "^0.11.10",
     "vue": "^3.5.17",
     "vue-loader": "^16.8.3",
-    "vue-router": "^4.5.1"
+    "vue-router": "^4.5.1",
+    "vue-search-select": "^3.2.0",
+    "vue3-select-option-search": "^0.0.6"
   }
 }
