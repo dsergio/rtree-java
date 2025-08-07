@@ -17,10 +17,11 @@ Properties of RTree:
 
 ## rtree-api-boot
 * Spring Boot Rest API
-* URL: https://dsergio-rtree-api-boot.azurewebsites.net/swagger-ui/index.html
+* URL: http://localhost:8080/swagger-ui/index.html#
 
 ## RTreeData
 
+[DEPRECATED]
 * pom.xml:
 ```
 <!-- https://pkgs.dev.azure.com/dsergio/rtree-java/_packaging/rtree-java-feed/maven/v1 -->
@@ -86,12 +87,23 @@ Example `rtree_items` table:
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
-### Compile: 
-`
-mvn clean package
-sdf
-`
+### Compile Full Web Stack: 
+`cd rtree-java`
+`cd ./RTreeData`
+`mvn clean install`
+`cd -`
+`cd ./RTreeBusiness`
+`mvn clean install`
+`cd -`
+`cd ./rtree-api-boot/rtree-api-boot`
+`mvn clean package`
+`java -jar ./target/rtree-api-boot-1.0.jar`
 
+### Run Web App
+
+`cd ./RTreeWeb`
+`npm install`
+`npm run serve`
 
 ### Run GUI
 
