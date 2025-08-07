@@ -45,6 +45,7 @@ public class RTreeCache<T extends IRType<T>> extends RTreeCacheBase<T> {
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
+			logger.log(e);
 		}
 		
 		return null;

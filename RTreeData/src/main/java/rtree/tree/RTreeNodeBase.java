@@ -61,6 +61,7 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 		} catch (ParseException e) {
 			
 			e.printStackTrace();
+			logger.log(e);
 		}
 		
 		this.parentId = parent;
@@ -136,6 +137,7 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 			}
 			
 		} catch (ParseException e) {
+			logger.log(e);
 			e.printStackTrace();
 		}
 	}

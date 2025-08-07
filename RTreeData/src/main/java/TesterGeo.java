@@ -36,8 +36,8 @@ public class TesterGeo {
 		Double longitudeMax = null;
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
+		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEBUG);
 		StorageType cloudType = StorageType.SQLITE;
 
 		if (args.length < 1) {

@@ -9,16 +9,21 @@ public class LoggerPaint extends LoggerBase implements ILoggerPaint {
 	}
 	
 	public void log(String message, Graphics2D drawImage, int x, int y) {
-		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
+		
+		if (logLevel.equals(LogLevel.DEBUG)) {
+			
 			drawImage.drawString(message, x, y);
-//			log("[PAINT] " + message + ", x = " + x + ", y = " + y);
+			
+			String logEntry = message + ", x = " + x + ", y = " + y;
+			log(logEntry, "PAINT", LogLevel.DEBUG, true);
 		}
+		
 	}
 
 	@Override
 	public void log(String message) {
 		
-		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
+		if (logLevel.equals(LogLevel.DEBUG)) {
 			System.out.println(message);
 		}
 		
@@ -26,17 +31,13 @@ public class LoggerPaint extends LoggerBase implements ILoggerPaint {
 
 	@Override
 	public void log() {
-		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
-			System.out.println();
-		}
+		super.log("", null, LogLevel.DEBUG, true);
+		
 	}
 
 	@Override
-	public void logExact(String message) {
-		
-		if (logLevel.equals(LogLevel.DEV) || logLevel.equals(LogLevel.DEV2)) {
-			System.out.print(message);
-		}
+	public void log(String category, String entry, Graphics2D drawImage, int x, int y) {
+		super.log(entry, category, LogLevel.DEBUG, true);
 		
 	}
 

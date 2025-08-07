@@ -5,6 +5,7 @@ import java.util.Map;
 
 import rtree.item.IRType;
 import rtree.log.ILogger;
+import rtree.log.LogLevel;
 import rtree.storage.IDataStorage;
 
 
@@ -33,10 +34,10 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 	}	
 	
 	public void printCache() {
-		logger.log("[CACHE] " + "Printing cache:");
+		logger.log("Printing cache:", "cache", LogLevel.DEBUG, true);
 		for (String key : cache.keySet()) {
 			IRTreeNode<T> cloudNode = cache.get(key);
-			logger.log("[CACHE] " + key + ": " + cloudNode);
+			logger.log(key + ": " + cloudNode, "cache", LogLevel.DEBUG, true);
 		}
 		logger.log();
 	}
@@ -61,7 +62,8 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 			if (node != null) {
 				cache.put(nodeId, node);
 			} else {
-				logger.log("[ERROR] RTreeCacheBase.getNode called with unknown nodeId: " + nodeId + " and returned null.");
+				logger.log("RTreeCacheBase.getNode called with unknown nodeId: " + nodeId + " and returned null.",
+						"getNode", LogLevel.ERROR, true);
 				return null;
 			}
 			
@@ -85,7 +87,8 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 				
 			}
 		} else {
-			logger.log("[ERROR] RTreeCacheBase.putNode called with null node for " + nodeId);
+			logger.log("RTreeCacheBase.putNode called with null node for " + nodeId, "putNode", LogLevel.ERROR,
+					true);
 		}
 	}
 	
@@ -97,7 +100,8 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 					node.getLocationItemsJSON().toString(), node.getRectangle().getJson().toString());
 			cache.put(nodeId, node);
 		} else {
-			logger.log("[ERROR] RTreeCacheBase.updateNode called with null node for " + nodeId);
+			logger.log("RTreeCacheBase.updateNode called with null node for " + nodeId, "updateNode",
+					LogLevel.ERROR, true);
 		}
 	}
 

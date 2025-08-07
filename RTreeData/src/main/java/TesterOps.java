@@ -19,7 +19,7 @@ public class TesterOps {
 		String inputTreeName = null;
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		StorageType cloudType = StorageType.SQLITE;
 		cloudType = StorageType.MYSQL;
 		

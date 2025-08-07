@@ -128,8 +128,8 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				IHyperRectangle<T> r1 = HyperRectangleBase.twoPointsRectangles(nodeItems.get(seed1), nodeItems.get(i));
 				IHyperRectangle<T> r2 = HyperRectangleBase.twoPointsRectangles(nodeItems.get(seed2), nodeItems.get(i));
 				
-				logger.log("[SPLIT-LEAF] " + "COMPARE seeds: " + nodeItems.get(i) + " r1.getArea(): " + r1.getSpace() + " node1 area:" + node1.getRectangle().getSpace());
-				logger.log("[SPLIT-LEAF] " + "COMPARE seeds: " + nodeItems.get(i) + " r2.getArea(): " + r2.getSpace() + " node2 area:" + node2.getRectangle().getSpace());
+				logger.log("COMPARE seeds: " + nodeItems.get(i) + " r1.getArea(): " + r1.getSpace() + " node1 area:" + node1.getRectangle().getSpace(), "splitLeafNode", LogLevel.DEBUG, true);
+				logger.log("COMPARE seeds: " + nodeItems.get(i) + " r2.getArea(): " + r2.getSpace() + " node2 area:" + node2.getRectangle().getSpace(), "splitLeafNode", LogLevel.DEBUG, true);
 				
 				if (r1.getSpace() < r2.getSpace()) {
 					node1.getLocationItems().add(nodeItems.get(i));
@@ -170,8 +170,8 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 		
 		if (nodeChildren != null && nodeChildren.size() > maxChildren) {
 			
-			logger.log("[SPLIT BRANCH] " + " nodeChildren.size(): " + nodeChildren.size() + ", maxChildren: " + maxChildren);
-			logger.log("[SPLIT BRANCH] " + "***** Oops too many children, let's split the branch " + node.getNodeId());
+			logger.log("nodeChildren.size(): " + nodeChildren.size() + ", maxChildren: " + maxChildren, "splitBranchNode", LogLevel.DEBUG, true);
+			logger.log("***** Oops too many children, let's split the branch " + node.getNodeId(), "splitBranchNode", LogLevel.DEBUG, true);
 			branchSplit = true;
 			
 			
@@ -203,9 +203,10 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 			nodeParentChild1Children.add(nodeChildren.get(seed1));
 			nodeParentChild2Children.add(nodeChildren.get(seed2));
 			
-			logger.log("[SPLIT BRANCH] " + "The two rectangle seeds are " + nodeChildrenRectangles.get(seed1) + " (" + nodeChildren.get(seed1) + ") and " + nodeChildrenRectangles.get(seed2) + " (" + nodeChildren.get(seed2) + ")");
-			logger.log("[SPLIT BRANCH] " + "SEED index1: " + nodeChildren.get(seed1));
-			logger.log("[SPLIT BRANCH] " + "SEED index2: " + nodeChildren.get(seed2));
+			logger.log("The two rectangle seeds are " + nodeChildrenRectangles.get(seed1) + " (" + nodeChildren.get(seed1) + 
+					") and " + nodeChildrenRectangles.get(seed2) + " (" + nodeChildren.get(seed2) + ")", "splitBranchNode", LogLevel.DEBUG, true);
+			logger.log("SEED index1: " + nodeChildren.get(seed1), "splitBranchNode", LogLevel.DEBUG, true);
+			logger.log("SEED index2: " + nodeChildren.get(seed2), "splitBranchNode", LogLevel.DEBUG, true);
 			
 			// add the node's children to the node's parent's new child1 or child2 children by smallest combined rectangle 
 			for (int i = 0; i < nodeChildren.size(); i++) {
@@ -221,8 +222,8 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 					}
 				}
 			}
-			logger.log("[SPLIT BRANCH] " + " nodesParentsNewChild1Children: " + nodeParentChild1Children);
-			logger.log("[SPLIT BRANCH] " + " nodesParentsNewChild2Children: " + nodeParentChild2Children);
+			logger.log("nodesParentsNewChild1Children: " + nodeParentChild1Children, "splitBranchNode", LogLevel.DEBUG, true);
+			logger.log("nodesParentsNewChild2Children: " + nodeParentChild2Children, "splitBranchNode", LogLevel.DEBUG, true);
 			
 			IRTreeNode<T> child1 = new RTreeNode<T>(UUID.randomUUID().toString(), null, null, cache, logger, className);
 			IRTreeNode<T> child2 = new RTreeNode<T>(UUID.randomUUID().toString(), null, null, cache, logger, className);
@@ -247,7 +248,7 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 			
 			if (node.getNodeId().equals(treeName)) {
 				
-				logger.log("[SPLIT BRANCH] " + "we're at the root");
+				logger.log("we're at the root", "splitBranchNode", LogLevel.DEBUG, true);
 				
 				IRTreeNode<T> root = getNode(treeName);
 				
@@ -282,12 +283,12 @@ public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 				
 			} else { // not at root
 				
-				logger.log("[SPLIT BRANCH] " + " not at root");
+				logger.log("Not at root", "splitBranchNode", LogLevel.DEBUG, true);
 				
 				
 				IRTreeNode<T> nodeParent = cache.getNode(node.getParent());
 				
-				logger.log("[SPLIT BRANCH] " + "nodesParent.children: " + nodeParent.getChildren());
+				logger.log("nodesParent.children: " + nodeParent.getChildren(), "splitBranchNode", LogLevel.DEBUG, true);
 				
 				nodeParent.getChildren().add(child1.getNodeId());
 				nodeParent.getChildren().add(child2.getNodeId());

@@ -56,7 +56,7 @@ class RTreeBulkInsertTests {
 		// Arrange
 		int N = 2;
 		IRTree<RDouble> tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RDouble> dataStorage = new DataStorageInMemory<>(logger, RDouble.class);
 		
 		try {

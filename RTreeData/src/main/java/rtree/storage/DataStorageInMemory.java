@@ -12,6 +12,7 @@ import org.json.simple.parser.ParseException;
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.log.ILogger;
+import rtree.log.PerformanceMetrics;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTreeCache;
@@ -33,6 +34,7 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	private Map<String, IRTreeNode<T>> localData;
 	private int numDimensions;
 	Class<T> className;
+	
 	
 	public DataStorageInMemory(ILogger logger, Class<T> className) {
 		super(StorageType.INMEMORY, logger);
@@ -144,8 +146,9 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 		
 		localData.put(nodeId, node);
 		
-		numAdds++;
-		addTime += (System.currentTimeMillis() - time);
+//		numAdds++;
+//		addTime += (System.currentTimeMillis() - time);
+		performance.addAdd(System.currentTimeMillis() - time);
 		
 		return node;
 	}
@@ -245,8 +248,9 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 			node.setLocationItemsJson(items);
 		}
 		
-		numUpdates++;
-		updateTime += (System.currentTimeMillis() - time);
+//		numUpdates++;
+//		updateTime += (System.currentTimeMillis() - time);
+		performance.addUpdate(System.currentTimeMillis() - time);
 	}
 
 	@Override
@@ -257,41 +261,12 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 		logger.log("treeName: " + treeName);
 		logger.log("nodeId: " + nodeId);
 		
-		numReads++;
-		readTime += (System.currentTimeMillis() - time);
+//		numReads++;
+//		readTime += (System.currentTimeMillis() - time);
+		performance.addRead(System.currentTimeMillis() - time);
 		
 		return localData.get(nodeId);
 		
-	}
-
-	@Override
-	public int getNumAdds() {
-		return numAdds;
-	}
-
-	@Override
-	public int getNumReads() {
-		return numReads;
-	}
-
-	@Override
-	public int getNumUpdates() {
-		return numUpdates;
-	}
-
-	@Override
-	public long getAddTime() {
-		return addTime;
-	}
-
-	@Override
-	public long getReadTime() {
-		return readTime;
-	}
-
-	@Override
-	public long getUpdateTime() {
-		return updateTime;
 	}
 
 	@Override

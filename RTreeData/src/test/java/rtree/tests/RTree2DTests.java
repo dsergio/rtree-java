@@ -49,7 +49,7 @@ class RTree2DTests {
 	void InMemoryTree_CreateTree_Success() {
 		// Arrange
 		int N = 2;
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		
 		// Act
@@ -70,7 +70,7 @@ class RTree2DTests {
 		// Arrange
 		int N = 2;
 		IRTree<RInteger> tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		int numChildrenExpected = 2;
 		int numItemsExpected = 6;
@@ -103,7 +103,7 @@ class RTree2DTests {
 		// Arrange
 		int N = 2;
 		IRTree<RDouble> tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RDouble> dataStorage = new DataStorageInMemory<>(logger, RDouble.class);
 		
 		try {
@@ -141,7 +141,7 @@ class RTree2DTests {
 		// Arrange
 		int N = 2;
 		IRTree<RInteger> tree = null;
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		
 		try {
@@ -196,7 +196,7 @@ class RTree2DTests {
 	void InMemoryTree_DeleteTree_Success() {
 		// Arrange
 		int N = 2;
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		IDataStorage<RInteger> dataStorage = new DataStorageInMemory<>(logger, RInteger.class);
 		
 		RTree<RInteger> tree = null;

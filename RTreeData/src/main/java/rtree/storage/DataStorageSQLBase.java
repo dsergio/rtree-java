@@ -19,6 +19,7 @@ import rtree.item.IRType;
 import rtree.item.LocationItem;
 import rtree.item.RDouble;
 import rtree.log.ILogger;
+import rtree.log.LogLevel;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTreeCache;
@@ -201,8 +202,9 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		node.setRectangle(r);
 		node.setLocationItemsJson(items);
 
-		numAdds++;
-		addTime += (System.currentTimeMillis() - time);
+//		numAdds++;
+//		addTime += (System.currentTimeMillis() - time);
+		performance.addAdd(System.currentTimeMillis() - time);
 
 		return node;
 
@@ -297,7 +299,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			}
 			stmt.setString(c++, nodeId);
 
-			logger.log("[QUERY] " + stmt.toString());
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			stmt.executeUpdate();
 
@@ -306,8 +308,10 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			e.printStackTrace();
 		}
 
-		numUpdates++;
-		updateTime += (System.currentTimeMillis() - time);
+//		numUpdates++;
+//		updateTime += (System.currentTimeMillis() - time);
+		performance.addUpdate(System.currentTimeMillis() - time);
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -335,7 +339,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 
 			stmt.setString(1, nodeId);
 
-			logger.log("[QUERY] " + stmt.toString());
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -408,40 +412,11 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			e.printStackTrace();
 		}
 
-		numReads++;
-		readTime += (System.currentTimeMillis() - time);
+//		numReads++;
+//		readTime += (System.currentTimeMillis() - time);
+		performance.addRead(System.currentTimeMillis() - time);
 
 		return returnNode;
-	}
-
-	@Override
-	public int getNumAdds() {
-		return numAdds;
-	}
-
-	@Override
-	public int getNumReads() {
-		return numReads;
-	}
-
-	@Override
-	public int getNumUpdates() {
-		return numUpdates;
-	}
-
-	@Override
-	public long getAddTime() {
-		return addTime;
-	}
-
-	@Override
-	public long getReadTime() {
-		return readTime;
-	}
-
-	@Override
-	public long getUpdateTime() {
-		return updateTime;
 	}
 	
 	@Override
@@ -463,6 +438,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt.setInt(c++, maxItems);
 			stmt.setInt(c++, N);
 			stmt.setString(c++, className.getSimpleName());
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			stmt.executeUpdate();
 		} catch (SQLException e) {
@@ -487,6 +464,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		try {
 			stmt = conn.prepareStatement(query);
 			stmt.setString(1, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -519,6 +498,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 
 			stmt.setString(1, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -552,6 +533,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 
 			stmt.setString(1, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -585,6 +568,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 
 			stmt.setString(1, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -636,6 +621,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 
 			stmt.setString(1, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -700,6 +687,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt.setString(c++, arrMin.toJSONString());
 			stmt.setString(c++, arrMax.toJSONString());
 			stmt.setString(c++, treeName);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			stmt.executeUpdate();
 
@@ -735,6 +724,9 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		
 		try {
 			stmt = conn.prepareStatement(deleteMetadata, Statement.RETURN_GENERATED_KEYS);
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
+			
 			stmt.executeUpdate();
 
 		} catch (SQLException e) {
@@ -764,6 +756,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 			
 			stmt.setString(c++, className.getSimpleName());
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 
 			ResultSet resultSet = stmt.executeQuery();
 
@@ -812,6 +806,8 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			stmt = conn.prepareStatement(query);
 
 			stmt.setString(c++, className.getSimpleName());
+			
+			logger.log(stmt.toString(), "QUERY", LogLevel.DEBUG, true);
 			
 			ResultSet resultSet = stmt.executeQuery();
 

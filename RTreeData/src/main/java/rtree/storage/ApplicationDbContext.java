@@ -31,7 +31,7 @@ public class ApplicationDbContext<T extends IRType<T>> {
 	
 	public ApplicationDbContext(Class<T> className) {
 		
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		dataStorage = new DataStorageMySQL<T>(logger, className);
 		
 		List<IRTree<T>> treeSet = dataStorage.getAllTrees();

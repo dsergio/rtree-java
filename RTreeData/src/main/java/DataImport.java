@@ -34,7 +34,7 @@ public class DataImport {
 		List<ILocationItem<RDouble>> citiesToInsert = new ArrayList<ILocationItem<RDouble>>();
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.PROD);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
 		StorageType cloudType = StorageType.MYSQL;
 
 		if (args.length < 5) {

@@ -13,6 +13,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import rtree.item.IRType;
 import rtree.log.ILogger;
+import rtree.log.LogLevel;
 
 public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T> {
 
@@ -91,7 +92,7 @@ public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T>
 				+ " , treeName VARCHAR(255) NOT NULL " + " , maxChildren INT NULL " + " , maxItems INT NULL " + " , treeType VARCHAR(255) NOT NULL "
 				+ " , N INT NULL "  + " , minimums TEXT NULL "  + " , maximums TEXT NULL " 
 				+ ")";
-		logger.log("create table: \n" + sql);
+		logger.log("create table: \n" + sql, "query", LogLevel.DEBUG, true);
 
 		try {
 			stmt = conn.createStatement();

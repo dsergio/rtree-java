@@ -8,6 +8,7 @@ import org.json.simple.JSONObject;
 
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
+import rtree.log.PerformanceMetrics;
 import rtree.rectangle.IHyperRectangle;
 
 /**
@@ -134,13 +135,11 @@ public interface IRTree<T extends IRType<T>> {
 	  */
 	 List<T> getMax();
 	 
-	 // performance analysis, move these into another class 
-	 int numAdds();
-	 int numReads();
-	 int numUpdates();
-	 long getAddTime();
-	 long getReadTime();
-	 long getUpdateTime();
+	 /**
+	  * Get the performance metrics of the R-tree.
+	  * @return
+	  */
+	 PerformanceMetrics getPerformance();
 	 
 }
 

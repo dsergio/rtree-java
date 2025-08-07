@@ -4,6 +4,7 @@ import java.util.List;
 
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
+import rtree.log.PerformanceMetrics;
 import rtree.tree.IRTreeCache;
 import rtree.tree.IRTree;
 import rtree.tree.IRTreeNode;
@@ -29,13 +30,7 @@ public interface IDataStorage<T extends IRType<T>> {
 	 void addLocationItem(String Id, int N, String location, String type, String properties);
 	 
 	
-	 // use these for performance analysis
-	 int getNumAdds();
-	 int getNumReads();
-	 int getNumUpdates();
-	 long getAddTime();
-	 long getReadTime();
-	 long getUpdateTime();
+	 PerformanceMetrics getPerformance();
 	
 	
 	 // metadata methods

@@ -35,6 +35,7 @@ import rtree.item.LocationItem;
 import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
+import rtree.log.LogLevel;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTree;
@@ -355,10 +356,10 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 					if (color != null) {
 						drawImage.setColor(color);
 						drawImage.fillOval(x, y, 4, 4);
-						paintLogger.log("(" + x + ", " + y + ")", drawImage, x, y);
-						paintLogger.log("" + item.getType(), drawImage, x, y + 20);
+						paintLogger.log("paint", "(" + x + ", " + y + ")", drawImage, x, y);
+						paintLogger.log("paint", "" + item.getType(), drawImage, x, y + 20);
 //						drawImage.drawString("(" + x + ", " + y + ")", x, y);
-//						drawImage.drawString(item.getType(), x, y + 20);
+						drawImage.drawString(item.getType(), x, y + 20);
 						
 					}
 				}
@@ -412,7 +413,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 
 						drawImage.setColor(color);
 						drawImage.drawRect(x, y, width, height);
-						paintLogger.log("area: " + r.getSpace(), drawImage, x, y + height - 20);
+						paintLogger.log("paint", "area: " + r.getSpace(), drawImage, x, y + height - 20);
 //						drawImage.drawString("area: " + r.getArea(), x, y + height - 20);
 
 					}
@@ -437,7 +438,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 						Stroke dashed = new BasicStroke(2.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_BEVEL, 0, new float[]{9}, 0);
 						drawImage.setStroke(dashed);
 						
-						logger.log("Rectangle traverse: " + r + ", level: " + r.getLevel());
+						logger.log("Rectangle traverse: " + r + ", level: " + r.getLevel(), "testpaintdouble", LogLevel.DEBUG, true);
 						
 						int offset = 0;
 						if (r.getLevel() == 1) {
@@ -576,7 +577,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 	public void keyReleased(KeyEvent e) {
 		int keyCode = e.getKeyCode(); // study KeyEvent class API
 		if (keyCode == KeyEvent.VK_ENTER) {
-			logger.log(output.getText());
+			logger.log(output.getText(), "keyReleased", LogLevel.DEBUG, true);
 			if (output.getText().trim().matches("search\\s+[0-9]+\\s+[0-9]+\\s+[0-9]+\\s*")) {
 				double x = Double.parseDouble(output.getText().split("\\s+")[1]);
 				double y = Double.parseDouble(output.getText().split("\\s+")[2]);
@@ -584,7 +585,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				
 				searchRange = range;
 
-				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range);
+				logger.log("you want to search for x: " + x + " y: " + y + " in range: " + range, "keyReleased", LogLevel.DEBUG, true);
 				String[] data = {"Searching..."};
 				list.setListData(data);
 				searchRectangle = new HyperRectangle<RDouble>(2);
@@ -597,14 +598,14 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				
 				searchResults = tree.search(searchRectangle);
 				for (IHyperRectangle<RDouble> r : searchResults.keySet()) {
-					logger.log("search results: " + r);
+					logger.log("search results: " + r, "keyReleased", LogLevel.DEBUG, true);
 					for (ILocationItem<RDouble> i : searchResults.get(r)) {
-						logger.log("..." + i);
+						logger.log("..." + i, "keyReleased", LogLevel.DEBUG, true);
 					}
 					
 				}
 
-				logger.log("searchRectangle: " + searchRectangle);
+				logger.log("searchRectangle: " + searchRectangle, "keyReleased", LogLevel.DEBUG, true);
 				repaint();
 
 			} else if (output.getText().trim().matches("delete\\s+[0-9]+\\s+[0-9]+\\s+\"[a-zA-Z][a-zA-Z0-9\\s+\\-,]+\"\\s*")) {
@@ -613,7 +614,7 @@ public class TestPaintDouble extends JFrame implements KeyListener, ActionListen
 				double y = Double.parseDouble(output.getText().split("\\s+")[2]);
 				String type = output.getText().split("\"")[1].replaceAll("\"", "");
 
-				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type);
+				logger.log("you want to delete x: " + x + " y: " + y + " type: " + type, "keyReleased", LogLevel.DEBUG, true);
 
 				ILocationItem<RDouble> toDelete = new LocationItem<RDouble>(2);
 				toDelete.setDim(0, new RDouble(x));

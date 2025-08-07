@@ -1,12 +1,5 @@
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;
@@ -30,13 +23,14 @@ public class TesterDouble {
 		String inputMaxItems = null;
 
 		// configurations
-		ILogger logger = new LoggerStdOut(LogLevel.DEV);
-		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEV);
+		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);
+		ILoggerPaint paintLogger = new LoggerPaint(LogLevel.DEBUG);
 		StorageType cloudType = StorageType.SQLITE;
 		cloudType = StorageType.MYSQL;
 
 		if (args.length < 1) {
-			logger.log("Usage: java TesterDouble [treeName] [optional maxChildren] [optional maxItems]");
+			logger.log("Usage: java TesterDouble [treeName] [optional maxChildren] [optional maxItems]",
+					"testerDouble", LogLevel.ERROR, true);
 			return;
 		} else if (args.length == 3) {
 			inputMaxChildren = args[1];

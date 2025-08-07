@@ -14,6 +14,7 @@ import rtree.item.IRType;
 import rtree.item.LocationItem;
 import rtree.item.RDouble;
 import rtree.log.ILogger;
+import rtree.log.LogLevel;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
@@ -101,7 +102,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	
 	@Override
 	public void insert(ILocationItem<T> locationItem) throws IOException {
-		logger.log("[DEBUG] insert called for " + locationItem);
+		logger.log("insert called for " + locationItem, "INSERT", LogLevel.DEBUG, true);
 		insert(locationItem, cache.getNode(treeName));
 	}
 	
@@ -109,7 +110,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	
 	@Override
 	public void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException {
-		logger.log("[DEBUG] insertRandomAnimal called for " + locationItem);
+		logger.log("insertRandomAnimal called for " + locationItem, "INSERT", LogLevel.DEBUG, true);
 		int x = r.nextInt(animals.length);
 		locationItem.setType(animals[x]);
 		insert(locationItem, cache.getNode(treeName));
@@ -130,8 +131,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		if (itemNumDimensions != numDimensions) {
 			throw new IllegalArgumentException("Item dimension must equal tree dimension.");
 		}
-		logger.log();
-		logger.log("[INSERT] " + locationItem);
+		logger.log(locationItem.toString(), "INSERT", LogLevel.DEBUG, true);
 		
 		
 		
@@ -159,13 +159,13 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 			cache.getDBAccess().addLocationItem(locationItem.getId(), locationItem.getNumberDimensions(), locationItem.getLocationJson().toJSONString(), locationItem.getType(), locationItem.getPropertiesJson().toJSONString());
 		}
 		
-		logger.log("[INSERT] " + locationItem + " into " + node.getNodeId() + " node.parent: " + node.getParent());
+		logger.log("inserting " + locationItem + " into " + node.getNodeId() + " node.parent: " + node.getParent(), "INSERT", LogLevel.DEBUG, true);
 		
 		if (node.isLeafNode()) {
 			
 			if (node.getNumberOfItems() < maxItems) {
 				
-				logger.log("[INSERT] " + " this node is a leaf node and items are less than max, so let's add to " + node.getNodeId());
+				logger.log("This node is a leaf node and items are less than max, so let's add to " + node.getNodeId(), "INSERT", LogLevel.DEBUG, true);
 				node.addLocationItem(locationItem);
 				
 				boolean updateBoundaries = false;
@@ -201,17 +201,17 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 			
 		} else {
 			// not a leaf node
-			logger.log("[INSERT] " + " not a leaf node, drill down");
+			logger.log("Not a leaf node, drill down", "INSERT", LogLevel.DEBUG, true);
 			
 			List<String> childrenArr = node.getChildren();
 			
 			for (String s : childrenArr) {
 				IRTreeNode<T> child = cache.getNode(s);
 				if (child == null) {
-					logger.log("[INSERT] " + " child " + s + " is null for " + node + ", skipping");
+					logger.log("Child " + s + " is null for " + node + ", skipping", "INSERT", LogLevel.ERROR, true);
 					continue;
 				}
-				logger.log("[INSERT] " + " child: " + child.toString());
+				logger.log("Child: " + child.toString(), "INSERT", LogLevel.DEBUG, true);
 				if (child.getRectangle().containsPoint(locationItem)) {
 					insert(locationItem, child);
 					
@@ -247,7 +247,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	private double getEnlargementArea(IRTreeNode<T> node, ILocationItem<T> item) {
 		
 		if (node.getNumberOfItems() == 0) {
-			logger.log("empty, so enlargement is 0 for " + item);
+			logger.log("empty, so enlargement is 0 for " + item, "getEnlargementArea", LogLevel.DEBUG, true);
 			return 0;
 		}
 		
@@ -287,20 +287,13 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	
 	@Override
 	public Map<IHyperRectangle<T>, List<ILocationItem<T>>> search(IHyperRectangle<T> searchRectangle) {
-		int curAdds = numAdds();
-		int curUpdates = numUpdates();
-		int curReads = numReads();
 		
-		logger.log("[SEARCH] ...");
+		logger.log("...", "SEARCH", LogLevel.DEBUG, true);
 		
-		long time = System.currentTimeMillis();
 		Map<IHyperRectangle<T>, List<ILocationItem<T>>> result = new HashMap<IHyperRectangle<T>, List<ILocationItem<T>>>();
 		resultCount  = 0;
 		search(searchRectangle, cache.getNode(treeName), result, 0);
 		
-		
-		logger.log("[SEARCH] consumed " + (numAdds() - curAdds)  + " adds, " + (numUpdates() - curUpdates) + " updates, " +
-				(numReads() - curReads) + " reads, and " + (System.currentTimeMillis() - time) + "ms to complete.");
 		return result;
 	}
 	
@@ -339,7 +332,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 				}
 				
 				if (searchRectangleContains) {
-					logger.log("[SEARCH] Merry Christmas " + item + " nodeId: " + node.getNodeId());
+					logger.log("Merry Christmas " + item + " nodeId: " + node.getNodeId(), "search", LogLevel.DEBUG, true);
 					resultCount++;
 					if (result.containsKey(searchRectangle)) {
 						if (!result.get(searchRectangle).contains(item)) {
@@ -380,7 +373,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	
 	private void delete(ILocationItem<T> toDelete, IRTreeNode<T> node) {
 		
-		logger.log("deleting " + toDelete + " from node " + node.getNodeId() + " (" + (node.isLeafNode() ? "leaf" : "branch") + ")");
+		logger.log("deleting " + toDelete + " from node " + node.getNodeId() + " (" + (node.isLeafNode() ? "leaf" : "branch") + ")", "DELETE", LogLevel.DEBUG, true);
 		
 		if (node.isLeafNode()) {
 			
@@ -388,12 +381,12 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 				
 				ILocationItem<T> item = node.getLocationItems().get(i);
 				
-				logger.log("[DELETE] compare item " + item + " (ID: " + item.getId() + ") and " + toDelete + " (ID: " + toDelete.getId() + ")");
+				logger.log("[DELETE] compare item " + item + " (ID: " + item.getId() + ") and " + toDelete + " (ID: " + toDelete.getId() + ")", "DELETE", LogLevel.DEBUG, true);
 				
 				boolean itemEqualsToDelete = false;
 				
 				if (item.getId().equals(toDelete.getId())) {
-					logger.log("item.getId equals toDelete id, so delete it");
+					logger.log("item.getId equals toDelete id, so delete it", "DELETE", LogLevel.DEBUG, true);
 					itemEqualsToDelete = true;
 				} else {
 				}
@@ -406,7 +399,7 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 					
 					node.updateRectangle(true);
 					
-					logger.log("deleted " + toDelete);
+					logger.log("deleted " + toDelete, "DELETE", LogLevel.DEBUG, true);
 				}
 			}
 			
@@ -439,13 +432,13 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		
 		if (!className.equals(RDouble.class)) {
 			
-			logger.log("[ERROR] Only RDouble is supported for insertRandomWACity, but got " + className.getSimpleName() + ". Using amimal instead.");
+			logger.log("Only RDouble is supported for insertRandomWACity, but got " + className.getSimpleName() + ". Using amimal instead.", "INSERT", LogLevel.DEBUG, true);
 			insertRandomAnimal(locationItem);
 			return;
 			
 		}
 		
-		logger.log("[DEBUG] insertRandomWACity called for " + locationItem);
+		logger.log("insertRandomWACity called for " + locationItem, "INSERT", LogLevel.DEBUG, true);
 		
 		File f = new File("../../wa_cities");
 		Scanner scanner = null;

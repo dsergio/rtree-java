@@ -14,6 +14,7 @@ import rtree.item.IRType;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
+import rtree.log.PerformanceMetrics;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.storage.IDataStorage;
@@ -85,7 +86,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> className) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), treeName, className); // default to DEV, Quadratic
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), treeName, className); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -98,7 +99,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName, Class<T> className) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), numDimensions, treeName, className); // default to DEV, Quadratic
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), numDimensions, treeName, className); // default to DEV, Quadratic
 	}
 	
 	/**
@@ -112,7 +113,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> className) throws Exception {
-		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEV), 2, treeName, className); // default to DEV, Quadratic, 2-D
+		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), 2, treeName, className); // default to DEV, Quadratic, 2-D
 	}
 	
 	/**
@@ -144,10 +145,22 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		
 		init(dataStorage);
 		
+		String logLevels = "";
+		int numValues = LogLevel.values().length;
+		int c = 0;
+		for (LogLevel l : LogLevel.values()) {
+            logLevels += l + " (" + l.ordinal() + ")";
+            if (c < (numValues - 1)) {
+            	logLevels += ", ";
+            }
+            c++;
+        }
+		
 		System.out.println("R-Tree initializing...");
 		System.out.println(" > Storage Type set to " + storageType + ".");
 		System.out.println(" > Split Behavior set to " + splitBehavior.getDescription() + ".");
 		System.out.println(" > Log level set to " + logger.getLogLevel() + ".");
+		System.out.println(" > > Log Levels: " + logLevels + ".");
 		System.out.println(" > Tree Name set to " + treeName + ".");
 		System.out.println(" > Max Children set to " + maxChildren + ".");
 		System.out.println(" > Max Items set to " + maxItems + ".");
@@ -171,7 +184,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			this.splitBehavior = new SplitQuadratic<T>(className);
 			
 		} catch (Exception e) {
-			logger.log("Cache initialization failed.");
+			logger.log("Cache initialization failed.", "init", LogLevel.ERROR, true);
 			e.printStackTrace();
 			throw new Exception("CloudRTree initialization failed.");
 		}
@@ -290,7 +303,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	public List<ILocationItem<T>> getAllLocationItems() {
 		List<ILocationItem<T>> points = new ArrayList<ILocationItem<T>>();
 		getLocationItems(cache.getNode(treeName), points, 0);
-		logger.log("[RTREE] getAllLocationItems() returned a list of size " + points.size());
+		logger.log("getAllLocationItems() returned a list of size " + points.size(), "getAllLocationItems", LogLevel.DEBUG, true);
 		return points;
 	}
 	
@@ -303,7 +316,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			points.addAll(node.getLocationItems());
 		} else {
 			for (String s : node.getChildren()) {
-				logger.log("[RTREE] getLocationItems() getting child node: " + s);
+				logger.log("getLocationItems() getting child node: " + s, "getLocationItems", LogLevel.DEBUG, true);
 				IRTreeNode<T> child = cache.getNode(s);
 				getLocationItems(child, points, depth);
 			}
@@ -341,20 +354,17 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	@Override
 	public void printTree() {
 		LogLevel temp = logger.getLogLevel();
-		logger.setLogLevel(LogLevel.DEV);
-		logger.log("[RTREE] PRINTING TREE: ");
+		logger.setLogLevel(LogLevel.DEBUG);
+		logger.log("PRINTING TREE: ", "printTree", LogLevel.DEBUG, true);
 		logger.log();
-		logger.logExact("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth");
+		logger.log("nodeId\tparent\trectangle\tnumber children\tnumber items\tdepth", "CSV", LogLevel.DEBUG, true);
 		for (int i = 0; i < maxItems; i++) {
-			logger.logExact("\titem");
+			logger.log("\titem", "CSV", LogLevel.DEBUG, false);
 		}
 		for (int i = 0; i < maxChildren; i++) {
-			logger.logExact("\tchild");
+			logger.log("\tchild", "CSV", LogLevel.DEBUG, false);
 		}
-		logger.log();
 		printTree(cache.getNode(treeName), 0);
-		logger.log();
-		logger.log();
 		logger.setLogLevel(temp);
 	}
 
@@ -367,16 +377,16 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 			numChildren = node.getChildren().size();
 		}
 		
-		logger.logExact(node.getNodeIdShort() + "\t" + node.getParent() + "\t" + node.getRectangle() + 
-				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth + "\t");
+		logger.log(node.getNodeIdShort() + "\t" + node.getParent() + "\t" + node.getRectangle() + 
+				"\t" + numChildren + "\t" + node.getNumberOfItems() +  "\t" + depth + "\t", "CSV", LogLevel.DEBUG, true);
 		
 		
 		List<ILocationItem<T>> tempPoints = node.getLocationItems();
 		for (int i = 0; i < maxItems; i++) {
 			if (i < tempPoints.size()) {
-				logger.logExact(tempPoints.get(i).getType() + "\t");
+				logger.log(tempPoints.get(i).getType() + "\t", "CSV", LogLevel.DEBUG, false);
 			} else {
-				logger.logExact("\t");
+				logger.log("\t", "CSV", LogLevel.DEBUG, false);
 			}
 			
 		}
@@ -384,9 +394,9 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		List<String> tempChildren = node.getChildrenShort();
 		for (int i = 0; i < maxChildren; i++) {
 			if (i < tempChildren.size()) {
-				logger.logExact(tempChildren.get(i) + "\t");
+				logger.log(tempChildren.get(i) + "\t", "CSV", LogLevel.DEBUG, false);
 			} else {
-				logger.logExact("\t");
+				logger.log("\t", "CSV", LogLevel.DEBUG, false);
 			}
 		}
 		
@@ -407,62 +417,16 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		return treeName;
 	}
 	
-	/**
-	 * 
-	 * @return number of add operations
-	 */
-	@Override
-	public int numAdds() {
-		return cache.getDBAccess().getNumAdds();
-	}
-	
-	/**
-	 * 
-	 * @return number of read operations
-	 */
-	@Override
-	public int numReads() {
-		return cache.getDBAccess().getNumReads();
-	}
-	
-	/**
-	 * 
-	 * @return number of update operations
-	 */
-	@Override
-	public int numUpdates() {
-		return cache.getDBAccess().getNumUpdates();
-	}
-	
-	/**
-	 * 
-	 * @return total add time
-	 */
-	@Override
-	public long getAddTime() {
-		return cache.getDBAccess().getAddTime();
-	}
-	
-	/**
-	 * 
-	 * @return total read time
-	 */
-	@Override
-	public long getReadTime() {
-		return cache.getDBAccess().getReadTime();
-	}
-	
-	/**
-	 * 
-	 * @return total update time
-	 */
-	@Override
-	public long getUpdateTime() {
-		return cache.getDBAccess().getUpdateTime();
-	}
 	
 	@Override
 	public int getNumDimensions() {
 		return numDimensions;
 	}
+	
+	@Override
+	public PerformanceMetrics getPerformance() {
+		return cache.getDBAccess().getPerformance();
+	}
 }
+
+

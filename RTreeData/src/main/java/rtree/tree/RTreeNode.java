@@ -13,6 +13,7 @@ import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.item.LocationItem;
 import rtree.log.ILogger;
+import rtree.log.LogLevel;
 import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 
@@ -43,6 +44,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
+			logger.log(e);
 		}
 		return null;
 	}
@@ -54,7 +56,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 	
 	@Override
 	public void updateRectangle(boolean goUp) {
-		logger.log("[RTREENODE] " + rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0));
+		logger.log(rectangle.getNumberDimensions() + "-Dimensional RTreeNode.UpdateRectangle rectangle: " + rectangle + ", rectangle.getDim1(0): " + rectangle.getDim1(0), "updateRectangle", LogLevel.DEBUG, true);
 		
 		List<T> minimums = new ArrayList<T>();
 		List<T> maximums = new ArrayList<T>();
@@ -96,7 +98,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 		node.setRectangle(rectangle);
 		cache.updateNode(nodeId, node);
 		
-		logger.log("[RTREENODE] " + "updated rectangle for " + nodeId + " new rectangle: " + rectangle);
+		logger.log("updated rectangle for " + nodeId + " new rectangle: " + rectangle, "updateRectangle", LogLevel.DEBUG, true);
 		
 		cache.getDBAccess().updateMetaDataBoundaries(minimums, maximums, nodeId);
 
@@ -107,7 +109,8 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 	
 	@Override
 	public void updateRectangle(IRTreeNode<T> node) {
-		logger.log("[RTREENODE] " + rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + node.getNodeId() + " ... node.children: " + node.getChildren() + " node.parent: " + node.getParent());
+		logger.log("[RTREENODE] " + rectangle.getNumberDimensions() + "-Dimensional BRANCH UPDATE RECTANGLE:::: " + 
+				node.getNodeId() + " ... node.children: " + node.getChildren() + " node.parent: " + node.getParent(), "updateRectangle", LogLevel.DEBUG, true);
 		
 		IHyperRectangle<T> childSum = node.getRectangle();
 		
@@ -143,7 +146,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 				IRTreeNode<T> childNode = cache.getNode(child);
 				if (childNode != null && childNode.getRectangle() != null) {
 					
-					logger.log("[RTREENODE] " + "childSum: " + childSum);
+					logger.log("childSum: " + childSum, "updateRectangle", LogLevel.DEBUG, true);
 					IHyperRectangle<T> childRectangle = cache.getNode(child).getRectangle();
 					
 					List<IHyperRectangle<T>> temp = new ArrayList<IHyperRectangle<T>>();
@@ -228,7 +231,7 @@ public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
 				}
 			}
 		} catch (ParseException e) {
-			logger.log("[RTREENODE] " + "items: |" + items + "|");
+			logger.log("items: |" + items + "|", "setLocationItemsJson", LogLevel.ERROR, true);
 			e.printStackTrace();
 		}
 		

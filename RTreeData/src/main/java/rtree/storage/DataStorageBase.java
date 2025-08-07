@@ -2,6 +2,7 @@ package rtree.storage;
 
 import rtree.item.IRType;
 import rtree.log.ILogger;
+import rtree.log.PerformanceMetrics;
 
 /**
  * Base class for data storage implementations, implements IDataStorage interface.
@@ -11,12 +12,9 @@ public abstract class DataStorageBase<T extends IRType<T>> implements IDataStora
 
 	public final StorageType storageType;
 	protected ILogger logger;
-	protected int numReads = 0;
-	protected int numAdds = 0;
-	protected int numUpdates = 0;
-	protected long readTime = 0;
-	protected long addTime = 0;
-	protected long updateTime = 0;
+	
+	protected PerformanceMetrics performance;
+	
 	protected boolean isTest;
 	protected String tablePrefix;
 	
@@ -25,6 +23,7 @@ public abstract class DataStorageBase<T extends IRType<T>> implements IDataStora
 		this.logger = logger;
 		this.isTest = false;
 		this.tablePrefix = "rtree";
+		this.performance = new PerformanceMetrics();
 	}
 	
 	protected abstract void init();
@@ -37,9 +36,14 @@ public abstract class DataStorageBase<T extends IRType<T>> implements IDataStora
 	
 	public void validateTreeName(String treeName) throws IllegalArgumentException {
 		if (!treeName.matches("^[a-zA-Z0-9_]+$")) {
-			logger.log("Illegal table name");
+			logger.log("Illegal table name", "validateTreeName", rtree.log.LogLevel.ERROR, true);
 			throw new IllegalArgumentException(treeName);
 		}
+	}
+	
+	@Override
+	public PerformanceMetrics getPerformance() {
+		return performance;
 	}
 
 }
