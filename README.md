@@ -17,7 +17,7 @@ Properties of RTree:
 
 ## rtree-api-boot
 * Spring Boot Rest API
-* URL: http://localhost:8080/swagger-ui/index.html#
+* URL: http://localhost:3000/
 
 ## RTreeData
 
