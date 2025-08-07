@@ -2,7 +2,6 @@
 
 # rtree-java
 
-
 N-Dimensional R-Tree data structure using minimum bounding boxes to hold data in a balanced R-Tree structure with configurable storage and configurable split (insertion) algorithms. The structure allows for fast O(log<sub>M</sub>n) querying by boundaries. For example, one might want to query all landmarks on a map that fall within a geographical region. This structure is designed for such queries.
 
 Properties of RTree:
@@ -87,7 +86,11 @@ Example `rtree_items` table:
 
 The default max children count is 4. The default max item count is 4. If an RTree already exists, it has these set already, it will use the value in the metadata table (either DynamoDB or other storage configuration), not in the command line argument.  
 
-Compile: `mvn package` or see above pom.xml
+### Compile: 
+`
+mvn clean package
+sdf
+`
 
 
 ### Run GUI

@@ -18,8 +18,8 @@
 
     <div :class="['navbar-menu', { 'is-active': isMenuOpen }]">
       <div class="navbar-start">
-        <a class="navbar-item" @click="$router.push('/')">Home</a>
-        <a class="navbar-item" @click="$router.push('/portfolio')">Portfolio</a>
+        <a class="navbar-item" @click="$router.push('/')">Portfolio</a>
+        <a class="navbar-item" @click="$router.push('/portfolio')">Summary</a>
 
         <div class="navbar-item has-dropdown" :class="{ 'is-active': isSubmenuOpen }">
           <a class="navbar-link" @click="toggleSubmenu">Projects</a>

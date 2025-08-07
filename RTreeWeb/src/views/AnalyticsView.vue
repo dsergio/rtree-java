@@ -5,7 +5,9 @@
       <div class="column">
         <div class="box">
           <h1 class="title">Analytics Dashboard</h1>
-          <!-- Add your analytics components here -->
+          <p>
+            Here is where the GTM (Google Tag Manager) and analytics data layer specification is displayed.
+          </p>
         </div>
       </div>
     </div>
