@@ -76,9 +76,29 @@ class RTreeComponentDetail {
 import { api } from '@/config';
 import BaseButton from '../BaseButton.vue';
 
+class Point {
+    id: string;
+    item: Object;
+
+    constructor(id: string, item: Object) {
+        this.id = id;
+        this.item = item;
+    }
+}
+
+class Rectangle {
+    id: string;
+    item: Object;
+
+    constructor(id: string, item: Object) {
+        this.id = id;
+        this.item = item;
+    }
+}
+
 const rtreeDetail = ref<RTreeComponentDetail | null>(null);
-const pointsRef = ref<Object[]>([]);
-const rectanglesRef = ref<Object[]>([]);
+const pointsRef = ref<Point[]>([]);
+const rectanglesRef = ref<Rectangle[]>([]);
 
 const loading = ref<boolean>(false);
 var gen_count = ref<number>(0);

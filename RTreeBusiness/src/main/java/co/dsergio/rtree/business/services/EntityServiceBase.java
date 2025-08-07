@@ -5,12 +5,12 @@ import rtree.storage.ApplicationDbContext;
 
 public abstract class EntityServiceBase<T extends IRType<T>> {
 	
-	protected Class<T> clazz;
+	protected Class<T> className;
 	protected ApplicationDbContext<T> dbContext;
 	
-	public EntityServiceBase(Class<T> clazz) {
-		dbContext = new ApplicationDbContext<T>(clazz);
-		this.clazz = clazz;
+	public EntityServiceBase(Class<T> className) {
+		dbContext = new ApplicationDbContext<T>(className);
+		this.className = className;
 	}
 
 }

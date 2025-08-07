@@ -10,7 +10,7 @@
             </div>
         </div>
     </div>
-    
+    <AnalyticsDataLayer :pageName="pageName" :pageId="pageId" />
     
   </section>
 </template>
@@ -18,6 +18,9 @@
 <script setup lang="ts">
 
 import { ref } from 'vue';
+
+const pageName = ref('Home Page');
+const pageId = ref('home-page');
 
 </script>
 

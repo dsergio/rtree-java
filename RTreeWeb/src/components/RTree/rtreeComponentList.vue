@@ -102,7 +102,7 @@
                     
                   </tbody>
                 </table>
-                <BaseButton @click="createRTree(newTreeName)">Create</BaseButton>
+                <BaseButton @click="createRTree(newTreeName)" :disabled="false">Create</BaseButton>
 
                 <table class="table is-striped">
                 <thead>
@@ -117,8 +117,8 @@
                         <td>{{ component.item.name }}</td>
                         <td>{{ component.item.numDimensions }}</td>
                         <td>
-                            <BaseButton @click="setActiveComponent(component)">View/Edit</BaseButton> &nbsp;
-                            <BaseButton @click="deleteComponent(component.item.name)">Delete</BaseButton>
+                            <BaseButton @click="setActiveComponent(component)" :disabled="false">View/Edit</BaseButton> &nbsp;
+                            <BaseButton @click="deleteComponent(component.item.name)" :disabled="false">Delete</BaseButton>
                         </td>
                     </tr>
                 </tbody>
@@ -181,12 +181,16 @@ for (let i = 1; i <= 10; i++) {
 class RTreeDoubleItems {
   item: RTreeDouble;
   active?: boolean;
-  name?: string;
+  name: string;
 
   constructor(item: RTreeDouble) {
     this.item = item;
     this.active = false; // Default to inactive
-    this.name = item.name;
+    if (!item.name) {
+      this.name = 'rtree-' + item.numDimensions + '-' + Math.random().toString(36).substring(2, 10);
+    } else {
+      this.name = item.name;
+    }
   }
 }
 
@@ -207,7 +211,7 @@ watch(newTreeDatasetItem, (newValue) => {
 
 const createRTree = async (name: string) => {
   generateItems.value = option_generate_random_items.value; // Set generate items option based on checkbox
-  
+
   try {
 
     if (!name) {

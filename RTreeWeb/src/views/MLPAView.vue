@@ -1,4 +1,5 @@
 <template>
+  <AnalyticsDataLayer :pageName="pageName" :pageId="pageId" />
   <section class="section">
     <h1 class="title">Machine Learning for Physics and Astronomy</h1>
     <div class="columns">
@@ -38,6 +39,9 @@ import Notebook from '@/views/Notebook.vue';
 
 const headers = ref<string[]>([]);
 const rows = ref<Record<string, string>[]>([]);
+
+const pageName = ref('MLPA Exercises');
+const pageId = ref('mlpa-exercises');
 
 onMounted(async () => {
   const response = await fetch('@/../mlpa.csv');

@@ -8,6 +8,8 @@
 <script setup lang="ts">
 import NavBar from '@/views/NavBar.vue';
 
+import '@/main.js';
+
 </script>
 
 <style>

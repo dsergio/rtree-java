@@ -6,11 +6,11 @@ import AnalyticsView from '@/views/AnalyticsView.vue';
 import NotFound from '@/views/NotFound.vue';
 
 const routes = [
-  { path: '/',      name: 'home',    component: HomeView },
-  { path: '/rtree',  name: 'rtree', component: RTreeView },
-  { path: '/portfolio', name: 'portfolio', component: PortfolioView },
-  { path: '/analytics', name: 'analytics', component: AnalyticsView },
-  { path: '/mlpa', name: 'mlpa', component: () => import('@/views/MLPAView.vue') },
+  { path: '/',      name: 'home',    component: HomeView, meta: { title: 'Home Page' }, },
+  { path: '/rtree',  name: 'rtree', component: RTreeView, meta: { title: 'R-Tree Visualization' }, },
+  { path: '/portfolio', name: 'portfolio', component: PortfolioView, meta: { title: 'Portfolio' }, },
+  { path: '/analytics', name: 'analytics', component: AnalyticsView, meta: { title: 'Analytics' }, },
+  { path: '/mlpa', name: 'mlpa', component: () => import('@/views/MLPAView.vue'), meta: { title: 'MLPA Exercises' }, },
 
 
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },

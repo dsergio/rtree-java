@@ -39,7 +39,7 @@ export interface RTreeDouble {
      * @type {string}
      * @memberof RTreeDouble
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {number}

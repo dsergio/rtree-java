@@ -4,3 +4,7 @@ declare module '*.vue' {
   const component: DefineComponent<{}, {}, any>;
   export default component;
 }
+
+declare module './main.js' {
+  export function initializePureJavaScript(): void;
+}

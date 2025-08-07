@@ -25,15 +25,15 @@ import rtree.tree.RTree;
 public class RTreeServiceBase<T extends IRType<T>> extends EntityServiceBase<T> {
 	
 	
-	public RTreeServiceBase(Class<T> clazz) {
-		super(clazz);
+	public RTreeServiceBase(Class<T> className) {
+		super(className);
 	}
 	
 	public T getInstanceOf() {
 		
 		try {
 			
-			return clazz.getDeclaredConstructor().newInstance();
+			return className.getDeclaredConstructor().newInstance();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
@@ -56,7 +56,7 @@ public class RTreeServiceBase<T extends IRType<T>> extends EntityServiceBase<T> 
 		
 		IRTree<T> t = null;
 		try {
-			t = new RTree<T>(dbContext.getDataStorage(), rtreeCreate.maxChildren, rtreeCreate.maxItems, rtreeCreate.numDimensions, rtreeCreate.treeName, clazz);
+			t = new RTree<T>(dbContext.getDataStorage(), rtreeCreate.maxChildren, rtreeCreate.maxItems, rtreeCreate.numDimensions, rtreeCreate.treeName, className);
 			dbContext.treeSetMap.put(rtreeCreate.treeName, t);
 			
 		} catch (Exception e) {
