@@ -15,7 +15,7 @@ import rtree.storage.StorageType;
 /**
  * 
  * Sqlite RTree storage implementation
- * 
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */

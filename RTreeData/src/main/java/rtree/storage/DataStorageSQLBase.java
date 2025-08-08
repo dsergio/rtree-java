@@ -32,6 +32,7 @@ import rtree.tree.RTreeNode;
  * 
  * SQL Storage Base Class
  * 
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */

@@ -12,7 +12,7 @@ import rtree.tree.IRTreeNode;
 /**
  * 
  * Storage Access Interface
- * 
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */

@@ -14,13 +14,14 @@ import rtree.rectangle.IHyperRectangle;
 /**
  * Interface for R-Tree data structure.
  * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @author David Sergio
  * 
  */
 public interface IRTree<T extends IRType<T>> {
 	 
 	/**
 	 * Insert a location item into the R-tree
-	 * @param LocationItem locationItem
+	 * @param locationItem
 	 * 
 	 */
 	 void insert(ILocationItem<T> locationItem) throws IOException;
@@ -28,7 +29,7 @@ public interface IRTree<T extends IRType<T>> {
 	 /**
 	  * Insert a random type of "animal" into the R-tree
 	  * 
-	  * @param LocationItem locationItem
+	  * @param locationItem
 	  * 
 	  */
 	 void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException;
@@ -42,7 +43,6 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	 /**
 	  * Deletes the RTree and all its data.
-	  * @param treeName
 	  * @throws Exception
 	  */
 	 void delete() throws Exception;
@@ -81,7 +81,7 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	/**
 	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
-	 * @param HyperRectangle searchRectangle
+	 * @param searchRectangle
 	 * @return a map of rectangles containing search results
 	 * 
 	 */

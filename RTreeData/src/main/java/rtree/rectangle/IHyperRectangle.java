@@ -7,6 +7,11 @@ import org.json.simple.JSONObject;
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 
+/**
+ * IHyperRectangle interface represents a hyper-rectangle in an R-tree structure.
+ * @param <T> Type of the items stored in the hyper-rectangle, extending IRType.
+ * @author David Sergio
+ */
 public interface IHyperRectangle<T extends IRType<T>> {
 	
 	/**

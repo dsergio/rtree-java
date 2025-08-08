@@ -18,6 +18,8 @@ import rtree.storage.IDataStorage;
 
 /**
  * 
+ * RTreeCache class represents a cache for R-tree nodes.
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */
@@ -26,10 +28,10 @@ public class RTreeCache<T extends IRType<T>> extends RTreeCacheBase<T> {
 	Class<T> className;
 	
 	/**
-	 * @param treeName
-	 * @param logger
-	 * @param dataStorage
-	 * @param numDimensions
+	 * @param tree The R-tree structure to be cached.
+	 * @param logger Logger instance for logging operations.
+	 * @param dataStorage Data storage instance for persisting R-tree nodes.
+	 * @param className Class type of the items stored in the R-tree, extending IRType.
 	 * @throws Exception
 	 */
 	public RTreeCache(IRTree<T> tree, ILogger logger, IDataStorage<T> dataStorage, Class<T> className) throws Exception {

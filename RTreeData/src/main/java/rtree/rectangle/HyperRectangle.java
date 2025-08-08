@@ -5,7 +5,8 @@ import org.json.simple.JSONObject;
 import rtree.item.IRType;
 
 /**
- * 
+ * HyperRectangle class represents a hyper-rectangle in an R-tree structure.
+ * @param <T> Type of the items stored in the hyper-rectangle, extending IRType.
  * @author David Sergio
  *
  */

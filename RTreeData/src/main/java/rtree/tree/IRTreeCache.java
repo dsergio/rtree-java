@@ -19,20 +19,20 @@ public interface IRTreeCache<T extends IRType<T>> {
 	 
 	 /**
 	  * Returns the data storage access object.
-	  * @return IDataStorage<T>
+	  * @return IDataStorage
 	  */
 	 IDataStorage<T> getDBAccess();
 	 
 	 /**
 	  * Returns the R-Tree object.
-	  * @return IRTree<T>
+	  * @return IRTree
 	  */
 	 IRTree<T> getTree();
 	 
 	 /**
 	  * Get a node the cache.
 	  * @param nodeId
-	  * @return IRTreeNode<T>
+	  * @return IRTreeNode
 	  */
 	 IRTreeNode<T> getNode(String nodeId);
 	 

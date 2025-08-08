@@ -25,10 +25,24 @@ import rtree.tree.IRTree;
 public class ApplicationDbContext<T extends IRType<T>> {
 	
 	private IDataStorage<T> dataStorage;
+	
+	/**
+	 * A map of R-trees indexed by their names. This allows quick access to R-trees
+	 * by their unique name.
+	 */
 	public Map<String, IRTree<T>> treeSetMap;
+	
+	/**
+	 * A map of location items indexed by their ID. This allows quick access to
+	 * location items by their unique identifier.
+	 */
 	public Map<String, ILocationItem<T>> locationItemSetMap;
 	
 	
+	/**
+	 * Constructor for ApplicationDbContext.
+	 * @param className The class type of the items stored in the R-tree, extending IRType.
+	 */
 	public ApplicationDbContext(Class<T> className) {
 		
 		ILogger logger = new LoggerStdOut(LogLevel.DEBUG);

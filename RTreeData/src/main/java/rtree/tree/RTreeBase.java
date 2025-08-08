@@ -22,7 +22,8 @@ import rtree.storage.StorageType;
 import rtree.storage.IDataStorage;
 
 /**
- * 
+ * Abstract base class for R-tree implementations.
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */
@@ -68,8 +69,9 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * default SplitBehavior: SplitQuadratic
 	 * 
 	 * @param dataStorage
-	 * @param storageType
 	 * @param logger
+	 * @param treeName
+	 * @param className
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> className) throws Exception {
@@ -107,9 +109,9 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param dataStorage
 	 * @param maxChildren
 	 * @param maxItems
-	 * @param storageType
 	 * @param logger
-	 * @param splitBehavior
+	 * @param treeName
+	 * @param className
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> className) throws Exception {
@@ -121,9 +123,10 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * @param dataStorage
 	 * @param maxChildren
 	 * @param maxItems
-	 * @param storageType
 	 * @param logger
 	 * @param numDimensions
+	 * @param treeName
+	 * @param className
 	 * @throws Exception
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName, Class<T> className) throws Exception {

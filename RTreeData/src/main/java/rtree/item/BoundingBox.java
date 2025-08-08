@@ -11,7 +11,6 @@ import java.util.List;
  * 
  * @author David Sergio
  *
- * @param <T>
  */
 public class BoundingBox {
 	

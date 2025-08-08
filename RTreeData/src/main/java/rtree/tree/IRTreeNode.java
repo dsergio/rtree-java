@@ -12,6 +12,8 @@ import rtree.rectangle.IHyperRectangle;
 
 /**
  * 
+ * RTreeNode interface represents a node in an R-tree structure.
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */

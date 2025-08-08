@@ -24,6 +24,7 @@ import rtree.tree.RTreeNode;
  * 
  * In Memory Storage Implementation
  * 
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
  * @author David Sergio
  *
  */
