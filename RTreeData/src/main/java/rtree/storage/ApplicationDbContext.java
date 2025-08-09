@@ -20,7 +20,7 @@ import rtree.tree.IRTree;
  * provides access to R-trees and location items. It initializes the data
  * storage and loads all trees and location items into maps for easy access.
  * 
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> Type of the data enclosed in the type.
  */
 public class ApplicationDbContext<T extends IRType<T>> {
 	

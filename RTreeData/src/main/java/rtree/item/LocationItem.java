@@ -10,8 +10,14 @@ import org.json.simple.JSONObject;
  * @param <T> {@link rtree.item.IRType} representing the type of data stored in each dimension.
  */
 public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
-
-	public LocationItem(int numberDimensions) {
+	
+	/**
+	 * Constructs a LocationItem with the specified number of dimensions.
+	 * 
+	 * @param numberDimensions the number of dimensions for this location item
+	 * @throws IllegalArgumentException if numberDimensions is less than 1
+	 */
+	public LocationItem(int numberDimensions) throws IllegalArgumentException {
 		super(numberDimensions);
 		if (numberDimensions < 1) {
 			throw new IllegalArgumentException("LocationItemND minimum dimension is 1.");
@@ -19,7 +25,15 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 			
 		}
 	}
-	public LocationItem(int numberDimensions, String id) {
+	
+	/**
+	 * Constructor with the specified number of dimensions and a unique identifier.
+	 * 
+	 * @param numberDimensions the number of dimensions for this location item
+	 * @param id a unique identifier for this location item
+	 * @throws IllegalArgumentException if numberDimensions is less than 1
+	 */
+	public LocationItem(int numberDimensions, String id) throws IllegalArgumentException {
 		super(numberDimensions, id);
 		if (numberDimensions < 1) {
 			throw new IllegalArgumentException("LocationItemND minimum dimension is 1.");
@@ -28,6 +42,10 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 		}
 	}
 	
+	/**
+	 * Returns the location item string representation.
+	 * @return a string representation of the location item, including its dimensions and type
+	 */
 	@Override
 	public String toString() {
 		String str = "(";
@@ -38,7 +56,11 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 		str +=  ") " + type;
 		return str;
 	}
-
+	
+	/**
+	 * Get a JSON representation of the location item.
+	 * @return a {@link org.json.simple.JSONObject} containing the location item data
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getJson() {
@@ -71,6 +93,10 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 		return obj;
 	}
 	
+	/**
+	 * Get a JSON representation of the location item without properties.
+	 * @return a {@link org.json.simple.JSONObject} containing the location item data
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getLocationJson() {

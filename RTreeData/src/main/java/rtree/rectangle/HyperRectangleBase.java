@@ -16,8 +16,7 @@ import rtree.item.IRType;
  * A Rectangle defines the space contained by two 2-dimensional points. 
  * A RectangularCuboid defines the space by two 3-dimensional points.
  * 
- * @param <T> Type of the items stored in the hyperrectangle, extending IRType.
- * @author David Sergio
+ * @param <T> {@link rtree.item.IRType} - the type of the dimensions
  *
  */
 public abstract class HyperRectangleBase<T extends IRType<T>> implements IHyperRectangle<T> {

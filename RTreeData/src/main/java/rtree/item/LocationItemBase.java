@@ -11,7 +11,10 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-
+/**
+ * Abstract base class for location items in an R-tree structure.
+ * @param <T> {@link rtree.item.IRType}
+ */
 public abstract class LocationItemBase<T extends IRType<T>> implements ILocationItem<T> {
 
 	protected List<T> dimensionArray;

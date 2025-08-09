@@ -21,12 +21,8 @@ import rtree.tree.IRTreeNode;
 import rtree.tree.RTreeNode;
 
 /**
- * 
  * In Memory Storage Implementation
- * 
- * @param <T> Type of the items stored in the R-tree, extending IRType.
- * @author David Sergio
- *
+ * @param <T> Type of the data enclosed in the type.
  */
 public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T> {
 	
@@ -36,13 +32,11 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	private int numDimensions;
 	Class<T> className;
 	
-	
 	public DataStorageInMemory(ILogger logger, Class<T> className) {
 		super(StorageType.INMEMORY, logger);
 		localData = new HashMap<String, IRTreeNode<T>>();
 		this.className = className;
 	}
-	
 
 	@Override
 	public void init() {

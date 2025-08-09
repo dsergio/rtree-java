@@ -7,19 +7,29 @@ package rtree.item;
  * Represents a double-precision floating-point number in the RTree.
  * This class extends RType and implements IRType for handling double values.
  * It provides methods for setting data, calculating distance, and comparing values.
- * 
- * @author David Sergio
  */
 public class RDouble extends RType<Double> implements IRType<RDouble> {
 	
+	/**
+	 * Constructs an RDouble with the specified data.
+	 * 
+	 * @param data the double value to set
+	 */
 	public RDouble(Object data) {
 		super((Double)data);
 	}
 	
+	/**
+	 * Default constructor for RDouble, initializes with null data.
+	 */
 	public RDouble() {
 		super(null);
 	}
 	
+	/**
+	 * Sets the data for this RDouble instance from a string.
+	 * @param s the string representation of the double value
+	 */
 	@Override
 	public void setData(String s) {
 		data = Double.parseDouble(s);
