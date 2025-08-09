@@ -6,7 +6,7 @@ import rtree.log.ILogger;
 
 /**
  * Abstract base class for R-Tree split behavior.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  *
  */

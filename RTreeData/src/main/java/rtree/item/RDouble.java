@@ -1,8 +1,15 @@
 package rtree.item;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+//import java.math.BigDecimal;
+//import java.math.RoundingMode;
 
+/**
+ * Represents a double-precision floating-point number in the RTree.
+ * This class extends RType and implements IRType for handling double values.
+ * It provides methods for setting data, calculating distance, and comparing values.
+ * 
+ * @author David Sergio
+ */
 public class RDouble extends RType<Double> implements IRType<RDouble> {
 	
 	public RDouble(Object data) {

@@ -15,7 +15,7 @@ import rtree.rectangle.IHyperRectangle;
 
 /**
  * Split behavior for R-Tree that implements a quadratic split algorithm.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  */
 public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 	

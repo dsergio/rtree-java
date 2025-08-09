@@ -19,7 +19,7 @@ import rtree.storage.IDataStorage;
 /**
  * 
  * RTreeCache class represents a cache for R-tree nodes.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  *
  */

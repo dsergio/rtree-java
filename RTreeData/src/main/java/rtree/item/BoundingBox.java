@@ -9,8 +9,6 @@ import java.util.List;
  * For example, a 3D tree might contain points that are all on a plane, so that
  * the 'space' is 2D and positive even if the simple 'space' calculation returns a 'volume' of 0.
  * 
- * @author David Sergio
- *
  */
 public class BoundingBox {
 	

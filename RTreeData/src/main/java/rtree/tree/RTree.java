@@ -22,7 +22,7 @@ import rtree.storage.IDataStorage;
 
 /**
  * R-Tree implementation.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  *
  */

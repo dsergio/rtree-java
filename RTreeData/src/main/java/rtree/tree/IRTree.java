@@ -13,7 +13,7 @@ import rtree.rectangle.IHyperRectangle;
 
 /**
  * Interface for R-Tree data structure.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  * 
  */
@@ -21,67 +21,67 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	/**
 	 * Insert a location item into the R-tree
-	 * @param locationItem
-	 * 
+	 * @param locationItem {@link rtree.item.ILocationItem} to insert
+	 * @throws IOException if an error occurs during insertion
 	 */
 	 void insert(ILocationItem<T> locationItem) throws IOException;
 	 
 	 /**
 	  * Insert a random type of "animal" into the R-tree
 	  * 
-	  * @param locationItem
-	  * 
+	  * @param locationItem {@link rtree.item.ILocationItem} to insert, with the type automatically set to a random animal type.
+	  * @throws IOException if an error occurs during insertion
 	  */
 	 void insertRandomAnimal(ILocationItem<T> locationItem) throws IOException;
 	 
 	 /**
 	  * Insert a random type of "city" into the R-tree
-	  * @param locationItem
-	  * @throws IOException
+	  * @param locationItem {@link rtree.item.ILocationItem} to insert, with the type automatically set to a random city type.
+	  * @throws IOException if an error occurs during insertion
 	  */
 	 void insertRandomWACity(ILocationItem<T> locationItem) throws IOException;
 	 
 	 /**
 	  * Deletes the RTree and all its data.
-	  * @throws Exception
+	  * @throws Exception if an error occurs during deletion
 	  */
 	 void delete() throws Exception;
 	 
 	 /**
 	 * Get all items in this tree
 	 * Caution: could be a big operation
-	 * @return all items in this tree
+	 * @return List of all {@link rtree.item.ILocationItem} in this tree
 	 * 
 	 */
 	 List<ILocationItem<T>> getAllLocationItems();
 	 
 	 /**
 	  * Get all items in this tree with their depth in the tree.
-	  * @return a map of items with their depth in the tree.
+	  * @return a map of {@link rtree.item.ILocationItem} with their depth in the tree.
 	  */
 	 Map<ILocationItem<T>, Integer> getAllLocationItemsWithDepth();
 	 
 	 /**
 	  * Get all rectangles in this tree
-	  * @return
+	  * @return all rectangles in this tree
 	  */
 	 List<IHyperRectangle<T>> getAllRectangles();
 	 
 	 /**
 	  * Get all rectangles in this tree with their depth in the tree.
-	  * @return
+	  * @return a map of rectangles with their depth in the tree.
 	  */
 	 Map<IHyperRectangle<T>, Integer> getAllRectanglesWithDepth();
 	 
 	 /**
 	  * Delete a specific location item from the R-tree.
-	  * @param toDelete
+	  * @param locationItem {@link rtree.item.ILocationItem} to delete
 	  */
-	 void delete(ILocationItem<T> toDelete);
+	 void delete(ILocationItem<T> locationItem);
 	 
 	/**
 	 * Query the R-Tree structure and retrieve the items that fall inside the parameter search rectangle
-	 * @param searchRectangle
+	 * @param searchRectangle the rectangle to search for items
 	 * @return a map of rectangles containing search results
 	 * 
 	 */
@@ -137,7 +137,7 @@ public interface IRTree<T extends IRType<T>> {
 	 
 	 /**
 	  * Get the performance metrics of the R-tree.
-	  * @return
+	  * @return the performance metrics
 	  */
 	 PerformanceMetrics getPerformance();
 	 

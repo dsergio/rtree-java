@@ -15,7 +15,7 @@ import rtree.storage.IDataStorage;
  * Next Steps: Implement a cache eviction policy (e.g., LRU, LFU) to manage the cache size.
  * 
  * @author David Sergio
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  */
 public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache<T> {
 	

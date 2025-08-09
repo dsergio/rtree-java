@@ -2,6 +2,13 @@ package rtree.item;
 
 import org.json.simple.JSONObject;
 
+/**
+ * Represents a location item in an R-tree structure with a specified number of dimensions.
+ * This class extends {@link LocationItemBase} and provides methods to manage the dimensions
+ * and properties of the location item.
+ * 
+ * @param <T> {@link rtree.item.IRType} representing the type of data stored in each dimension.
+ */
 public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 
 	public LocationItem(int numberDimensions) {

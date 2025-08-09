@@ -1,7 +1,13 @@
 package rtree.log;
 
+/**
+ * Interface for logging system.
+ * Provides methods to log messages with different categories and log levels,
+ * manage the current log level, and print log entries.
+ * 
+ * @author David Sergio
+ */
 public interface ILogger {
-	
 	 
 	 /**
 	 * Logs an entry with a category and log level and a newline if specified.
@@ -45,8 +51,8 @@ public interface ILogger {
 	 
 	 /**
 	  * Prints all log entries that match the specified category and log level.
-	  * @param filterCategory
-	  * @param filterLogLevel
+	  * @param filterCategory filter by category, or null to ignore category
+	  * @param filterLogLevel filter by log level, or null to ignore log level
 	  */
 	 void printLogEntries(String filterCategory, LogLevel filterLogLevel);
 	 

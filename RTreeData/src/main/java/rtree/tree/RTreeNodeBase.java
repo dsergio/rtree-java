@@ -20,7 +20,7 @@ import rtree.rectangle.HyperRectangle;
 
 /**
  * Abstract base class for R-tree nodes.
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  *
  */

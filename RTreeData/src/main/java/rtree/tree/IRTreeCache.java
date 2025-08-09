@@ -5,7 +5,7 @@ import rtree.storage.IDataStorage;
 
 /**
  * R-Tree Cache Interface
- * @param <T> Type of the items stored in the R-tree, extending IRType.
+ * @param <T> {@link rtree.item.IRType}
  * @author David Sergio
  *
  */
@@ -19,41 +19,41 @@ public interface IRTreeCache<T extends IRType<T>> {
 	 
 	 /**
 	  * Returns the data storage access object.
-	  * @return IDataStorage
+	  * @return the IDataStorage object associated with this cache
 	  */
 	 IDataStorage<T> getDBAccess();
 	 
 	 /**
 	  * Returns the R-Tree object.
-	  * @return IRTree
+	  * @return the IRTree object associated with this cache
 	  */
 	 IRTree<T> getTree();
 	 
 	 /**
 	  * Get a node the cache.
-	  * @param nodeId
-	  * @return IRTreeNode
+	  * @param nodeId the ID of the node to retrieve
+	  * @return the IRTreeNode associated with the given nodeId, or null if not found
 	  */
 	 IRTreeNode<T> getNode(String nodeId);
 	 
 	 /**
 	  * Remove a node from the cache.
-	  * @param nodeId
+	  * @param nodeId the ID of the node to remove
 	  */
 	 void removeNode(String nodeId);
 	 
 	 /**
 	  * Put a node in the cache.
-	  * @param nodeId
-	  * @param node
+	  * @param nodeId the ID of the node to put in the cache
+	  * @param node the IRTreeNode to be cached
 	  * 
 	  */
 	 void putNode(String nodeId, IRTreeNode<T> node);
 	 
 	 /**
 	  * Update a node in the cache.
-	  * @param nodeId
-	  * @param node
+	  * @param nodeId the ID of the node to update
+	  * @param node the IRTreeNode to update in the cache
 	  */
 	 void updateNode(String nodeId, IRTreeNode<T> node);
 	 
