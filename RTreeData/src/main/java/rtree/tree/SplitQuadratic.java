@@ -19,9 +19,22 @@ import rtree.rectangle.IHyperRectangle;
  */
 public class SplitQuadratic<T extends IRType<T>> extends SplitBehaviorBase<T> {
 	
-	final String description;
+	/**
+	 * The description of the split behavior.
+	 */
+	public final String description;
+	
+	/**
+	 * The class type of the items stored in the R-tree, extending IRType.
+	 */
 	Class<T> className;
 	
+	/**
+	 * Constructor for SplitQuadratic.
+	 * 
+	 * @param className Class type of the items stored in the R-tree, extending
+	 *                  IRType.
+	 */
 	public SplitQuadratic(Class<T> className) {
 		description = "ND Quadratic Split";
 		this.className = className;

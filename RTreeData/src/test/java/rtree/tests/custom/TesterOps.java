@@ -1,3 +1,4 @@
+package rtree.tests.custom;
 import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
@@ -75,8 +76,8 @@ public class TesterOps {
 		}
 
 		try {
-			logger.log("deleting tree " + inputTreeName);
-			tree.delete();
+//			logger.log("deleting tree " + inputTreeName);
+//			tree.delete();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -1,11 +1,21 @@
 package rtree.item;
 
+/**
+ * Abstract class representing a nominal type in R-tree.
+ */
 public abstract class RNominal extends RTypeDiscrete<String> {
-
+	
+	/**
+	 * Constructor for RNominal.
+	 * @param data the nominal data
+	 */
 	public RNominal(Object data) {
 		super((String)data);
 	}
 	
+	/**
+	 * Default constructor for RNominal. Initializes with null data.
+	 */
 	public RNominal() {
 		super(null);
 	}

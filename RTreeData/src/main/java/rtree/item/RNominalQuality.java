@@ -2,12 +2,15 @@ package rtree.item;
 
 /**
  * TODO this should be a singleton, and it should read the distanceMatrix and rank from a file
- * 
- * @author David Sergio
+ * This class represents a nominal quality type with predefined values and distances.
  *
  */
 public class RNominalQuality extends RNominal implements IRType<RNominalQuality>{
 
+	/**
+	 * Constructor that initializes the nominal quality with the given data.
+	 * @param data the data to initialize the nominal quality
+	 */
 	public RNominalQuality(Object data) {
 		super(data);
 		init();

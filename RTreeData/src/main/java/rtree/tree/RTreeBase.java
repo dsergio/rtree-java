@@ -24,29 +24,98 @@ import rtree.storage.IDataStorage;
 /**
  * Abstract base class for R-tree implementations.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
  *
  */
 public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	
+	/**
+	 * The maximum number of children per node.
+	 */
 	protected int maxChildren;
+	
+	/**
+	 * The maximum number of items per node.
+	 */
 	protected int maxItems;
+	
+	/**
+	 * The name of the R-tree.
+	 */
 	protected String treeName;
+	
+	/**
+	 * The list of animal names used for random insertion.
+	 */
 	String[] animals = {"Abyssinian", "Adelie Penguin", "Affenpinscher", "Afghan Hound", "African Bush Elephant", "African Civet", "African Clawed Frog", "African Forest Elephant", "African Palm Civet", "African Penguin", "African Tree Toad", "African Wild Dog", "Ainu Dog", "Airedale Terrier", "Akbash", "Akita", "Alaskan Malamute", "Albatross", "Aldabra Giant Tortoise", "Alligator", "Alpine Dachsbracke", "American Bulldog", "American Cocker Spaniel", "American Coonhound", "American Eskimo Dog", "American Foxhound", "American Pit Bull Terrier", "American Staffordshire Terrier", "American Water Spaniel", "Anatolian Shepherd Dog", "Angelfish", "Ant", "Anteater", "Antelope", "Appenzeller Dog", "Arctic Fox", "Arctic Hare", "Arctic Wolf", "Armadillo", "Asian Elephant", "Asian Giant Hornet", "Asian Palm Civet", "Asiatic Black Bear", "Australian Cattle Dog", "Australian Kelpie Dog", "Australian Mist", "Australian Shepherd", "Australian Terrier", "Avocet", "Axolotl", "Aye Aye", "Baboon", "Bactrian Camel", "Badger", "Balinese", "Banded Palm Civet", "Bandicoot", "Barb", "Barn Owl", "Barnacle", "Barracuda", "Basenji Dog", "Basking Shark", "Basset Hound", "Bat", "Bavarian Mountain Hound", "Beagle", "Bear", "Bearded Collie", "Bearded Dragon", "Beaver", "Bedlington Terrier", "Beetle", "Bengal Tiger", "Bernese Mountain Dog", "Bichon Frise", "Binturong", "Bird", "Birds Of Paradise", "Birman", "Bison", "Black Bear", "Black Rhinoceros", "Black Russian Terrier", "Black Widow Spider", "Bloodhound", "Blue Lacy Dog", "Blue Whale", "Bluetick Coonhound", "Bobcat", "Bolognese Dog", "Bombay", "Bongo", "Bonobo", "Booby", "Border Collie", "Border Terrier", "Bornean Orang-utan", "Borneo Elephant", "Boston Terrier", "Bottle Nosed Dolphin", "Boxer Dog", "Boykin Spaniel", "Brazilian Terrier", "Brown Bear", "Budgerigar", "Buffalo", "Bull Mastiff", "Bull Shark", "Bull Terrier", "Bulldog", "Bullfrog", "Bumble Bee", "Burmese", "Burrowing Frog", "Butterfly", "Butterfly Fish", "Caiman", "Caiman Lizard", "Cairn Terrier", "Camel", "Canaan Dog", "Capybara", "Caracal", "Carolina Dog", "Cassowary", "Cat", "Caterpillar", "Catfish", "Cavalier King Charles Spaniel", "Centipede", "Cesky Fousek", "Chameleon", "Chamois", "Cheetah", "Chesapeake Bay Retriever", "Chicken", "Chihuahua", "Chimpanzee", "Chinchilla", "Chinese Crested Dog", "Chinook", "Chinstrap Penguin", "Chipmunk", "Chow Chow", "Cichlid", "Clouded Leopard", "Clown Fish", "Clumber Spaniel", "Coati", "Cockroach", "Collared Peccary", "Collie", "Common Buzzard", "Common Frog", "Common Loon", "Common Toad", "Coral", "Cottontop Tamarin", "Cougar", "Cow", "Coyote", "Crab", "Crab-Eating Macaque", "Crane", "Crested Penguin", "Crocodile", "Cross River Gorilla", "Curly Coated Retriever", "Cuscus", "Cuttlefish", "Dachshund", "Dalmatian", "Darwin's Frog", "Deer", "Desert Tortoise", "Deutsche Bracke", "Dhole", "Dingo", "Discus", "Doberman Pinscher", "Dodo", "Dog", "Dogo Argentino", "Dogue De Bordeaux", "Dolphin", "Donkey", "Dormouse", "Dragonfly", "Drever", "Duck", "Dugong", "Dunker", "Dusky Dolphin", "Dwarf Crocodile", "Eagle", "Earwig", "Eastern Gorilla", "Eastern Lowland Gorilla", "Echidna", "Edible Frog", "Egyptian Mau", "Electric Eel", "Elephant", "Elephant Seal", "Elephant Shrew", "Emperor Penguin", "Emperor Tamarin", "Emu", "English Cocker Spaniel", "English Shepherd", "English Springer Spaniel", "Entlebucher Mountain Dog", "Epagneul Pont Audemer", "Eskimo Dog", "Estrela Mountain Dog", "Falcon", "Fennec Fox", "Ferret", "Field Spaniel", "Fin Whale", "Finnish Spitz", "Fire-Bellied Toad", "Fish", "Fishing Cat", "Flamingo", "Flat Coat Retriever", "Flounder", "Fly", "Flying Squirrel", "Fossa", "Fox", "Fox Terrier", "French Bulldog", "Frigatebird", "Frilled Lizard", "Frog", "Fur Seal", "Galapagos Penguin", "Galapagos Tortoise", "Gar", "Gecko", "Gentoo Penguin", "Geoffroys Tamarin", "Gerbil", "German Pinscher", "German Shepherd", "Gharial", "Giant African Land Snail", "Giant Clam", "Giant Panda Bear", "Giant Schnauzer", "Gibbon", "Gila Monster", "Giraffe", "Glass Lizard", "Glow Worm", "Goat", "Golden Lion Tamarin", "Golden Oriole", "Golden Retriever", "Goose", "Gopher", "Gorilla", "Grasshopper", "Great Dane", "Great White Shark", "Greater Swiss Mountain Dog", "Green Bee-Eater", "Greenland Dog", "Grey Mouse Lemur", "Grey Reef Shark", "Grey Seal", "Greyhound", "Grizzly Bear", "Grouse", "Guinea Fowl", "Guinea Pig", "Guppy", "Hammerhead Shark", "Hamster", "Hare", "Harrier", "Havanese", "Hedgehog", "Hercules Beetle", "Hermit Crab", "Heron", "Highland Cattle", "Himalayan", "Hippopotamus", "Honey Bee", "Horn Shark", "Horned Frog", "Horse", "Horseshoe Crab", "Howler Monkey", "Human", "Humboldt Penguin", "Hummingbird", "Humpback Whale", "Hyena", "Ibis", "Ibizan Hound", "Iguana", "Impala", "Indian Elephant", "Indian Palm Squirrel", "Indian Rhinoceros", "Indian Star Tortoise", "Indochinese Tiger", "Indri", "Insect", "Irish Setter", "Irish WolfHound", "Jack Russel", "Jackal", "Jaguar", "Japanese Chin", "Japanese Macaque", "Javan Rhinoceros", "Javanese", "Jellyfish", "Kakapo", "Kangaroo", "Keel Billed Toucan", "Killer Whale", "King Crab", "King Penguin", "Kingfisher", "Kiwi", "Koala", "Komodo Dragon", "Kudu", "Labradoodle", "Labrador Retriever", "Ladybird", "Leaf-Tailed Gecko", "Lemming", "Lemur", "Leopard", "Leopard Cat", "Leopard Seal", "Leopard Tortoise", "Liger", "Lion", "Lionfish", "Little Penguin", "Lizard", "Llama", "Lobster", "Long-Eared Owl", "Lynx", "Macaroni Penguin", "Macaw", "Magellanic Penguin", "Magpie", "Maine Coon", "Malayan Civet", "Malayan Tiger", "Maltese", "Manatee", "Mandrill", "Manta Ray", "Marine Toad", "Markhor", "Marsh Frog", "Masked Palm Civet", "Mastiff", "Mayfly", "Meerkat", "Millipede", "Minke Whale", "Mole", "Molly", "Mongoose", "Mongrel", "Monitor Lizard", "Monkey", "Monte Iberia Eleuth", "Moorhen", "Moose", "Moray Eel", "Moth", "Mountain Gorilla", "Mountain Lion", "Mouse", "Mule", "Neanderthal", "Neapolitan Mastiff", "Newfoundland", "Newt", "Nightingale", "Norfolk Terrier", "Norwegian Forest", "Numbat", "Nurse Shark", "Ocelot", "Octopus", "Okapi", "Old English Sheepdog", "Olm", "Opossum", "Orang-utan", "Ostrich", "Otter", "Oyster", "Quail", "Quetzal", "Quokka", "Quoll", "Rabbit", "Raccoon", "Raccoon Dog", "Radiated Tortoise", "Ragdoll", "Rat", "Rattlesnake", "Red Knee Tarantula", "Red Panda", "Red Wolf", "Red-handed Tamarin", "Reindeer", "Rhinoceros", "River Dolphin", "River Turtle", "Robin", "Rock Hyrax", "Rockhopper Penguin", "Roseate Spoonbill", "Rottweiler", "Royal Penguin", "Russian Blue", "Sabre-Toothed Tiger", "Saint Bernard", "Salamander", "Sand Lizard", "Saola", "Scorpion", "Scorpion Fish", "Sea Dragon", "Sea Lion", "Sea Otter", "Sea Slug", "Sea Squirt", "Sea Turtle", "Sea Urchin", "Seahorse", "Seal", "Serval", "Sheep", "Shih Tzu", "Shrimp", "Siamese", "Siamese Fighting Fish", "Siberian", "Siberian Husky", "Siberian Tiger", "Silver Dollar", "Skunk", "Sloth", "Slow Worm", "Snail", "Snake", "Snapping Turtle", "Snowshoe", "Snowy Owl", "Somali", "South China Tiger", "Spadefoot Toad", "Sparrow", "Spectacled Bear", "Sperm Whale", "Spider Monkey", "Spiny Dogfish", "Sponge", "Squid", "Squirrel", "Squirrel Monkey", "Sri Lankan Elephant", "Staffordshire Bull Terrier", "Stag Beetle", "Starfish", "Stellers Sea Cow", "Stick Insect", "Stingray", "Stoat", "Striped Rocket Frog", "Sumatran Elephant", "Sumatran Orang-utan", "Sumatran Rhinoceros", "Sumatran Tiger", "Sun Bear", "Swan", "Tang", "Tapir", "Tarsier", "Tasmanian Devil", "Tawny Owl", "Termite", "Tetra", "Thorny Devil", "Tibetan Mastiff", "Tiffany", "Tiger", "Tiger Salamander", "Tiger Shark", "Tortoise", "Toucan", "Tree Frog", "Tropicbird", "Tuatara", "Turkey", "Turkish Angora", "Uakari", "Uguisu", "Umbrellabird", "Vampire Bat", "Vervet Monkey", "Vulture", "Wallaby", "Walrus", "Warthog", "Wasp", "Water Buffalo", "Water Dragon", "Water Vole", "Weasel", "Welsh Corgi", "West Highland Terrier", "Western Gorilla", "Western Lowland Gorilla", "Whale Shark", "Whippet", "White Faced Capuchin", "White Rhinoceros", "White Tiger", "Wild Boar", "Wildebeest", "Wolf", "Wolverine", "Wombat", "Woodlouse", "Woodpecker", "Woolly Mammoth", "Woolly Monkey", "Wrasse", "X-Ray Tetra", "Yak", "Yellow-Eyed Penguin", "Yorkshire Terrier", "Zebra", "Zebra Shark", "Zebu", "Zonkey", "Zorse"};
+	
+	/**
+	 * Random number generator for random operations.
+	 */
 	Random r = new Random();
+	
+	/**
+	 * The split behavior used for the R-tree.
+	 */
 	protected SplitBehaviorBase<T> splitBehavior;
+	
+	/**
+	 * The cache used for the R-tree.
+	 */
 	protected IRTreeCache<T> cache;
+	
+	/**
+	 * The performance metrics for the R-tree.
+	 */
 	protected StorageType storageType;
+	
+	/**
+	 * The logger used for logging operations in the R-tree.
+	 */
 	protected ILogger logger;
+	
+	/**
+	 * The minimum X coordinate for the R-tree.
+	 */
 	protected int minX;
+	
+	/**
+	 * The maximum X coordinate for the R-tree.
+	 */
 	protected int maxX;
+	
+	/**
+	 * The minimum Y coordinate for the R-tree.
+	 */
 	protected int minY;
+	
+	/**
+	 * The maximum Y coordinate for the R-tree.
+	 */
 	protected int maxY;
+	
+	/**
+	 * Indicates whether the boundaries of the R-tree have been set.
+	 */
 	protected boolean boundariesSet = false;
 	
+	/**
+	 * The number of dimensions for the R-tree.
+	 */
 	protected int numDimensions;
+	
+	/**
+	 * The list of minimum values for each dimension.
+	 */
 	protected List<T> maximums;
+	
+	/**
+	 * The list of maximum values for each dimension.
+	 */
 	protected List<T> minimums;
+	
+	/**
+	 * The class type of the items stored in the R-tree.
+	 */
 	Class<T> className;
 	
 	
@@ -56,8 +125,10 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * default maxItems: 4
 	 * default SplitBehavior: SplitQuadratic
 	 * 
-	 * @param dataStorage
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, String treeName, Class<T> className) throws Exception {
 		this(dataStorage, 4, 4, treeName, className);
@@ -68,11 +139,11 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * default maxItems: 4
 	 * default SplitBehavior: SplitQuadratic
 	 * 
-	 * @param dataStorage
-	 * @param logger
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param logger the logger to use for logging
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> className) throws Exception {
 		this(dataStorage, 4, 4, logger, treeName, className); // default to Quadratic
@@ -82,10 +153,12 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * default LogLevel: LogLevel.DEV
 	 * default SplitBehavior: SplitQuadratic
 	 * 
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param maxChildren the maximum number of children per node
+	 * @param maxItems the maximum number of items per node
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> className) throws Exception {
 		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), treeName, className); // default to DEV, Quadratic
@@ -95,39 +168,46 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	 * default LogLevel: LogLevel.DEV
 	 * default SplitBehavior: SplitQuadratic
 	 * 
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param maxChildren the maximum number of children per node
+	 * @param maxItems the maximum number of items per node
+	 * @param numDimensions the number of dimensions for the R-tree
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName, Class<T> className) throws Exception {
 		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), numDimensions, treeName, className); // default to DEV, Quadratic
 	}
 	
 	/**
+	 * default LogLevel: LogLevel.DEV
+	 * default SplitBehavior: SplitQuadratic
+	 * default numDimensions: 2
 	 * 
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @param logger
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param maxChildren the maximum number of children per node
+	 * @param maxItems the maximum number of items per node
+	 * @param logger the logger to use for logging
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> className) throws Exception {
 		this(dataStorage, maxChildren, maxItems, new LoggerStdOut(LogLevel.DEBUG), 2, treeName, className); // default to DEV, Quadratic, 2-D
 	}
 	
 	/**
+	 * The constructor initializes the R-tree with the specified parameters.
 	 * 
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @param logger
-	 * @param numDimensions
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * @param dataStorage the data storage implementation to use
+	 * @param maxChildren the maximum number of children per node
+	 * @param maxItems the maximum number of items per node
+	 * @param logger the logger to use for logging
+	 * @param numDimensions the number of dimensions for the R-tree
+	 * @param treeName the name of the R-tree
+	 * @param className the class of the items stored in the R-tree
+	 * @throws Exception if initialization fails
 	 */
 	public RTreeBase(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName, Class<T> className) throws Exception {
 		this.maxChildren = maxChildren;
@@ -173,11 +253,6 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	}
 
 	
-	/**
-	 * Initialize the split behavior, the cache container, the max children and items, and the root node configuration
-	 * 
-	 * @throws Exception 
-	 */
 	private void init(IDataStorage<T> dataStorage) throws Exception {
 		
 		try {
@@ -219,6 +294,11 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	public abstract void delete(ILocationItem<T> toDelete);
 	
 	
+	/**
+	 * Checks if the metadata for the R-tree exists in the database.
+	 * @return true if metadata exists, false otherwise
+	 * @throws Exception if there is an error checking for metadata existence
+	 */
 	protected boolean metaDataExists() throws Exception {
 		return cache.getDBAccess().metaDataExists(treeName);
 	}
@@ -243,6 +323,11 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 		return cache.getDBAccess().getMax(treeName);
 	}
 	
+	/**
+	 * Adds the given rectangle to the specified node's rectangle in the R-tree.
+	 * @param node the R-tree node to which the rectangle will be added
+	 * @param r the rectangle to be added
+	 */
 	protected void addToRectangle(IRTreeNode<T> node, IHyperRectangle<T> r) {
 		if (node == null) {
 			return;

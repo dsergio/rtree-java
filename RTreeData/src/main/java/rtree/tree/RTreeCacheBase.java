@@ -19,11 +19,36 @@ import rtree.storage.IDataStorage;
  */
 public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache<T> {
 	
+	/**
+	 * Cache for R-tree nodes, mapping node IDs to their corresponding IRTreeNode
+	 * instances.
+	 */
 	protected Map<String, IRTreeNode<T>> cache;
+	
+	/**
+	 * Data storage access object for R-tree nodes. This is used to persistently
+	 * store and retrieve R-tree nodes.
+	 */
 	protected IDataStorage<T> dbAccess;
+	
+	/**
+	 * The R-tree instance associated with this cache.
+	 */
 	protected IRTree<T> tree;
+	
+	/**
+	 * Logger instance for logging operations related to the R-tree cache.
+	 */
 	protected ILogger logger;
 	
+	/**
+	 * Constructor for the RTreeCacheBase class.
+	 * 
+	 * @param tree        The R-tree structure to be cached.
+	 * @param logger      Logger instance for logging operations.
+	 * @param dataStorage Data storage instance for persisting R-tree nodes.
+	 * @throws Exception if there is an error initializing the data storage.
+	 */
 	public RTreeCacheBase(IRTree<T> tree, ILogger logger, IDataStorage<T> dataStorage) throws Exception {
 		
 		cache = new HashMap<String, IRTreeNode<T>>();
@@ -34,6 +59,7 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 		dbAccess.initializeStorage();
 	}	
 	
+	@Override
 	public void printCache() {
 		logger.log("Printing cache:", "cache", LogLevel.DEBUG, true);
 		for (String key : cache.keySet()) {
@@ -43,10 +69,12 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 		logger.log();
 	}
 	
+	@Override
 	public IDataStorage<T> getDBAccess() {
 		return dbAccess;
 	}
 	
+	@Override
 	public IRTreeNode<T> getNode(String nodeId) {
 		
 		if (nodeId == null) {
@@ -105,11 +133,13 @@ public abstract class RTreeCacheBase<T extends IRType<T>> implements IRTreeCache
 					LogLevel.ERROR, true);
 		}
 	}
-
+	
+	@Override
 	public void removeNode(String node) {
 		cache.remove(node);
 	}
 	
+	@Override
 	public IRTree<T> getTree() {
 		return tree;
 	}

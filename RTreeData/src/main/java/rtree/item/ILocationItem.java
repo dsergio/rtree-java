@@ -46,14 +46,14 @@ public interface ILocationItem<T extends IRType<T>> {
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @param value value to set for the dimension. See {@link rtree.item.IRType} for the type of value.
 	 */
-	void setDim(int dim, T value);
+	void setDim(int dim, T value) throws IllegalArgumentException;
 	
 	/**
 	 * Get the value for a specific dimension.
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @return value for the dimension. See {@link rtree.item.IRType} for the type of value.
 	 */
-	T getDim(int dim);
+	T getDim(int dim) throws IllegalArgumentException;
 	
 	/**
 	 * Get the array of dimensions.

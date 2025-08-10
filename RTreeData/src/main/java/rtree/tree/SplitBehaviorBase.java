@@ -7,15 +7,33 @@ import rtree.log.ILogger;
 /**
  * Abstract base class for R-Tree split behavior.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
  *
  */
 public abstract class SplitBehaviorBase<T extends IRType<T>> implements ISplitBehavior<T> {
 	
+	/**
+	 * The cache for R-tree nodes.
+	 */
 	protected IRTreeCache<T> cache;
+	
+	/**
+	 * The maximum number of children allowed in a node.
+	 */
 	protected int maxChildren;
+	
+	/**
+	 * Indicates whether a branch split has occurred.
+	 */
 	protected boolean branchSplit;
+	
+	/**
+	 * The name of the R-tree.
+	 */
 	protected String treeName;
+	
+	/**
+	 * Logger for logging operations.
+	 */
 	protected ILogger logger;
 	
 	@Override

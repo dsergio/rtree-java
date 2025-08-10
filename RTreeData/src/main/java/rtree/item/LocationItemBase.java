@@ -23,6 +23,13 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 	protected String type;
 	protected final String id;
 	
+	/**
+	 * Constructor to create a location item with a specified number of dimensions
+	 * and a unique ID.
+	 * 
+	 * @param numberDimensions The number of dimensions for the location item.
+	 * @param id               The unique identifier for the location item.
+	 */
 	public LocationItemBase(int numberDimensions, String id) {
 		this.numberDimensions = numberDimensions;
 		this.id = id;
@@ -32,41 +39,54 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 		}
 		itemProperties = new HashMap<String, String>();
 	}
-	
+
+	/**
+	 * Constructor to create a location item with a specified number of dimensions
+	 * and a randomly generated unique ID.
+	 * 
+	 * @param numberDimensions The number of dimensions for the location item.
+	 */
 	public LocationItemBase(int numberDimensions) {
 		this(numberDimensions, UUID.randomUUID().toString());
 	}
 	
+	@Override
 	public List<T> getDimensionArray() {
 		return dimensionArray;
 	}
 	
+	@Override
 	public int getNumberDimensions() {
 		return numberDimensions;
 	}
 	
-	public void setDim(int dim, T value) {
+	@Override
+	public void setDim(int dim, T value) throws IllegalArgumentException {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions + " you entered dim: " + dim + " value: " + value);
 		}
 		dimensionArray.set(dim, value);
 	}
 	
-	public T getDim(int dim) {
+	@Override
+	public T getDim(int dim) throws IllegalArgumentException {
 		if (dim < 0 || dim >= numberDimensions) {
 			throw new IllegalArgumentException("min dimension 0, max dimension " + numberDimensions + " you entered dim: " + dim);
 		}
 		return dimensionArray.get(dim);
 	}
 	
+	@Override
 	public String getId() {
 		return id;
 	}
 	
+	@Override
 	public String getType() {
 		return type;
 	}
 
+	@Override
 	public void setType(String type) {
 		this.type = type;
 	}
@@ -120,7 +140,14 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 		
 		return ret;
 	}
-
+	
+	/**
+	 * Static Method that calculates the space between two location items.
+	 * @param <T> {@link rtree.item.IRType}
+	 * @param e1 {@link rtree.item.ILocationItem} 
+	 * @param e2 {@link rtree.item.ILocationItem}
+	 * @return the space between the two items as a double value.
+	 */
 	public static <T extends IRType<T>> Double space(ILocationItem<T> e1, ILocationItem<T> e2) {
 		
 		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
@@ -142,6 +169,14 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 		return spaceTotal;
 	}
 	
+	/**
+	 * Static Method that calculates the bounding box between two location items.
+	 * 
+	 * @param <T> {@link rtree.item.IRType}
+	 * @param e1  {@link rtree.item.ILocationItem}
+	 * @param e2  {@link rtree.item.ILocationItem}
+	 * @return a {@link rtree.item.BoundingBox} object representing the bounding box
+	 */
 	public static <T extends IRType<T>> BoundingBox getBoundingBox(ILocationItem<T> e1, ILocationItem<T> e2) {
 		
 		if (e1.getDimensionArray().size() != e2.getDimensionArray().size()) {
@@ -164,6 +199,13 @@ public abstract class LocationItemBase<T extends IRType<T>> implements ILocation
 		return box;
 	}
 	
+	/**
+	 * Static method to convert a list of location items to a JSON array.
+	 * 
+	 * @param <T>           {@link rtree.item.IRType}
+	 * @param locationItems List of {@link rtree.item.ILocationItem} objects
+	 * @return JSONArray representation of the location items
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends IRType<T>> JSONArray getItemsJSON(List<ILocationItem<T>> locationItems) {
 		

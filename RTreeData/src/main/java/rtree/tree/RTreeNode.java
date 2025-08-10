@@ -20,24 +20,33 @@ import rtree.rectangle.IHyperRectangle;
 /**
  * RTreeNode class represents a node in an R-tree structure.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
  *
  */
 public class RTreeNode<T extends IRType<T>> extends RTreeNodeBase<T> {
-
-	Class<T> className;
+	
 	/**
-	 * @param nodeId
-	 * @param childrenStr
-	 * @param parent
-	 * @param cache
-	 * @param logger
+	 * Class type of the items stored in the R-tree, extending IRType.
+	 */
+	Class<T> className;
+	
+	/**
+	 * Constructor for RTreeNode.
+	 * @param nodeId the ID of the node
+	 * @param childrenStr the string representation of the children nodes
+	 * @param parent the ID of the parent node
+	 * @param cache the cache for R-tree nodes
+	 * @param logger logger instance for logging operations
+	 * @param className Class type of the items stored in the R-tree, extending IRType.
 	 */
 	public RTreeNode(String nodeId, String childrenStr, String parent, IRTreeCache<T> cache, ILogger logger, Class<T> className) {
 		super(nodeId, childrenStr, parent, cache, logger);
 		this.className = className;
 	}
 	
+	/**
+	 * Creates an instance of the class type specified.
+	 * @return a new instance of the class type
+	 */
 	public T getInstanceOf() {
 		
 		try {

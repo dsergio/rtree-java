@@ -26,10 +26,6 @@ public class RDouble extends RType<Double> implements IRType<RDouble> {
 		super(null);
 	}
 	
-	/**
-	 * Sets the data for this RDouble instance from a string.
-	 * @param s the string representation of the double value
-	 */
 	@Override
 	public void setData(String s) {
 		data = Double.parseDouble(s);

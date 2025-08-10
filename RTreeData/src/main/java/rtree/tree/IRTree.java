@@ -14,8 +14,6 @@ import rtree.rectangle.IHyperRectangle;
 /**
  * Interface for R-Tree data structure.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
- * 
  */
 public interface IRTree<T extends IRType<T>> {
 	 

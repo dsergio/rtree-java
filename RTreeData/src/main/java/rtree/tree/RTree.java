@@ -23,7 +23,6 @@ import rtree.storage.IDataStorage;
 /**
  * R-Tree implementation.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
  *
  */
 public class RTree<T extends IRType<T>> extends RTreeBase<T> {
@@ -36,67 +35,75 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	private List<Double> max_cities = new ArrayList<>();
 
 	/**
-	 * @param dataStorage
-	 * @param logger
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param logger the logger to use
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, logger, treeName, className);
 	}
 
 	/**
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @param logger
-	 * @param numDimensions
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param maxChildren maximum number of children per node
+	 * @param maxItems maximum number of items per node
+	 * @param logger the logger to use
+	 * @param numDimensions number of dimensions for the tree
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, int numDimensions, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, maxChildren, maxItems, logger, numDimensions, treeName, className);
 	}
 	
 	/**
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @param numDimensions
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param maxChildren maximum number of children per node
+	 * @param maxItems maximum number of items per node
+	 * @param numDimensions number of dimensions for the tree
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, int maxChildren, int maxItems, int numDimensions, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, maxChildren, maxItems, numDimensions, treeName, className);
 	}
 
 	/**
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @param logger
-	 * @param treeName
-	 * @param className
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param maxChildren maximum number of children per node
+	 * @param maxItems maximum number of items per node
+	 * @param logger the logger to use
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, int maxChildren, int maxItems, ILogger logger, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, maxChildren, maxItems, logger, treeName, className);
 	}
 
 	/**
-	 * @param dataStorage
-	 * @param maxChildren
-	 * @param maxItems
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param maxChildren maximum number of children per node
+	 * @param maxItems maximum number of items per node
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, maxChildren, maxItems, treeName, className);
 	}
 
 	/**
-	 * @param dataStorage
-	 * @throws Exception
+	 * Constructor for RTree.
+	 * @param dataStorage the data storage to use
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
+	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, String treeName, Class<T> className) throws Exception {
 		super(dataStorage, treeName, className);
@@ -120,12 +127,6 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		printTree();
 	}
 	
-	/**
-	 * Insert a location item into the RTree.
-	 * @param locationItem
-	 * @param node
-	 * @throws IOException
-	 */
 	private void insert(ILocationItem<T> locationItem, IRTreeNode<T> node) throws IOException {
 		
 		int itemNumDimensions = locationItem.getNumberDimensions();
@@ -299,13 +300,6 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 		return result;
 	}
 	
-	/**
-	 * Recursively search the RTree for items within the specified rectangle.
-	 * @param searchRectangle
-	 * @param node
-	 * @param result
-	 * @param depth
-	 */
 	private void search(
 			IHyperRectangle<T> searchRectangle, 
 			IRTreeNode<T> node, 

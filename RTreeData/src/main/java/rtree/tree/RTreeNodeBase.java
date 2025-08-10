@@ -21,21 +21,54 @@ import rtree.rectangle.HyperRectangle;
 /**
  * Abstract base class for R-tree nodes.
  * @param <T> {@link rtree.item.IRType}
- * @author David Sergio
  *
  */
 public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T> {
-
+	
+	/**
+	 * The ID of the node.
+	 */
 	protected String nodeId;
+	
+	/**
+	 * The ID of the parent node.
+	 */
 	protected String parentId;
+	
+	/**
+	 * The list of children node IDs.
+	 */
 	protected List<String> children;
 	
+	/**
+	 * The list of location items contained in the node.
+	 */
 	protected List<ILocationItem<T>> locationItems;
+	
+	/**
+	 * The rectangle that bounds the node.
+	 */
 	protected IHyperRectangle<T> rectangle;
 	
+	/**
+	 * The cache for R-tree nodes.
+	 */
 	protected IRTreeCache<T> cache;
+	
+	/**
+	 * Logger for logging operations.
+	 */
 	protected ILogger logger;
-
+	
+	/**
+	 * Constructor for RTreeNodeBase.
+	 * 
+	 * @param nodeId      the ID of the node
+	 * @param childrenStr the string representation of the children nodes
+	 * @param parent      the ID of the parent node
+	 * @param cache       the cache for R-tree nodes
+	 * @param logger      logger instance for logging operations
+	 */
 	public RTreeNodeBase(String nodeId, String childrenStr, String parent, IRTreeCache<T> cache, ILogger logger) {
 		this.cache = cache;
 		this.logger = logger;
@@ -73,6 +106,7 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 		}
 	}
 	
+	@Override
 	public void setLocationItems(ArrayList<ILocationItem<T>> locationItems) {
 		this.locationItems = locationItems;
 	}

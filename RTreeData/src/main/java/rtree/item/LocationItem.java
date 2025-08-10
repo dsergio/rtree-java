@@ -57,10 +57,6 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 		return str;
 	}
 	
-	/**
-	 * Get a JSON representation of the location item.
-	 * @return a {@link org.json.simple.JSONObject} containing the location item data
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getJson() {
@@ -93,10 +89,6 @@ public class LocationItem<T extends IRType<T>> extends LocationItemBase<T> {
 		return obj;
 	}
 	
-	/**
-	 * Get a JSON representation of the location item without properties.
-	 * @return a {@link org.json.simple.JSONObject} containing the location item data
-	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getLocationJson() {
