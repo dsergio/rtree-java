@@ -36,7 +36,7 @@ public interface ILogger {
 	 
 	 /**
 	  * Sets the log level.
-	  * @param logLevel
+	  * @param logLevel the log level to set
 	  */
 	 void setLogLevel(LogLevel logLevel);
 	 
@@ -45,8 +45,6 @@ public interface ILogger {
 	  * @param e the exception to log
 	  */
 	 void log(Exception e);
-	 
-	 
 	 
 	 /**
 	  * Prints all log entries that match the specified category and log level.

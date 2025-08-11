@@ -88,6 +88,9 @@ public abstract class RTypeDiscrete<T> extends RType<T> {
 	
 	/**
 	 * Adds a distance between two discrete values to the distance matrix.
+	 * @param from the starting discrete value
+	 * @param to the ending discrete value
+	 * @param distance the distance between the two discrete values
 	 */
 	protected void addValueDistance(T from, T to, double distance) {
 		addValueDistance(values.indexOf(from), values.indexOf(to), distance);
@@ -104,8 +107,8 @@ public abstract class RTypeDiscrete<T> extends RType<T> {
 	
 	/**
 	 * Sets the rank of a discrete value in the rank map.
-	 * @param item
-	 * @param rankValue
+	 * @param item the discrete value whose rank is to be set
+	 * @param rankValue the rank value to set for the discrete value
 	 */
 	protected void setRank(T item, Integer rankValue) {
 		if (rank.containsKey(item)) {

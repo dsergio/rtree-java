@@ -2,13 +2,23 @@ package rtree.log;
 
 import java.io.IOException;
 
+/**
+ * LoggerAnalytics class for logging analytics data.
+ * This class extends LoggerBase and implements ILogger.
+ */
 public class LoggerAnalytics extends LoggerBase implements ILogger {
 	
-	private String treeName;
+	// I'm not sure why I initially included this
+//	private String treeName;
 	
-	public LoggerAnalytics(LogLevel logLevel, String treeName) throws IOException {
+	/**
+	 * Constructor for LoggerAnalytics.
+	 * @param logLevel the log level to set for the logger
+	 * @throws IOException if an I/O error occurs during logger initialization
+	 */
+	public LoggerAnalytics(LogLevel logLevel) throws IOException {
 		super(logLevel);
-		this.treeName = treeName;
+//		this.treeName = treeName;
 	}
 
 	@Override

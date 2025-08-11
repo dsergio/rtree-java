@@ -6,13 +6,9 @@ import java.util.Map;
 
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
-import rtree.item.RDouble;
-import rtree.item.RInteger;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.log.LoggerStdOut;
-import rtree.storage.DataStorageMySQL;
-import rtree.storage.IDataStorage;
 import rtree.tree.IRTree;
 
 /**
@@ -61,6 +57,10 @@ public class ApplicationDbContext<T extends IRType<T>> {
 		
 	}
 	
+	/**
+	 * Get the data storage instance.
+	 * @return the data storage instance
+	 */
 	public IDataStorage<T> getDataStorage() {
 		return dataStorage;
 	}

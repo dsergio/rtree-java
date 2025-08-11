@@ -29,6 +29,11 @@ public abstract class RType<T> {
 		return data;
 	}
 	
+	/**
+	 * Set the data contained in this RType.
+	 * 
+	 * @param s the data to be set
+	 */
 	public abstract void setData(String s);
 	
 }

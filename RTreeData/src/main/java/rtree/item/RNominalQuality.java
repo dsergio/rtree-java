@@ -67,6 +67,9 @@ public class RNominalQuality extends RNominal implements IRType<RNominalQuality>
 		setRank("horrible", 6);
 	}
 	
+	/**
+	 * Default constructor that initializes the nominal quality with no data.
+	 */
 	public RNominalQuality() {
 		super();
 		init();

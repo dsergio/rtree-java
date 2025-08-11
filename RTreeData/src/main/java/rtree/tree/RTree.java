@@ -38,6 +38,8 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	 * Constructor for RTree.
 	 * @param dataStorage the data storage to use
 	 * @param logger the logger to use
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
 	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, ILogger logger, String treeName, Class<T> className) throws Exception {
@@ -92,6 +94,8 @@ public class RTree<T extends IRType<T>> extends RTreeBase<T> {
 	 * @param dataStorage the data storage to use
 	 * @param maxChildren maximum number of children per node
 	 * @param maxItems maximum number of items per node
+	 * @param treeName name of the tree
+	 * @param className the class type of the items stored in the R-tree, extending IRType
 	 * @throws Exception if an error occurs during initialization
 	 */
 	public RTree(IDataStorage<T> dataStorage, int maxChildren, int maxItems, String treeName, Class<T> className) throws Exception {

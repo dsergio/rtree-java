@@ -10,37 +10,40 @@ import rtree.item.IRType;
 /**
  * IHyperRectangle interface represents a hyper-rectangle in an R-tree structure.
  * @param <T> {@link rtree.item.IRType} representing the type of dimensions
- * @author David Sergio
  */
 public interface IHyperRectangle<T extends IRType<T>> {
 	
 	/**
 	 * Set the value for a specific dimension 1.
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
-	 * @param value
+	 * @param value value for the dimension. See {@link rtree.item.IRType} for the type of value.
+	 * @throws IllegalArgumentException if the dimension is invalid or the value is null
 	 */
-	 void setDim1(int dim, T value);
+	 void setDim1(int dim, T value) throws IllegalArgumentException;
 	
 	/**
 	 * Set the value for a specific dimension 2.
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
-	 * @param value
+	 * @param value value for the dimension. See {@link rtree.item.IRType} for the type of value.
+	 * throws IllegalArgumentException if the dimension is invalid or the value is null
 	 */
-	 void setDim2(int dim, T value);
+	 void setDim2(int dim, T value) throws IllegalArgumentException;
 	
 	/**
 	 * Get the value for a specific dimension 1.
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @return value for the dimension. See {@link rtree.item.IRType} for the type of value.
+	 * @throws IllegalArgumentException if the dimension is invalid
 	 */
-	 T getDim1(int dim);
+	 T getDim1(int dim) throws IllegalArgumentException;
 	
 	/**
 	 * Get the value for a specific dimension 2.
 	 * @param dim Dimension. 0 for "x", 1 for "y", 2 for "z", etc.
 	 * @return value for the dimension. See {@link rtree.item.IRType} for the type of value.
+	 * @throws IllegalArgumentException if the dimension is invalid
 	 */
-	 T getDim2(int dim);
+	 T getDim2(int dim) throws IllegalArgumentException;
 	
 	 /**
 	  * Get List of dimension 1 values.

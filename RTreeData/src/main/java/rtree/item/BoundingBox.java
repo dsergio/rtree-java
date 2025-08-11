@@ -13,6 +13,12 @@ import java.util.List;
 public class BoundingBox {
 	
 	private final int numberDimensions;
+	
+	/**
+	 * List of dimensions, each of type Double. 
+	 * Each dimension is the size of that dimension in the bounding box.
+	 * The size of this list is equal to the number of dimensions specified at construction.
+	 */
 	protected List<Double> dimensionArray;
 	
 	/**

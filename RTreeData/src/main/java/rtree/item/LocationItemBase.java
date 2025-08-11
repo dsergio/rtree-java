@@ -17,10 +17,29 @@ import org.json.simple.parser.ParseException;
  */
 public abstract class LocationItemBase<T extends IRType<T>> implements ILocationItem<T> {
 
+	/**
+	 * list of dimensions for the location item.
+	 */
 	protected List<T> dimensionArray;
+	
+	/**
+	 * The number of dimensions for the location item.
+	 */
 	protected int numberDimensions;
+	
+	/**
+	 * Properties of the location item, stored as key-value pairs.
+	 */
 	protected Map<String, String> itemProperties;
+	
+	/**
+	 * Type of the location item, used for categorization.
+	 */
 	protected String type;
+	
+	/**
+	 * Unique identifier for the location item.
+	 */
 	protected final String id;
 	
 	/**

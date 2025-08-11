@@ -1,8 +1,15 @@
 package rtree.log;
 
 
+/**
+ * LoggerStdOut is a logger that outputs log entries to the standard output (console).
+ */
 public class LoggerStdOut extends LoggerBase {
 	
+	/**
+	 * Constructor for LoggerStdOut
+	 * @param logLevel The log level for this logger.
+	 */
 	public LoggerStdOut(LogLevel logLevel) {
 		super(logLevel);
 	}

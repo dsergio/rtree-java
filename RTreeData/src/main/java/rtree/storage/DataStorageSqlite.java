@@ -13,19 +13,21 @@ import rtree.log.ILogger;
 import rtree.storage.StorageType;
 
 /**
- * 
  * Sqlite RTree storage implementation
  * @param <T> Type of the items stored in the R-tree, extending IRType.
- * @author David Sergio
- *
  */
 public class DataStorageSqlite<T extends IRType<T>> extends DataStorageSQLBase<T> {
 	
 	private String dir;
-
-//	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions, boolean isTest) {
-	public DataStorageSqlite(ILogger logger, boolean isTest, Class<T> clazz) {
-		super(StorageType.SQLITE, logger, clazz);
+	
+	/**
+	 * Constructor for DataStorageSqlite.
+	 * @param logger Logger instance for logging messages.
+	 * @param isTest Indicates if this is a test instance, which will use a different table prefix.
+	 * @param className Class type of the items stored in the R-tree, extending IRType.
+	 */
+	public DataStorageSqlite(ILogger logger, boolean isTest, Class<T> className) {
+		super(StorageType.SQLITE, logger, className);
 		if (isTest) {
 			this.isTest = true;
 			tablePrefix = "rtree_test";
@@ -33,9 +35,15 @@ public class DataStorageSqlite<T extends IRType<T>> extends DataStorageSQLBase<T
 		init();
 	}
 	
-//	public DataStorageSqlite(ILogger logger, String treeName, int numDimensions) {
-	public DataStorageSqlite(ILogger logger, Class<T> clazz) {
-		super(StorageType.SQLITE, logger, clazz);
+	/**
+	 * Constructor for DataStorageSqlite.
+	 * 
+	 * @param logger    Logger instance for logging messages.
+	 * @param className Class type of the items stored in the R-tree, extending
+	 *                  IRType.
+	 */
+	public DataStorageSqlite(ILogger logger, Class<T> className) {
+		super(StorageType.SQLITE, logger, className);
 		init();
 	}
 

@@ -9,6 +9,7 @@
 	<properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 	
 
@@ -37,11 +38,11 @@
             <artifactId>doxia-sink-api</artifactId>
             <version>2.0.0</version> <!-- Use the latest version available -->
         </dependency>
-
-		<dependency>
-			<groupId>org.apache.clerezza.ext</groupId>
-			<artifactId>org.json.simple</artifactId>
-			<version>0.4</version>
+        
+        <dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 
 		<dependency>
@@ -97,7 +98,9 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.2.1</version>
 				<configuration>
-					<createDependencyReducedPom>false</createDependencyReducedPom>
+					<createDependencyReducedPom>true</createDependencyReducedPom>
+					<artifactSet>
+					</artifactSet>
 				</configuration>
 				<executions>
 					<execution>
@@ -173,6 +176,8 @@
 	        </plugin>
 
 		</plugins>
+		
+		
 	</build>
 	
 	<reporting>

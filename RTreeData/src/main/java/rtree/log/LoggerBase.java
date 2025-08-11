@@ -6,20 +6,55 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Abstract base class for logging functionality.
+ */
 public abstract class LoggerBase implements ILogger {
-
+	
+	/**
+	 * The log level for this logger.
+	 */
 	protected LogLevel logLevel;
 	
+	/**
+	 * The list of log entries.
+	 */
 	protected List<String> entries;
+	
+	/**
+	 * The list of categories for each log entry.
+	 */
 	protected List<String> entriesCategory;
+	
+	/**
+	 * The list of log levels for each log entry.
+	 */
 	protected List<LogLevel> entriesLogLevel;
+	
+	/**
+	 * The current index for printing log entries. This allows for sequential
+	 * printing of log entries without repeating.
+	 */
 	protected int currentEntryIndex = 0;
 	
+	/**
+	 * The file where logs are written, if specified.
+	 */
 	protected File logFile;
+	
+	/**
+	 * The FileWriter used to write logs to the file.
+	 */
 	protected FileWriter fileWriter;
 	
 	
-	
+	/**
+	 * Constructor for LoggerBase.
+	 * 
+	 * @param logLevel    The log level for this logger.
+	 * @param logFilePath The path to the log file. If null or empty, no file
+	 *                    logging will be performed.
+	 */
 	public LoggerBase(LogLevel logLevel, String logFilePath) {
 		this.logLevel = logLevel;
 		this.entries = new ArrayList<>();
@@ -41,6 +76,11 @@ public abstract class LoggerBase implements ILogger {
 		}
 	}
 	
+	/**
+	 * Constructor for LoggerBase with default log level.
+	 * 
+	 * @param logLevel The log level for this logger.
+	 */
 	public LoggerBase(LogLevel logLevel) {
 		this(logLevel, null);
 	}

@@ -1,12 +1,10 @@
 package rtree.tree;
 
 import java.io.IOException;
-import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
@@ -59,6 +57,18 @@ public abstract class RTreeNodeBase<T extends IRType<T>> implements IRTreeNode<T
 	 * Logger for logging operations.
 	 */
 	protected ILogger logger;
+	
+	/**
+	 * Default constructor for RTreeNodeBase.
+	 */
+	public RTreeNodeBase() {
+		this.cache = null;
+		this.logger = null;
+		this.nodeId = null;
+		this.parentId = null;
+		this.locationItems = new ArrayList<ILocationItem<T>>();
+		this.rectangle = null;
+	}
 	
 	/**
 	 * Constructor for RTreeNodeBase.

@@ -36,6 +36,17 @@ public abstract class SplitBehaviorBase<T extends IRType<T>> implements ISplitBe
 	 */
 	protected ILogger logger;
 	
+	/**
+	 * Default constructor for SplitBehaviorBase.
+	 */
+	public SplitBehaviorBase() {
+		this.cache = null;
+		this.maxChildren = 0;
+		this.branchSplit = false;
+		this.treeName = null;
+		this.logger = null;
+	}
+	
 	@Override
 	public boolean didBranchSplit() {
 		return branchSplit;

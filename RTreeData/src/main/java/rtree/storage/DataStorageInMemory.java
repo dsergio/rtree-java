@@ -30,8 +30,20 @@ public class DataStorageInMemory<T extends IRType<T>> extends DataStorageBase<T>
 	private int maxChildren;
 	private Map<String, IRTreeNode<T>> localData;
 	private int numDimensions;
-	Class<T> className;
 	
+	
+	/**
+	 * className of the items stored in the R-tree, extending IRType.
+	 */
+	protected Class<T> className;
+	
+	/**
+	 * Constructor for DataStorageInMemory.
+	 * 
+	 * @param logger    Logger instance for logging messages.
+	 * @param className Class type of the items stored in the R-tree, extending
+	 *                  IRType.
+	 */
 	public DataStorageInMemory(ILogger logger, Class<T> className) {
 		super(StorageType.INMEMORY, logger);
 		localData = new HashMap<String, IRTreeNode<T>>();

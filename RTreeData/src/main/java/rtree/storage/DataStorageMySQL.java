@@ -15,8 +15,19 @@ import rtree.item.IRType;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 
+/**
+ * MySQL RTree storage implementation.
+ * @param <T> Type of the items stored in the R-tree, extending IRType.
+ */
 public class DataStorageMySQL<T extends IRType<T>> extends DataStorageSQLBase<T> {
 
+	/**
+	 * Constructor for DataStorageMySQL.
+	 * 
+	 * @param logger    Logger instance for logging messages.
+	 * @param className Class type of the items stored in the R-tree, extending
+	 *                  IRType.
+	 */
 	public DataStorageMySQL(ILogger logger, Class<T> className) {
 		super(StorageType.MYSQL, logger, className);
 		init();

@@ -29,23 +29,38 @@ import rtree.tree.RTree;
 import rtree.tree.RTreeNode;
 
 /**
- * 
  * SQL Storage Base Class
- * 
  * @param <T> Type of the items stored in the R-tree, extending IRType.
- * @author David Sergio
- *
  */
 public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorageBase<T> {
 
+	/**
+	 * Connection to the SQL database.
+	 */
 	protected Connection conn;
-	Class<T> className;
 	
+	/**
+	 * Class name of the items stored in the R-tree.
+	 */
+	protected Class<T> className;
+	
+	/**
+	 * Constructor for DataStorageSQLBase.
+	 * 
+	 * @param storageType Type of the storage (e.g., SQLITE, MYSQL).
+	 * @param logger      Logger instance for logging messages.
+	 * @param className   Class type of the items stored in the R-tree, extending
+	 *                    IRType.
+	 */
 	public DataStorageSQLBase(StorageType storageType, ILogger logger, Class<T> className) {
 		super(storageType, logger);
 		this.className = className;
 	}
 	
+	/**
+	 * Get an instance of the item type.
+	 * @return Instance of the item type, or null if instantiation fails.
+	 */
 	public T getInstanceOf() {
 		try {
 			return className.getDeclaredConstructor().newInstance();
@@ -203,8 +218,6 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 		node.setRectangle(r);
 		node.setLocationItemsJson(items);
 
-//		numAdds++;
-//		addTime += (System.currentTimeMillis() - time);
 		performance.addAdd(System.currentTimeMillis() - time);
 
 		return node;
@@ -308,14 +321,11 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			logger.log(e);
 			e.printStackTrace();
 		}
-
-//		numUpdates++;
-//		updateTime += (System.currentTimeMillis() - time);
+		
 		performance.addUpdate(System.currentTimeMillis() - time);
 		
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public IRTreeNode<T> getRTreeNode(String tableName, String nodeId, IRTreeCache<T> cache) {
 
@@ -412,9 +422,7 @@ public abstract class DataStorageSQLBase<T extends IRType<T>> extends DataStorag
 			logger.log(e);
 			e.printStackTrace();
 		}
-
-//		numReads++;
-//		readTime += (System.currentTimeMillis() - time);
+		
 		performance.addRead(System.currentTimeMillis() - time);
 
 		return returnNode;
