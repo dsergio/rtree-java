@@ -2,11 +2,6 @@ package co.dsergio.rtree.business.dto;
 
 import java.util.List;
 
-import rtree.item.ILocationItem;
-import rtree.item.RDouble;
-import rtree.item.RInteger;
-import rtree.rectangle.IHyperRectangle;
-
 public class RTreeInteger {
 	
 	public RTreeInteger() {

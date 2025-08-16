@@ -10,6 +10,8 @@
         </BaseButton>
 
         <div :id = "'canvasContainer2D_' + props.treeName"></div>
+        
+        <div v-if="props.numDimensions == 3" id="threejsCanvas"></div>
 
         <ul class="list">
             <li class ="list-item">
@@ -48,7 +50,9 @@
 <script setup lang="ts">
 
 import { ref, onMounted, defineProps, defineComponent } from 'vue';
-import { Configuration, RTreeDoubleApi } from '@/generated/TypeScriptClient';
+
+import { api } from '@/config';
+import BaseButton from '../BaseButton.vue';
 
 import * as $ from 'jquery';
 import * as twoAppMain from '@/two/two-app-main.js';
@@ -72,9 +76,6 @@ class RTreeComponentDetail {
     }
 
 }
-
-import { api } from '@/config';
-import BaseButton from '../BaseButton.vue';
 
 class Point {
     id: string;

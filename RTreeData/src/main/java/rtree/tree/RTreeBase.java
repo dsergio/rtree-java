@@ -19,7 +19,6 @@ import rtree.rectangle.HyperRectangleBase;
 import rtree.rectangle.IHyperRectangle;
 import rtree.storage.IDataStorage;
 import rtree.storage.StorageType;
-import rtree.storage.IDataStorage;
 
 /**
  * Abstract base class for R-tree implementations.
@@ -280,7 +279,7 @@ public abstract class RTreeBase<T extends IRType<T>> implements IRTree<T> {
 	
 	
 	
-//	@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public JSONObject getJSON() {
 		JSONObject obj = new JSONObject();

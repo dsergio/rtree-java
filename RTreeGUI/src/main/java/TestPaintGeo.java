@@ -63,22 +63,16 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 	private JList<String> list;
 	private double searchRange = 20;
 	private ILogger logger;
-	private ILoggerPaint paintLogger;
-	
 	private int paintInitialWidth = 1000;
 	private int paintInitialHeight = 800;
 	private int listWidth = 250;
 	private int padding = 0;
 	private int gridOffset = 10;
-	private int mapOffset = 100;
-	
 	double mapRelativeSize = 0.7;
 	
 	private Double latitudeMin = null;
 	private Double latitudeMax = null;
 	private Double longitudeMin = null;
-	private Double longitudeMax = null;
-	
 	private Double longitudeWidth = null;
 	private Double latitudeHeight = null;
 	
@@ -86,7 +80,6 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 			Double longitudeMin, Double longitudeMax, Double latitudeMin, Double latitudeMax) {
 		
 		this.longitudeMin = longitudeMin;
-		this.longitudeMax = longitudeMax;
 		this.latitudeMin = latitudeMin;
 		this.latitudeMax = latitudeMax;
 		
@@ -100,8 +93,6 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 		this.showTreeOn = showTreeOn;
 		this.tree = tree;
 		this.logger = logger;
-		this.paintLogger = paintLogger;
-		
 		list = new JList<String>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -394,8 +385,8 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 //					y2 += 50;
 					
 					
-					int width = Math.abs(x2 - x);
-					int height = Math.abs(y2 - y);
+					Math.abs(x2 - x);
+					Math.abs(y2 - y);
 					
 					drawImage = (Graphics2D) g;
 					if (color != null) {
@@ -423,9 +414,6 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 						int extra = r.getLevel() + 1;
 						x += extra;
 						y += extra;
-						width -= extra;
-						height -= extra;
-
 						drawImage.setStroke(new BasicStroke(1.3f));
 
 						drawImage.setColor(color);
@@ -456,30 +444,22 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 						
 						logger.log("Rectangle traverse: " + r + ", level: " + r.getLevel());
 						
-						int offset = 0;
 						if (r.getLevel() == 1) {
 							color = Color.RED;
 						} else if (r.getLevel() == 2) {
 							color = Color.ORANGE;
-							offset = 3;
 						} else if (r.getLevel() == 3) {
 							color = Color.YELLOW;
-							offset = 5;
 						} else if (r.getLevel() == 4) {
 							color = Color.GREEN;
-							offset = 7;
 						} else if (r.getLevel() == 5) {
 							color = Color.BLUE;
-							offset = 9;
 						} else if (r.getLevel() == 6) {
 							color = Color.decode("#4B0082");
-							offset = 11;
 						} else if (r.getLevel() == 7) {
 							color = Color.decode("#9400D3");
-							offset = 13;
 						} else {
 							color = Color.BLACK;
-							offset = 15;
 						}
 						drawImage.setColor(color);
 						
@@ -504,8 +484,8 @@ public class TestPaintGeo extends JFrame implements KeyListener, ActionListener 
 //						y2 += 50;
 						
 						
-						int width = Math.abs(x2 - x);
-						int height = Math.abs(y2 - y);
+						Math.abs(x2 - x);
+						Math.abs(y2 - y);
 						
 //						drawImage.drawRect(x + offset, paintPan.getHeight() - y - height, width - offset, height);
 						drawImage.setStroke(existing);

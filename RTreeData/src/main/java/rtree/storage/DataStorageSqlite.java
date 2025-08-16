@@ -10,7 +10,6 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import rtree.item.IRType;
 import rtree.log.ILogger;
-import rtree.storage.StorageType;
 
 /**
  * Sqlite RTree storage implementation

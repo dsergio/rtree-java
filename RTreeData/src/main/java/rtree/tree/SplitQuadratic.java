@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.json.simple.JSONArray;
-
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.item.LocationItemBase;

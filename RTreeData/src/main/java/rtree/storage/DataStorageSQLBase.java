@@ -17,7 +17,6 @@ import org.json.simple.parser.ParseException;
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.item.LocationItem;
-import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.LogLevel;
 import rtree.rectangle.IHyperRectangle;

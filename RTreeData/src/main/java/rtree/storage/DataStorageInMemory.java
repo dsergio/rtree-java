@@ -12,7 +12,6 @@ import org.json.simple.parser.ParseException;
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.log.ILogger;
-import rtree.log.PerformanceMetrics;
 import rtree.rectangle.IHyperRectangle;
 import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTreeCache;

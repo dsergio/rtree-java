@@ -1,13 +1,6 @@
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
 import rtree.item.RDouble;
 import rtree.log.ILogger;
 import rtree.log.ILoggerPaint;

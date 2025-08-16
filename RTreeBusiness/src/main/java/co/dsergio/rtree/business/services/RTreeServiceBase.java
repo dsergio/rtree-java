@@ -6,13 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import co.dsergio.rtree.business.dto.LocationItem;
 import co.dsergio.rtree.business.dto.RTreeCreate;
-import co.dsergio.rtree.business.dto.SearchRectangle;
 import rtree.item.ILocationItem;
 import rtree.item.IRType;
 import rtree.rectangle.IHyperRectangle;
-import rtree.rectangle.HyperRectangle;
 import rtree.tree.IRTree;
 import rtree.tree.RTree;
 

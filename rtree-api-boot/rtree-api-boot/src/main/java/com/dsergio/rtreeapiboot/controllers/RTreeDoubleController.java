@@ -258,8 +258,6 @@ public class RTreeDoubleController extends RTreeControllerBaseGeneric<RDouble> {
 			for (IHyperRectangle<RDouble> r : results.keySet()) {
 				List<ILocationItem<RDouble>> items = results.get(r);
 				
-				RectangleDouble eachR = new RectangleDouble();
-
 				for (ILocationItem<RDouble> item : items) {
 					LocationItemDouble i = new LocationItemDouble();
 					i.type = item.getType();
